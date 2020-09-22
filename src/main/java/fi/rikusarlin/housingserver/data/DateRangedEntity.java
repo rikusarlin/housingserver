@@ -8,9 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 
 import fi.rikusarlin.housingserver.validation.DateRangeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
@@ -18,11 +18,11 @@ import fi.rikusarlin.housingserver.validation.ValidDateRange;
 
 @ValidDateRange(groups=DateRangeChecks.class,payload={Severity.Info.class})
 @MappedSuperclass
+@Validated
 public abstract class DateRangedEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
-	@NotNull(groups=DateRangeChecks.class, payload={Severity.Error.class})
 	Integer id;	
 	@Basic
     @Column(name = "startDate", nullable = true)	

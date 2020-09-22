@@ -68,7 +68,7 @@ public class HouseholdMemberTest
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
     }
-    
+
     @AfterEach
     public void logValdiationErrorMessages()
     {
