@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema#",
+  "$id": "http://rikusarlin.fi/schemas/basic.json",
+  "definitions": {
+    "dateRange": {
+      "$id": "#dateRange",
+      "type": "object",
+      "title": "Range between two dates",
+      "description": "Possibly open range between two dates - that is, both start end end dates can be empty",
+      "additionalProperties": true,
+      "required": ["startDate",  "endDate"],
+      "properties": {
+        "startDate": { "type": "string", format: "date", "description": "Start date of date range"},
+        "endDate": { "type": "string", format: "date",  "description": "End date of date range" }
+      }
+    },
+    "id": {
+      "$id": "#id",
+      "type": "object",
+      "title": "Unique id",
+      "description": "Unique, non-mandatory identifier",
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "integer", "description": "Unique identifier"}
+    }
+  },
+  "type": "object",  
+  "properties": {
+     "allOf": [
+	   { "$ref": "#definitions/id" },
+	   { "$ref": "#definitions/dateRange" }
+     ],
+     "personNumber": {
+       "type": "string",
+       "description": "Person number"
+     },
+  },
+  "required": ["personNumber"]
+ }
+ }
+ 

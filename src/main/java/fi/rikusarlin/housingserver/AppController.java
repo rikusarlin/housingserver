@@ -1,8 +1,7 @@
 package fi.rikusarlin.housingserver;
 
-import java.time.Duration;
 import java.time.Period;
-import java.time.temporal.TemporalUnit;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -17,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -66,6 +66,30 @@ public class AppController {
 			}
 		}
 		return householdMemberRepo.save(householdMember);
+	}
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PutMapping("/householdmember/{id}")
+	public HouseholdMember updateHouseholdMember(@Min(value=0) @PathVariable int id, @RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
+		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(householdMember, HouseholdChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		Optional<HouseholdMember> hm = householdMemberRepo.findById(id);
+		hm.ifPresentOrElse(
+				(value) 
+					-> {
+				 		value.setEndDate(householdMember.getEndDate());
+				 		value.setStartDate(householdMember.getStartDate());
+				 		value.setPersonNumber(householdMember.getPersonNumber());
+						householdMemberRepo.save(value);
+					},
+				()
+				 	-> {
+				 		householdMemberRepo.save(householdMember);
+				 	});
+		// Well, by now we should always be able to find the updated version
+		return householdMemberRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
 	}
 
 }

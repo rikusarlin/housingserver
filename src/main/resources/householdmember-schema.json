@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema#",
+  "$id": "http://rikusarlin.fi/schemas/householdmember.json",
+  "type": "object",  
+  "properties": {
+     "allOf": [
+	   { "$ref": "basic-schma.json#definitions/id" },
+	   { "$ref": "basic-schma.json#definitions/dateRange" }
+     ],
+     "personNumber": {
+       "type": "string",
+       "description": "Person number"
+     },
+  },
+  "required": ["personNumber"]
+ }
+ }
+ 
