@@ -42,18 +42,18 @@ public class SubCollectionOverlappingDateRangeValidator
         int index=0;
        	for(Object subvalue:collection) {
            	DateRangedEntity entity2 = (DateRangedEntity) subvalue;
-           	if( entity1.getEndDate().isBefore(entity2.getStartDate()) ||
-           		entity1.getStartDate().isAfter(entity2.getEndDate())) {
+           	if(     ((entity1.getEndDate()!=null) && (entity2.getStartDate()!=null) && (entity1.getEndDate().isBefore(entity2.getStartDate()))) 
+           	     || ((entity1.getStartDate()!=null) && (entity2.getEndDate()!=null) && (entity1.getStartDate().isAfter(entity2.getEndDate())))) {
            		ValidatorUtils.addViolation(
            	    		collectionName, 
            	    		index, 
            	    		"startEndDate",
            	    		"must overlap with application date range, and {0}-{1} and {2}-{3} do not overlap",
            				hibernateContext,
-                   		entity1.getStartDate().format(formatter),
-                   		entity1.getEndDate().format(formatter),
-                   		entity2.getStartDate().format(formatter),
-                   		entity2.getEndDate().format(formatter)
+           				entity1.getStartDate()!=null ? entity1.getStartDate().format(formatter) : "null",
+           				entity1.getEndDate()!=null ? entity1.getEndDate().format(formatter) : "null",
+           				entity2.getStartDate()!=null ? entity2.getStartDate().format(formatter) : "null",
+           				entity2.getEndDate()!=null ? entity2.getEndDate().format(formatter) : "null"
            		);
                 isValid = false;
            	}

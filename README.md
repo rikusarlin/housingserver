@@ -35,5 +35,7 @@ The application domain is an imaginary "housing benefit application" containing 
      "startDate": "2020-08-01",
      "endDate": "2021-12-31"
    }
- * ...more to come
+ * POST /householdmember/{id} - payload with or without ID, either updates or inserts
+ 
+ In addition to the actual Rest service, there are experiments with JSON schema based validation in class JsonSchemaValidition application. JSON schemas and example JSON input files can be found in src/main/resources. JsonSchemaValidation app also shows how to combine JSON schema validation to Spring validation. This could also be applied to Rest service, see [this blog post](https://www.mscharhag.com/spring/json-schema-validation-handlermethodargumentresolver). All in all, though, only quite basic validation can be done through JSON schema validation. 
  

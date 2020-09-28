@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema#",
+  "$id": "http://rikusarlin.fi/housingserver/expense-schema.json",
+  "type": "object",  
+  "allOf": [
+    { "$ref": "classpath:/basic-schema.json#/definitions/id" },
+    { "$ref": "classpath:/basic-schema.json#/definitions/dateRange" },
+    { "properties": {
+      "expenseType": {
+        "enum": ["RENT","ELECTRICITY","WATER","INTEREST","MAINTENANCE_CHARGE","OTHER"],
+        "description": "Type of expense"}
+      },
+      "amount": {
+        "type":"number",
+        "description":"Monetary amount of expense in EUR",
+        "minimum":0.0
+      },
+      "otherExpenseDescription": {
+        "type":"string",
+        "description":"Description of expense if expense type is OTHER"
+      }
+    }
+  ],
+  "required": ["amount"]
+ }
+ 
+ 
+ 
