@@ -13,6 +13,7 @@ import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import fi.rikusarlin.housingserver.data.Expense;
 import fi.rikusarlin.housingserver.data.HouseholdMember;
+import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
+import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -35,6 +39,8 @@ public class AppController {
 
     @Autowired
     HouseholdMemberRepository householdMemberRepo;
+    @Autowired
+    ExpenseRepository expenseRepo;
 
     @GetMapping("/householdmembers")
     public @ResponseBody Iterable<HouseholdMember> findHouseholdMembers() {
@@ -88,8 +94,67 @@ public class AppController {
 				 	-> {
 				 		householdMemberRepo.save(householdMember);
 				 	});
-		// Well, by now we should always be able to find the updated version
-		return householdMemberRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
+		return findHouseholdMemberById(id);
 	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/householdmember/{id}")
+	public void deleteHouseholdMember(@Min(value=0) @PathVariable int id) {
+		HouseholdMember hm = householdMemberRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
+ 		householdMemberRepo.delete(hm);
+	}
+	
+    @GetMapping("/expenses")
+    public @ResponseBody Iterable<Expense> findExpenses() {
+        return expenseRepo.findAll();
+    }
+     
+	@GetMapping(value = "/expense/{id}")
+	public Expense findExpenseById(@Min(value=0) @PathVariable int id) {
+		return expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
+	}
+ 
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/expense")
+	public Expense addExpense(@RequestBody @Validated(InputChecks.class) Expense expense) {
+		Set<ConstraintViolation<Expense>> violations =  validator.validate(expense, ExpenseChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		return expenseRepo.save(expense);
+	}
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PutMapping("/expense/{id}")
+	public Expense updateExpense(@Min(value=0) @PathVariable int id, @RequestBody @Validated(InputChecks.class) Expense expense) {
+		Set<ConstraintViolation<Expense>> violations =  validator.validate(expense, ExpenseChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		Optional<Expense> previousExpense = expenseRepo.findById(id);
+		previousExpense.ifPresentOrElse(
+				(value) 
+					-> {
+				 		value.setEndDate(expense.getEndDate());
+				 		value.setStartDate(expense.getStartDate());
+				 		value.setAmount(expense.getAmount());
+				 		value.setExpenseType(expense.getExpenseType());
+				 		value.setOtherExpenseDescription(expense.getOtherExpenseDescription());
+						expenseRepo.save(value);
+					},
+				()
+				 	-> {
+				 		expenseRepo.save(expense);
+				 	});
+		return findExpenseById(id);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/expense/{id}")
+	public void deleteExpense(@Min(value=0) @PathVariable int id) {
+		Expense expense = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
+ 		expenseRepo.delete(expense);
+	}
+
 
 }
