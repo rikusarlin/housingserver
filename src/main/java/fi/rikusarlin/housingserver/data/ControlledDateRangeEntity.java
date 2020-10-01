@@ -1,7 +1,6 @@
 package fi.rikusarlin.housingserver.data;
 
 import fi.rikusarlin.housingserver.validation.ValidDateRange;
-import fi.rikusarlin.housingserver.data.DateRangedEntity;
 import fi.rikusarlin.housingserver.validation.OverlappingDateRanges;
 
 @OverlappingDateRanges(dateRange1 = "dateRange", dateRange2="parentDateRange")

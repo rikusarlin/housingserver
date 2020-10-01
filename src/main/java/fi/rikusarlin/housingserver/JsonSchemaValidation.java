@@ -62,7 +62,7 @@ public class JsonSchemaValidation {
 	    }
 
 	    try (
-	            InputStream jsonStream = inputStreamFromClasspath("expense.json");
+	            InputStream jsonStream = inputStreamFromClasspath("expense3.json");
 	            InputStream schemaStream = inputStreamFromClasspath("expense-schema.json")
 	    ) {
 	        JsonNode json = objectMapper.readTree(jsonStream);

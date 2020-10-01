@@ -27,15 +27,28 @@ The application domain is an imaginary "housing benefit application" containing 
  The service is accessed via Rest api, with the following methods
  
  ### Household member
- * GET /householdmembers
- * GET /householdmember/{id}
- * PUT /householdmember
+ * GET /householdmembers - fetch all
+ * GET /householdmember/{id} - fetch
+ * PUT /householdmember - insert
    {
      "personNumber": "020103A678R",
      "startDate": "2020-08-01",
      "endDate": "2021-12-31"
    }
- * POST /householdmember/{id} - payload with or without ID, either updates or inserts
+ * POST /householdmember/{id} - update
+ * GET /householdmember/{id}/check - cross validate
+ ### Expense
+ * GET /expenses - fetch all
+ * GET /expense/{id} - fetch
+ * PUT /expense - insert
+   {
+     "amount": 74.0,
+     "startDate": "2020-08-01",
+     "expenseType": "OTHER",
+     "otherExpenseDescription": "Sold 100 liters of moonshine"
+   }
+ * POST /expense/{id} - update
+ * GET /expense/{id}/check - cross validate
  
  In addition to the actual Rest service, there are experiments with JSON schema based validation in class JsonSchemaValidition application. JSON schemas and example JSON input files can be found in src/main/resources. JsonSchemaValidation app also shows how to combine JSON schema validation to Spring validation. This could also be applied to Rest service, see [this blog post](https://www.mscharhag.com/spring/json-schema-validation-handlermethodargumentresolver). All in all, though, only quite basic validation can be done through JSON schema validation. 
  

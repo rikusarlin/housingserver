@@ -52,28 +52,38 @@ public class AppController {
 		return householdMemberRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
 	}
  
-	/**
-	 * Just to demonstrate, this method makes some validations to input
-	 * and another set of validations using Spring Validation.
-	 * Then, a manual (rather nonsensical) check is made
-	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/householdmember")
 	public HouseholdMember addHouseholdMember(@RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
-		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(householdMember, HouseholdChecks.class);
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
-		}
-		// Period max one year in this case (yes, we could have written a validator for this, too)
-		if(householdMember.getStartDate() != null && householdMember.getEndDate() != null){
-			Period  period = Period.between(householdMember.getStartDate(),householdMember.getEndDate());
-			if(period.getYears() >= 1) {
-				throw new TooLongRangeException(householdMember.getStartDate(), householdMember.getEndDate());
-			}
-		}
 		return householdMemberRepo.save(householdMember);
 	}
 
+	/**
+	 * Cross validate a household member
+	 * Note how Spring validation checks and manual checks are combined
+	 */
+	@GetMapping(value = "/householdmember/{id}/check")
+	public HouseholdMember checkHouseholdMemberById(@Min(value=0) @PathVariable int id) {
+		HouseholdMember hm = householdMemberRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
+		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(hm, HouseholdChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		/*
+		 * Period max one year in this case
+		 * Yes, we could have written a validator for this, too, but wanted to show
+		 * manual checks are added to Spring Validation checks
+		 */
+		if(hm.getStartDate() != null && hm.getEndDate() != null){
+			Period  period = Period.between(hm.getStartDate(), hm.getEndDate());
+			if(period.getYears() >= 1) {
+				throw new TooLongRangeException(hm.getStartDate(), hm.getEndDate());
+			}
+		}
+		return hm;
+	}
+
+	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PutMapping("/householdmember/{id}")
 	public HouseholdMember updateHouseholdMember(@Min(value=0) @PathVariable int id, @RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
@@ -117,11 +127,17 @@ public class AppController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/expense")
 	public Expense addExpense(@RequestBody @Validated(InputChecks.class) Expense expense) {
+		return expenseRepo.save(expense);
+	}
+
+	@GetMapping(value = "/expense/{id}/check")
+	public Expense checkExpenseById(@Min(value=0) @PathVariable int id) {
+		Expense expense = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
 		Set<ConstraintViolation<Expense>> violations =  validator.validate(expense, ExpenseChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return expenseRepo.save(expense);
+		return expense;
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
