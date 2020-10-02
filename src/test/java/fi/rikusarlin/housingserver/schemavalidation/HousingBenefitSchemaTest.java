@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +18,8 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
-import fi.rikusarlin.housingserver.data.Expense;
-
-public class ExpenseSchemaTest 
+public class HousingBenefitSchemaTest 
 {
-	Set<ConstraintViolation<Expense>> violations;
     InputStream schemaStream;
     JsonSchema schema;
     ObjectMapper objectMapper;
@@ -35,7 +30,7 @@ public class ExpenseSchemaTest
 	public void setUp() {
         try {
     	    schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
-			schemaStream = (new ClassPathResource("expense-schema.json")).getInputStream();
+			schemaStream = (new ClassPathResource("housingbenefit-schema.json")).getInputStream();
 	        schema = schemaFactory.getSchema(schemaStream);
 		    objectMapper = new ObjectMapper();
 		} catch (IOException e) {
@@ -44,10 +39,10 @@ public class ExpenseSchemaTest
 	}
 	
     @Test
-    public void testGoodExpense()
+    public void testGoodApplication()
     {
 		try {
-	    	InputStream jsonStream = (new ClassPathResource("expense.json")).getInputStream();
+	    	InputStream jsonStream = (new ClassPathResource("housingbenefit-application2.json")).getInputStream();
 	    	JsonNode json;
 			json = objectMapper.readTree(jsonStream);
 	    	validationResult = schema.validate(json);
@@ -56,47 +51,34 @@ public class ExpenseSchemaTest
 			e.printStackTrace();
 		}
     }
-
+    
     @Test
-    public void testFaultyDateAndAmount()
+    public void testBadIncomeType()
     {
 		try {
-	    	InputStream jsonStream = (new ClassPathResource("expense3.json")).getInputStream();
+	    	InputStream jsonStream = (new ClassPathResource("housingbenefit-application.json")).getInputStream();
 	    	JsonNode json;
 			json = objectMapper.readTree(jsonStream);
 	    	validationResult = schema.validate(json);
 	        Assertions.assertTrue(!validationResult.isEmpty());
-	        Assertions.assertTrue(validationResult.size() == 2);
+	        Assertions.assertTrue(validationResult.size() == 5);
 	        Iterator<ValidationMessage> iter = validationResult.iterator();
-	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("is an invalid date"));
-	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("amount: must have a minimum value"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-
-    @Test
-    public void testFaultyExpenseType()
-    {
-		try {
-	    	InputStream jsonStream = (new ClassPathResource("expense4.json")).getInputStream();
-	    	JsonNode json;
-			json = objectMapper.readTree(jsonStream);
-	    	validationResult = schema.validate(json);
-	        Assertions.assertTrue(!validationResult.isEmpty());
-	        Assertions.assertTrue(validationResult.size() == 1);
-	        Iterator<ValidationMessage> iter = validationResult.iterator();
+	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("amount: is missing but it is required"));
+	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("startDate: is missing but it is required"));
+	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("endDate: is missing but it is required"));
 	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("expenseType: does not have a value in the enumeration"));
+	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("personNumber: does not match the regex pattern"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
     }
+
 
     @AfterEach
     public void logValdiationErrorMessages()
     {
     	if(validationResult != null) {
-    		validationResult.forEach(vm -> System.out.println("Expense:"+vm.getMessage()));
+    		validationResult.forEach(vm -> System.out.println("Huosing benefit application:"+vm.getMessage()));
     	}
     }
 }

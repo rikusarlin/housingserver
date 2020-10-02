@@ -1,0 +1,50 @@
+{
+  "startDate": "2020-01-01",
+  "endDate": "2020-12-31",
+  "incomes": [
+  	{
+  	  "id":1,
+      "startDate": "2020-09-30",
+      "endDate": "2020-11-01",
+      "incomeType":"OTHER",
+      "otherIncomeDescription":"Sold 100 liters of moonshine"
+    },
+  	{
+  	  "id":2,
+      "incomeType":"SALARY",
+      "amount":2200
+    }
+  ],
+  "housingExpenses": [
+  	{
+  	  "id":1,
+      "startDate": "2020-09-30",
+      "endDate": "2020-11-01",
+      "expenseType":"RENT",
+      "amount":820    
+    },
+  	{
+  	  "id":2,
+      "startDate": "2020-09-30",
+      "endDate": "2020-11-01",
+      "expenseType":"WATÖ",
+      "amount":84
+    }
+  ],
+  "householdMembers": [
+  	{
+  	  "id":1,
+      "startDate": "2020-01-01",
+      "personNumber":"170871B0091"
+    },
+  	{
+  	  "id":2,
+      "startDate": "2022-01-01",
+      "personNumber":"130570-216E"
+    }
+  ]
+  
+}
+ 
+ 
+ 

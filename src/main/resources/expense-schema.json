@@ -7,21 +7,20 @@
     { "$ref": "classpath:/basic-schema.json#/definitions/dateRange" },
     { "properties": {
       "expenseType": {
+        "type":"string",
         "enum": ["RENT","ELECTRICITY","WATER","INTEREST","MAINTENANCE_CHARGE","OTHER"],
-        "description": "Type of expense"}
-      },
+        "description": "Type of expense"},
       "amount": {
         "type":"number",
         "description":"Monetary amount of expense in EUR",
-        "minimum":0.0
-      },
+        "minimum":0.0},
       "otherExpenseDescription": {
         "type":"string",
-        "description":"Description of expense if expense type is OTHER"
+        "description":"Description of expense if expense type is OTHER"}
       }
     }
   ],
-  "required": ["amount"]
+  "required": ["amount","expenseType"]
  }
  
  

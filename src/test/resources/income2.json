@@ -1,0 +1,8 @@
+{
+  "id":1,
+  "startDate": "2020-09-30",
+  "endDate": "2020-xx-yy",
+  "incomeType":"OTHER",
+  "amount":-2,
+  "otherIncomeDescription":"Sold 100 liters of moonshine"
+}
