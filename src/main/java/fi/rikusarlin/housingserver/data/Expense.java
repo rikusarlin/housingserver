@@ -3,8 +3,12 @@ package fi.rikusarlin.housingserver.data;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
@@ -18,8 +22,12 @@ import fi.rikusarlin.housingserver.validation.Severity;
 	    groups=ExpenseChecks.class,
 	    payload={Severity.Error.class})
 @Entity
-@Table(name = "expense", catalog = "")
+@Table(name = "expense")
 public class Expense extends DateRangedEntity{
+	@JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="application_id", nullable=false)
+    private HousingBenefitApplication application;  
 	@Basic
     @Column(name = "expenseType")	
 	ExpenseType expenseType;
@@ -48,5 +56,11 @@ public class Expense extends DateRangedEntity{
 	}
 	public void setOtherExpenseDescription(String otherExpenseDescription) {
 		this.otherExpenseDescription = otherExpenseDescription;
+	}
+	public HousingBenefitApplication getApplication() {
+		return application;
+	}
+	public void setApplication(HousingBenefitApplication application) {
+		this.application = application;
 	}
 }

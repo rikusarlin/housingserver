@@ -3,6 +3,10 @@ package fi.rikusarlin.housingserver.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.Valid;
 
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
@@ -16,12 +20,17 @@ import fi.rikusarlin.housingserver.validation.SubCollectionOverlappingDateRange;
   @SubCollectionOverlappingDateRange(collectionName = "incomes", groups= {IncomeChecks.class}, payload={Severity.Info.class}),
   @SubCollectionOverlappingDateRange(collectionName = "housingExpenses", groups= {ExpenseChecks.class}, payload={Severity.Info.class})
 })
+@Entity
+@Table(name="application")
 public class HousingBenefitApplication extends DateRangedEntity {
 	@Valid
+	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
 	List<HouseholdMember> householdMembers = new ArrayList<HouseholdMember>();
 	@Valid
+	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
 	List<Income> incomes = new ArrayList<Income>();
 	@Valid
+	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
 	List<Expense> housingExpenses = new ArrayList<Expense>();
 	
 	public List<HouseholdMember> getHouseholdMembers() {

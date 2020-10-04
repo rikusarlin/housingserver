@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver;
+package fi.rikusarlin.housingserver.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.validation.Severity;
 
 @ControllerAdvice
@@ -84,7 +86,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
     
     @ExceptionHandler(TooLongRangeException.class)
-    public final ResponseEntity<Object> springHandleConstraintViolation(TooLongRangeException tlre, WebRequest request) {
+    public final ResponseEntity<Object> springHandleTooLong(TooLongRangeException tlre, WebRequest request) {
     	Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.BAD_REQUEST.value());

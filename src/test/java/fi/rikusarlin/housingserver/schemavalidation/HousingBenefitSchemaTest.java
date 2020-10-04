@@ -56,7 +56,7 @@ public class HousingBenefitSchemaTest
     public void testBadIncomeType()
     {
 		try {
-	    	InputStream jsonStream = (new ClassPathResource("housingbenefit-application.json")).getInputStream();
+	    	InputStream jsonStream = (new ClassPathResource("housingbenefit-application-wrong.json")).getInputStream();
 	    	JsonNode json;
 			json = objectMapper.readTree(jsonStream);
 	    	validationResult = schema.validate(json);

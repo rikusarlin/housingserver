@@ -23,14 +23,14 @@
   	{
       "startDate": "2020-11-30",
       "endDate": "2020-11-01",
-      "expenseType":"WATER",
+      "expenseType":"WATÖ",
       "amount":84
     }
   ],
   "householdMembers": [
   	{
       "startDate": "2020-01-01",
-      "personNumber":"170871-0091"
+      "personNumber":"170871B0091"
     },
   	{
       "startDate": "2022-01-01",

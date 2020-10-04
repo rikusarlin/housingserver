@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver;
+package fi.rikusarlin.housingserver.exception;
 
 public class NotFoundException extends RuntimeException {
 
