@@ -1,6 +1,5 @@
 package fi.rikusarlin.housingserver.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -9,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Payload;
@@ -31,10 +29,13 @@ import fi.rikusarlin.housingserver.validation.Severity;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+	/*
     @ExceptionHandler(NotFoundException.class)
     public void springHandleNotFound(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value());
     }
+    */
+	
 
     // error handle for @Validated
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,9 +49,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(x -> x.getDefaultMessage())
+                .map(x -> x.getField()+ ":" + x.getDefaultMessage()) // + ", value: " + x.getRejectedValue())
                 .collect(Collectors.toList());
-
         body.put("error", "NOTVALID1");
         body.put("message", errors);
         body.put("path", request.getContextPath());
@@ -94,6 +94,17 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body.put("message", tlre.getMessage());
         body.put("path", request.getContextPath());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<Object> springHandleTooLong(NotFoundException nfe, WebRequest request) {
+    	Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", new Date());
+        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("error", "NOTFOUND");
+        body.put("message", nfe.getMessage());
+        body.put("path", request.getContextPath());
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
 }

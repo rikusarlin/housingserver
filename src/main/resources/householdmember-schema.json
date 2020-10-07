@@ -5,17 +5,13 @@
   "allOf": [
     { "$ref": "classpath:/basic-schema.json#/definitions/id" },
     { "$ref": "classpath:/basic-schema.json#/definitions/dateRange" },
-    { "properties": {
-        "personNumber": {
-          "type": "string",
-          "description": "Finnish person number",
-          "minLength": 11,
-          "maxLength": 11,
-          "pattern": "^([0-9]{6})[+-A][0-9]{3}[0-9]|[ABCDEFHJKLMNPRSTUVWXY]$"}
+    { 
+      "properties": {
+        "person": { "$ref": "classpath:/person-schema.json" }
       }
     }
   ],
-  "required": ["personNumber"]
+  "required": ["person"]
  }
  
  

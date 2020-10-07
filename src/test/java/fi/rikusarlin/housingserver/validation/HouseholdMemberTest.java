@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.housingserver.data.HouseholdMember;
+import fi.rikusarlin.housingserver.data.Person;
 
 public class HouseholdMemberTest 
 {
@@ -21,25 +22,31 @@ public class HouseholdMemberTest
 	Set<ConstraintViolation<HouseholdMember>> violations;
 
     @Test
-    public void testValidHousehold()
+    public void testValidHouseholdMember()
     {
     	HouseholdMember hm1 = new HouseholdMember();
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	hm1.setPersonNumber("170871-0091");
+    	Person p1 = new Person();
+    	p1.setId(1);
+    	p1.setPersonNumber("170871-0091");
+    	p1.setFirstName("Riku");
+    	p1.setLastName("Sarlin");
+    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	hm1.setPerson(p1);
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(violations.isEmpty());
-    	hm1.setPersonNumber("170871+0091");
+    	p1.setPersonNumber("170871+0091");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
-    	hm1.setPersonNumber("130570-216E");
+    	p1.setPersonNumber("130570-216E");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
-    	hm1.setPersonNumber("020103A678R");
+    	p1.setPersonNumber("020103A678R");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
-    	hm1.setPersonNumber("270205A515X");
+    	p1.setPersonNumber("270205A515X");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -51,7 +58,13 @@ public class HouseholdMemberTest
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	hm1.setPersonNumber("170871-0092");
+    	Person p1 = new Person();
+    	p1.setId(1);
+    	p1.setPersonNumber("170871-0092");
+    	p1.setFirstName("Riku");
+    	p1.setLastName("Sarlin");
+    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	hm1.setPerson(p1);
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
     }
@@ -63,7 +76,13 @@ public class HouseholdMemberTest
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	hm1.setPersonNumber("170871-009");
+    	Person p1 = new Person();
+    	p1.setId(1);
+    	p1.setPersonNumber("170871-009");
+    	p1.setFirstName("Riku");
+    	p1.setLastName("Sarlin");
+    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	hm1.setPerson(p1);
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);

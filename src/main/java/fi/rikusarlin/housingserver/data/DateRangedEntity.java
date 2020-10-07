@@ -4,9 +4,6 @@ import java.time.LocalDate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,14 +18,10 @@ import fi.rikusarlin.housingserver.validation.DateRangeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidDateRange;
 
-@ValidDateRange(groups=DateRangeChecks.class,payload={Severity.Info.class})
+@ValidDateRange(groups=DateRangeChecks.class,payload={Severity.Error.class})
 @MappedSuperclass
 @Validated
-public abstract class DateRangedEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
-	Integer id;	
+public abstract class DateRangedEntity extends EntityClass {
 	@Basic
     @Column(name = "startDate", nullable = true)	
 	@DateTimeFormat(pattern="dd.MM.yyyy")
@@ -53,11 +46,4 @@ public abstract class DateRangedEntity {
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 }

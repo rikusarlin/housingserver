@@ -30,11 +30,23 @@
   "householdMembers": [
   	{
       "startDate": "2020-01-01",
-      "personNumber":"170871B0091"
+      "person" : {
+    	"id":1,
+  		"personNumber":"170871B0091",
+  		"birthDate":"1971-08-17",
+  		"firstName":"Riku",
+  		"lastName":"Sarlin"
+  	  }
     },
   	{
       "startDate": "2022-01-01",
-      "personNumber":"130570-216E"
+      "person" : {
+    	"id":2,
+  		"personNumber":"130570-216E",
+  		"birthDate":"1970-05-13",
+  		"firstName":"Helena",
+  		"lastName":"Sarlin"
+  	  }
     }
   ]
   

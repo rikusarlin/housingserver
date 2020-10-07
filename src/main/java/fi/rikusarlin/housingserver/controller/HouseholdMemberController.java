@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.data.HouseholdMember;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
+import fi.rikusarlin.housingserver.data.Person;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
+import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -41,6 +43,8 @@ public class HouseholdMemberController {
     HouseholdMemberRepository householdMemberRepo;
     @Autowired
     HousingBenefitApplicationRepository hbaRepo;
+    @Autowired
+    PersonRepository personRepo;
 
     @GetMapping("/api/v1/housing/{caseId}/householdmembers")
     public @ResponseBody Iterable<HouseholdMember> findHouseholdMembers(
@@ -60,10 +64,12 @@ public class HouseholdMemberController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/housing/{caseId}/householdmember")
 	public HouseholdMember addHouseholdMember(
-			@PathVariable int caseId, 
+			@PathVariable int caseId,
 			@RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
     	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	Person p = personRepo.findById(householdMember.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", householdMember.getPerson().getId()));
     	householdMember.setApplication(hba);
+    	householdMember.setPerson(p);
 		return householdMemberRepo.save(householdMember);
 	}
 
@@ -113,7 +119,6 @@ public class HouseholdMemberController {
 					-> {
 				 		value.setEndDate(householdMember.getEndDate());
 				 		value.setStartDate(householdMember.getStartDate());
-				 		value.setPersonNumber(householdMember.getPersonNumber());
 						householdMemberRepo.save(value);
 					},
 				()

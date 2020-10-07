@@ -6,9 +6,11 @@
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "incomeType":"OTHER",
+      "amount":1200,
       "otherIncomeDescription":"Sold 100 liters of moonshine"
     },
   	{
+      "startDate": "2020-09-30",
       "incomeType":"SALARY",
       "amount":2200
     }
@@ -30,11 +32,24 @@
   "householdMembers": [
   	{
       "startDate": "2020-01-01",
-      "personNumber":"170871-0091"
+      "person" : {
+    	"id":1,
+  		"personNumber":"170871-0091",
+  		"birthDate":"1971-08-17",
+  		"firstName":"Riku",
+  		"lastName":"Sarlin"
+  	  }
+      
     },
   	{
       "startDate": "2022-01-01",
-      "personNumber":"130570-216E"
+      "person" : {
+    	"id":2,
+  		"personNumber":"130570-216E",
+  		"birthDate":"1970-05-13",
+  		"firstName":"Helena",
+  		"lastName":"Sarlin"
+  	  }
     }
   ]
   

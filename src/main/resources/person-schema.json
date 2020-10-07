@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema#",
+  "$id": "http://rikusarlin.fi/housingserver/person-schema.json",
+  "type": "object",  
+  "allOf": [
+    { "$ref": "classpath:/basic-schema.json#/definitions/id" },
+    { "properties": {
+      "personNumber": {
+        "type": "string",
+        "description": "Finnish person number",
+        "minLength": 11,
+        "maxLength": 11,
+        "pattern": "^([0-9]{6})[+-A][0-9]{3}[0-9]|[ABCDEFHJKLMNPRSTUVWXY]$"},
+      "firstName": {
+        "type":"string",
+        "description":"First name of person",
+        "maxLength": 80},
+      "lastName": {
+        "type":"string",
+        "description":"Last name of person",
+        "maxLength": 80},
+      "birthDate": {
+        "type": "string", 
+        "format": "date", 
+        "description": "Birthdate of person"}
+      }
+    }
+  ],
+  "required": ["personNumber","birthDate","firstName","lastName"]
+ }
+ 
+ 
+ 

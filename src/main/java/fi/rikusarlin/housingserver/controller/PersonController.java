@@ -1,0 +1,105 @@
+package fi.rikusarlin.housingserver.controller;
+
+import java.util.Optional;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
+import fi.rikusarlin.housingserver.data.Income;
+import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.repository.PersonRepository;
+import fi.rikusarlin.housingserver.validation.AllChecks;
+import fi.rikusarlin.housingserver.validation.IncomeChecks;
+import fi.rikusarlin.housingserver.validation.InputChecks;
+
+@RestController
+@Validated
+public class PersonController {
+	
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    @Autowired
+    PersonRepository personRepo;
+
+    @GetMapping("/api/v1/persons")
+    public @ResponseBody Iterable<Person> findPersons() {
+        return  personRepo.findAll();
+    }
+     
+	@GetMapping(value = "/api/v1/person/{id}")
+	public Person findPersonById(
+			@PathVariable int id) {
+		return personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
+	}
+ 
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/api/v1/person")
+	public Person addPerson(
+			@RequestBody @Validated(InputChecks.class) Person person) {
+    	return personRepo.save(person);
+	}
+
+	@GetMapping(value = "/api/v1/person/{id}/check")
+	public Person checkPersonById(
+			@PathVariable int id) {
+    	Person p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
+		Set<ConstraintViolation<Person>> violations =  validator.validate(p, AllChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		return p;
+	}
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PutMapping("/api/v1/person/{id}")
+	public Person updatePerson(
+			@PathVariable int id,
+			@RequestBody @Validated(InputChecks.class) Person person) {
+		Set<ConstraintViolation<Person>> violations =  validator.validate(person, InputChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		Optional<Person> previousPerson = personRepo.findById(id);
+		previousPerson.ifPresentOrElse(
+				(value) 
+					-> {
+						value.setBirthDate(person.getBirthDate());
+						value.setFirstName(person.getFirstName());
+						value.setLastName(person.getLastName());
+						value.setPersonNumber(person.getPersonNumber());
+						personRepo.save(value);
+					},
+				()
+				 	-> {
+				 		personRepo.save(person);
+				 	});
+		return findPersonById(id);
+	}
+	
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/api/v1/person/{id}")
+	public void deleteIncome(
+			@PathVariable int id) {
+		Person person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
+ 		personRepo.delete(person);
+	}
+
+}

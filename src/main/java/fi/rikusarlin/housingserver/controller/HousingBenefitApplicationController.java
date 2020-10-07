@@ -25,11 +25,13 @@ import fi.rikusarlin.housingserver.data.Expense;
 import fi.rikusarlin.housingserver.data.HouseholdMember;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
 import fi.rikusarlin.housingserver.data.Income;
+import fi.rikusarlin.housingserver.data.Person;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
+import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -47,6 +49,8 @@ public class HousingBenefitApplicationController {
     IncomeRepository incomeRepo;
     @Autowired
     ExpenseRepository expenseRepo;
+    @Autowired
+    PersonRepository personRepo;
     
     @GetMapping("/api/v1/housing")
     public @ResponseBody Iterable<HousingBenefitApplication> findHousingBenefitApplications() {
@@ -66,7 +70,9 @@ public class HousingBenefitApplicationController {
 		
 		HousingBenefitApplication hbaSaved = hbaRepo.save(hba);
 		for(HouseholdMember hm:hba.getHouseholdMembers()) {
+			Person p = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
 			hm.setApplication(hbaSaved);
+			hm.setPerson(p);
 			hmRepo.save(hm);
 		}
 		for(Expense e:hba.getHousingExpenses()) {
@@ -111,7 +117,9 @@ public class HousingBenefitApplicationController {
 				 		value.setIncomes(hba.getIncomes());
 						value = hbaRepo.save(value);
 						for(HouseholdMember hm:hba.getHouseholdMembers()) {
+							Person p = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
 							hm.setApplication(value);
+							hm.setPerson(p);
 							hmRepo.save(hm);
 						}
 						for(Expense e:hba.getHousingExpenses()) {

@@ -52,7 +52,7 @@ public class IncomeController {
 			@PathVariable int caseId,
 			@PathVariable int id) {
     	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		return incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Expense", id));
+		return incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Income", id));
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
@@ -70,7 +70,7 @@ public class IncomeController {
 			@PathVariable int caseId,
 			@PathVariable int id) {
     	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Income income = incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Expense", id));
+		Income income = incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Income", id));
 		Set<ConstraintViolation<Income>> violations =  validator.validate(income, IncomeChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -113,7 +113,7 @@ public class IncomeController {
 			@PathVariable int caseId,
 			@PathVariable int id) {
     	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Income income = incomeRepo.findByApplicationAndId(hba,id).orElseThrow(() -> new NotFoundException("Expense", id));
+		Income income = incomeRepo.findByApplicationAndId(hba,id).orElseThrow(() -> new NotFoundException("Income", id));
  		incomeRepo.delete(income);
 	}
 

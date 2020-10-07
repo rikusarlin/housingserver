@@ -1,5 +1,12 @@
 {
   "id":2,
   "startDate": "2020-09-30",
-  "personNumber":"170871B0091"
+  "person" : {
+    "id":1,
+  	"personNumber":"170871B0091",
+  	"birthDate":"1971-08-17",
+  	"firstName":"Riku",
+  	"lastName":"Sarlin"
+  }
+  
 }

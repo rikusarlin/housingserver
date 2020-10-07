@@ -21,6 +21,7 @@ import fi.rikusarlin.housingserver.data.Expense;
 import fi.rikusarlin.housingserver.data.HouseholdMember;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
 import fi.rikusarlin.housingserver.data.Income;
+import fi.rikusarlin.housingserver.data.Person;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
@@ -134,6 +135,34 @@ public class JsonSchemaValidation {
 	    		Set<ConstraintViolation<HousingBenefitApplication>> violations =  validator.validate(hba, AllChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Housingbenefit: no validation errors from Spring validation");
+	    		} else {
+	    			ValidatorUtils.logValidationErrors(violations);
+	    			
+	    		}
+
+	        } else {
+	            validationResult.forEach(vm -> System.out.println("Housingbenefit: "+vm.getMessage()));
+	        }
+	    } catch (IOException ioe) {
+	    	System.out.println(ioe.getMessage());
+	    }
+
+	    try (
+	            InputStream jsonStream = (new ClassPathResource("person_ok.json")).getInputStream();
+	            InputStream schemaStream = (new ClassPathResource("person-schema.json")).getInputStream();
+	    ) {
+	        JsonNode json = objectMapper.readTree(jsonStream);
+	        JsonSchema schema = schemaFactory.getSchema(schemaStream);
+	        Set<ValidationMessage> validationResult = schema.validate(json);
+	 
+	        // print validation errors
+	        if (validationResult.isEmpty()) {
+	            System.out.println("Perdon: no validation errors from JSON schema validation");
+	            // Now we can safely populate the Java object
+	            Person p =  objectMapper.readValue((new ClassPathResource("person_ok.json")).getInputStream(), Person.class);
+	    		Set<ConstraintViolation<Person>> violations =  validator.validate(p, AllChecks.class);
+	    		if (violations.isEmpty()) {
+		            System.out.println("Person: no validation errors from Spring validation");
 	    		} else {
 	    			ValidatorUtils.logValidationErrors(violations);
 	    			
