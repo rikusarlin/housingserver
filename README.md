@@ -62,6 +62,7 @@ These are considered to be stored in a separate database, reflected in the fact 
 
 ### Housing benefit application
 * GET /api/v1/housing - fetch all housing benefit applications
+* GET /api/v1/housing/person/{personNumber} - fetch all housing benefit applications of a person
 * GET /api/v1/housing/{caseId} - fetch one housing benefit application
 * PUT /api/v1/housing - add housing benefit application
 * POST /api/v1/housing - update (or add) housing benefit application in a case

@@ -2,6 +2,7 @@ package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -138,8 +139,8 @@ public class HousingBenefitApplicationTest
     public void testBadApplicaton()
     {
     	HousingBenefitApplication hba = goodHousingBenefitApplication();
-    	hba.getIncomes().get(0).setStartDate(LocalDate.parse("01.11.2020", formatter));
-    	hba.getIncomes().get(0).setEndDate(LocalDate.parse("01.08.2020", formatter));
+    	hba.getIncomes().iterator().next().setStartDate(LocalDate.parse("01.11.2020", formatter));
+    	hba.getIncomes().iterator().next().setEndDate(LocalDate.parse("01.08.2020", formatter));
     	violations = validator.validate(hba,ApplicationChecks.class);
         Assertions.assertTrue(violations.size() == 1);
     	violations = validator.validate(hba, IncomeChecks.class);
@@ -154,13 +155,20 @@ public class HousingBenefitApplicationTest
     public void testVeryBadApplicaton()
     {
     	HousingBenefitApplication hba = goodHousingBenefitApplication();
-    	hba.getIncomes().get(0).setStartDate(LocalDate.parse("01.11.2020", formatter));
-    	hba.getIncomes().get(0).setEndDate(LocalDate.parse("01.08.2020", formatter));
+    	hba.getIncomes().iterator().next().setStartDate(LocalDate.parse("01.11.2020", formatter));
+    	hba.getIncomes().iterator().next().setEndDate(LocalDate.parse("01.08.2020", formatter));
 
-    	hba.getHouseholdMembers().get(1).setStartDate(LocalDate.parse("01.11.2019", formatter));
-    	hba.getHouseholdMembers().get(1).setEndDate(LocalDate.parse("01.08.2019", formatter));
+    	Iterator<Expense> i1 = hba.getHousingExpenses().iterator();
+    	i1.next();
+    	Expense e = i1.next();
+    	e.setStartDate(LocalDate.parse("01.11.2019", formatter));
+    	e.setEndDate(LocalDate.parse("01.08.2019", formatter));
     	
-    	hba.getHouseholdMembers().get(2).getPerson().setPersonNumber("020202A002B");
+    	Iterator<HouseholdMember> i2 = hba.getHouseholdMembers().iterator();
+    	i2.next();
+    	i2.next();
+    	HouseholdMember hm = i2.next();
+    	hm.getPerson().setPersonNumber("020202A002B");
     	
     	violations = validator.validate(hba,AllChecks.class);
         Assertions.assertTrue(!violations.isEmpty());

@@ -3,6 +3,7 @@ package fi.rikusarlin.housingserver.data;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
@@ -16,7 +17,7 @@ public class HouseholdMember extends DateRangedEntity{
     @JoinColumn(name="application_id", nullable=false)
     private HousingBenefitApplication application;
 	@Valid
-	@ManyToOne
+	@OneToOne
     @JoinColumn(name="customer_id", nullable=false)
     private Person person;
 	

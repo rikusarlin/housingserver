@@ -1,7 +1,7 @@
 package fi.rikusarlin.housingserver.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,36 +25,36 @@ import fi.rikusarlin.housingserver.validation.SubCollectionOverlappingDateRange;
 public class HousingBenefitApplication extends DateRangedEntity {
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	List<HouseholdMember> householdMembers = new ArrayList<HouseholdMember>();
+	Set<HouseholdMember> householdMembers = new HashSet<HouseholdMember>();
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	List<Income> incomes = new ArrayList<Income>();
+	Set<Income> incomes = new HashSet<Income>();
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	List<Expense> housingExpenses = new ArrayList<Expense>();
+	Set<Expense> housingExpenses = new HashSet<Expense>();
 	
-	public List<HouseholdMember> getHouseholdMembers() {
+	public Set<HouseholdMember> getHouseholdMembers() {
 		return householdMembers;
 	}
-	public void setHouseholdMembers(List<HouseholdMember> householdMembers) {
+	public void setHouseholdMembers(Set<HouseholdMember> householdMembers) {
 		this.householdMembers = householdMembers;
 	}
 	public void addHouseholdMember(HouseholdMember hm) {
 		this.householdMembers.add(hm);		
 	}
-	public List<Income> getIncomes() {
+	public Set<Income> getIncomes() {
 		return incomes;
 	}
-	public void setIncomes(List<Income> incomes) {
+	public void setIncomes(Set<Income> incomes) {
 		this.incomes = incomes;
 	}
 	public void addIncome(Income income) {
 		this.incomes.add(income);		
 	}
-	public List<Expense> getHousingExpenses() {
+	public Set<Expense> getHousingExpenses() {
 		return housingExpenses;
 	}
-	public void setHousingExpenses(List<Expense> housingExpenses) {
+	public void setHousingExpenses(Set<Expense> housingExpenses) {
 		this.housingExpenses = housingExpenses;
 	}
 	public void addExpense(Expense expense) {

@@ -56,7 +56,13 @@ public class HousingBenefitApplicationController {
     public @ResponseBody Iterable<HousingBenefitApplication> findHousingBenefitApplications() {
         return hbaRepo.findAll();
     }
-     
+
+    @GetMapping("/api/v1/housing/person/{personNumber}")
+    public @ResponseBody Iterable<HousingBenefitApplication> findHousingBenefitApplicationsForPerson(
+    		@PathVariable String personNumber) {
+    	return hbaRepo.findByPersonNumber(personNumber);
+    }
+
 	@GetMapping(value = "/api/v1/housing/{caseId}")
 	public HousingBenefitApplication findHousingBenefitApplicationById(
 			@PathVariable int caseId) {

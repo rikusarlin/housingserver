@@ -16,9 +16,14 @@ public class HousingBenefitApplicationRepositoryCustomImpl implements HousingBen
 	public List<HousingBenefitApplication> findByPersonNumber(String personNumber) {
 	    TypedQuery<HousingBenefitApplication> query 
 	      = entityManager.createQuery(
-	          "Select * from HousingBenefitApplication hba  left join HouseholdMember hm on hba.id=hm.id left join Person p on hm.customer_id=p.id and p.personNumber=:personNumber", 
+	          "Select distinct hba from HousingBenefitApplication hba "
+	          + "join fetch hba.householdMembers hm "
+	          + "join fetch hba.housingExpenses e "
+	          + "join fetch hba.incomes i "
+	          + "join fetch hm.person p "
+	          + "where p.personNumber=:personNumber", 
 	          HousingBenefitApplication.class);
-	    return query.getResultList();
+	    return query.setParameter("personNumber", personNumber).getResultList();
 		
 	}
 
