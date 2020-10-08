@@ -36,7 +36,7 @@ public class PersonControllerImpl implements PersonApi{
 
 	@Override
 	public ResponseEntity<Person> fetchPersonById(Id id) {
-		PersonEntity p = personRepo.findById(id.getId()).orElseThrow(() -> new NotFoundException("Person", id.getId()));
+		PersonEntity p = personRepo.findById(Integer.getInteger(id.getId())).orElseThrow(() -> new NotFoundException("Person", Integer.getInteger(id.getId())));
 		return ResponseEntity.ok(p.toPerson());
 	}
  
@@ -52,7 +52,7 @@ public class PersonControllerImpl implements PersonApi{
 
 	@Override
 	public ResponseEntity<Person> checkPersonById(Id id) {
-    	PersonEntity p = personRepo.findById(id.getId()).orElseThrow(() -> new NotFoundException("Person", id.getId()));
+    	PersonEntity p = personRepo.findById(Integer.getInteger(id.getId())).orElseThrow(() -> new NotFoundException("Person", Integer.getInteger(id.getId())));
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, AllChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -67,7 +67,7 @@ public class PersonControllerImpl implements PersonApi{
 			if (!violations.isEmpty()) {
 				throw new ConstraintViolationException(violations);
 			}
-			Optional<PersonEntity> previousPerson = personRepo.findById(id.getId());
+			Optional<PersonEntity> previousPerson = personRepo.findById(Integer.getInteger(id.getId()));
 			previousPerson.ifPresentOrElse(
 				(value) 
 					-> {
@@ -86,7 +86,7 @@ public class PersonControllerImpl implements PersonApi{
 	
 	@Override
 	public ResponseEntity<Void> deletePerson(Id id) {
-		PersonEntity person = personRepo.findById(id.getId()).orElseThrow(() -> new NotFoundException("Person", id.getId()));
+		PersonEntity person = personRepo.findById(Integer.getInteger(id.getId())).orElseThrow(() -> new NotFoundException("Person", Integer.getInteger(id.getId())));
  		personRepo.delete(person);
  		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
