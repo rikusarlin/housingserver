@@ -67,6 +67,21 @@
     		<artifactId>json-schema-validator</artifactId>
     		<version>1.0.42</version>
 		</dependency>
+		<dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.24</version>
+        </dependency>
+		<dependency>
+  			<groupId>org.openapitools</groupId>
+  			<artifactId>jackson-databind-nullable</artifactId>
+  			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springdoc</groupId>
+    		<artifactId>springdoc-openapi-ui</artifactId>
+    		<version>1.2.32</version>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -83,6 +98,12 @@
             </exclusions>
         </dependency>
         <dependency>
+  			<groupId>org.codehaus.mojo</groupId>
+  			<artifactId>build-helper-maven-plugin</artifactId>
+  			<version>3.1.0</version>
+             <scope>build</scope>
+		</dependency>
+        <dependency>
              <groupId>org.junit.jupiter</groupId>
              <artifactId>junit-jupiter-engine</artifactId>
              <scope>test</scope>
@@ -96,6 +117,47 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+    			<groupId>org.codehaus.mojo</groupId>
+    			<artifactId>build-helper-maven-plugin</artifactId>
+    			<executions>
+        			<execution>
+            			<id>add-source</id>
+            			<phase>generate-sources</phase>
+            			<goals>
+                			<goal>add-source</goal>
+            			</goals>
+            			<configuration>
+                			<sources>
+                    			<source>${project.build.directory}/generated-sources/java/</source>
+                			</sources>
+            			</configuration>
+        			</execution>
+    			</executions>
+ 			</plugin>
+			<plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>4.3.1</version>
+                <executions>
+                    <execution>
+                        <id>spring-boot-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>fi.rikusarlin.housingserver.api</apiPackage>
+                            <modelPackage>fi.rikusarlin.housingserver.model</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 

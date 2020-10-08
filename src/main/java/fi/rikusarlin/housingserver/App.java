@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan("fi.rikusarlin.housingserver.data")
-@ComponentScan(basePackages = {"fi.rikusarlin.housingserver.controller"})
+@ComponentScan(basePackages = {"fi.rikusarlin.housingserver.controllerimpl","fi.rikusarlin.housingserver.api","fi.rikusarlin.housingserver.controller"})
 @EnableJpaRepositories(basePackageClasses=fi.rikusarlin.housingserver.repository.HouseholdMemberRepository.class)
 public class App {
 

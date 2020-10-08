@@ -20,11 +20,11 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
-import fi.rikusarlin.housingserver.data.Expense;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
 
 public class ExpenseSchemaTest 
 {
-	Set<ConstraintViolation<Expense>> violations;
+	Set<ConstraintViolation<ExpenseEntity>> violations;
     InputStream schemaStream;
     JsonSchema schema;
     ObjectMapper objectMapper;

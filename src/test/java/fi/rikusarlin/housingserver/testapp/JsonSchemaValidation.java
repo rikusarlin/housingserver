@@ -17,11 +17,11 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
-import fi.rikusarlin.housingserver.data.Expense;
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Income;
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
+import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
@@ -47,8 +47,8 @@ public class JsonSchemaValidation {
 	        if (validationResult.isEmpty()) {
 	            System.out.println("Household member: no validation errors from JSON schema validation");
 	            // Now we can safely populate the Java object
-	            HouseholdMember householdMember =  objectMapper.readValue((new ClassPathResource("householdMember.json")).getInputStream(), HouseholdMember.class);
-	    		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(householdMember, HouseholdChecks.class);
+	            HouseholdMemberEntity householdMember =  objectMapper.readValue((new ClassPathResource("householdMember.json")).getInputStream(), HouseholdMemberEntity.class);
+	    		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(householdMember, HouseholdChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Household member: no validation errors from Spring validation");
 	    		} else {
@@ -75,8 +75,8 @@ public class JsonSchemaValidation {
 	        if (validationResult.isEmpty()) {
 	            System.out.println("Expense: no validation errors from JSON schema validation");
 	            // Now we can safely populate the Java object
-	            Expense expense =  objectMapper.readValue((new ClassPathResource("expense.json")).getInputStream(), Expense.class);
-	    		Set<ConstraintViolation<Expense>> violations =  validator.validate(expense, ExpenseChecks.class);
+	            ExpenseEntity expense =  objectMapper.readValue((new ClassPathResource("expense.json")).getInputStream(), ExpenseEntity.class);
+	    		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(expense, ExpenseChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Expense: no validation errors from Spring validation");
 	    		} else {
@@ -103,8 +103,8 @@ public class JsonSchemaValidation {
 	        if (validationResult.isEmpty()) {
 	            System.out.println("Income: no validation errors from JSON schema validation");
 	            // Now we can safely populate the Java object
-	            Income income =  objectMapper.readValue((new ClassPathResource("income.json")).getInputStream(), Income.class);
-	    		Set<ConstraintViolation<Income>> violations =  validator.validate(income, IncomeChecks.class);
+	            IncomeEntity income =  objectMapper.readValue((new ClassPathResource("income.json")).getInputStream(), IncomeEntity.class);
+	    		Set<ConstraintViolation<IncomeEntity>> violations =  validator.validate(income, IncomeChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Income: no validation errors from Spring validation");
 	    		} else {
@@ -131,8 +131,8 @@ public class JsonSchemaValidation {
 	        if (validationResult.isEmpty()) {
 	            System.out.println("Housingbenefit: no validation errors from JSON schema validation");
 	            // Now we can safely populate the Java object
-	            HousingBenefitApplication hba =  objectMapper.readValue((new ClassPathResource("housingbenefit-application.json")).getInputStream(), HousingBenefitApplication.class);
-	    		Set<ConstraintViolation<HousingBenefitApplication>> violations =  validator.validate(hba, AllChecks.class);
+	            HousingBenefitApplicationEntity hba =  objectMapper.readValue((new ClassPathResource("housingbenefit-application.json")).getInputStream(), HousingBenefitApplicationEntity.class);
+	    		Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations =  validator.validate(hba, AllChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Housingbenefit: no validation errors from Spring validation");
 	    		} else {
@@ -159,8 +159,8 @@ public class JsonSchemaValidation {
 	        if (validationResult.isEmpty()) {
 	            System.out.println("Perdon: no validation errors from JSON schema validation");
 	            // Now we can safely populate the Java object
-	            Person p =  objectMapper.readValue((new ClassPathResource("person_ok.json")).getInputStream(), Person.class);
-	    		Set<ConstraintViolation<Person>> violations =  validator.validate(p, AllChecks.class);
+	            PersonEntity p =  objectMapper.readValue((new ClassPathResource("person_ok.json")).getInputStream(), PersonEntity.class);
+	    		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, AllChecks.class);
 	    		if (violations.isEmpty()) {
 		            System.out.println("Person: no validation errors from Spring validation");
 	    		} else {

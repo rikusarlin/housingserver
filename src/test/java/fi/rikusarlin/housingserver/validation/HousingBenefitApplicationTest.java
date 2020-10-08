@@ -14,20 +14,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import fi.rikusarlin.housingserver.data.Expense;
-import fi.rikusarlin.housingserver.data.ExpenseType;
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Income;
-import fi.rikusarlin.housingserver.data.IncomeType;
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
+import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.model.ExpenseType;
+import fi.rikusarlin.housingserver.model.IncomeType;
 
 public class HousingBenefitApplicationTest 
 {
 	private static boolean setUpIsDone = false;
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
-	Set<ConstraintViolation<HousingBenefitApplication>> violations;
+	Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations;
 
 	@BeforeAll
 	public static void setUp() {
@@ -39,36 +39,36 @@ public class HousingBenefitApplicationTest
    	    setUpIsDone = true;
 	}
 	
-	private HousingBenefitApplication goodHousingBenefitApplication() {
-    	Expense expense1 = new Expense();
+	private HousingBenefitApplicationEntity goodHousingBenefitApplication() {
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.RENT);
     	expense1.setAmount(1520.25);
     	expense1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	expense1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	Expense expense2 = new Expense();
+    	ExpenseEntity expense2 = new ExpenseEntity();
     	expense2.setId(2);
     	expense2.setExpenseType(ExpenseType.ELECTRICITY);
     	expense2.setAmount(120.5);
     	expense2.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	expense2.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(3400.20);
     	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	Income income2 = new Income();
+    	IncomeEntity income2 = new IncomeEntity();
     	income2.setId(2);
     	income2.setIncomeType(IncomeType.DIVIDEND);
     	income2.setAmount(120.47);
     	income2.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	income2.setEndDate(LocalDate.parse("01.10.2020", formatter));
 
-    	HouseholdMember hm1 = new HouseholdMember();
+    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
     	hm1.setId(1);
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -77,9 +77,9 @@ public class HousingBenefitApplicationTest
     	hm1.setPerson(p1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	HouseholdMember hm2 = new HouseholdMember();
+    	HouseholdMemberEntity hm2 = new HouseholdMemberEntity();
     	hm2.setId(2);
-    	Person p2 = new Person();
+    	PersonEntity p2 = new PersonEntity();
     	p2.setId(1);
     	p2.setPersonNumber("130570-216E");
     	p2.setFirstName("Helena");
@@ -88,9 +88,9 @@ public class HousingBenefitApplicationTest
     	hm2.setPerson(p2);
     	hm2.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm2.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	HouseholdMember hm3 = new HouseholdMember();
+    	HouseholdMemberEntity hm3 = new HouseholdMemberEntity();
     	hm3.setId(3);
-    	Person p3 = new Person();
+    	PersonEntity p3 = new PersonEntity();
     	p3.setId(1);
     	p3.setPersonNumber("020103A678R");
     	p3.setFirstName("Elsa");
@@ -99,9 +99,9 @@ public class HousingBenefitApplicationTest
     	hm3.setPerson(p3);
     	hm3.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm3.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	HouseholdMember hm4 = new HouseholdMember();
+    	HouseholdMemberEntity hm4 = new HouseholdMemberEntity();
     	hm4.setId(4);
-    	Person p4 = new Person();
+    	PersonEntity p4 = new PersonEntity();
     	p4.setId(1);
     	p4.setPersonNumber("270205A515X");
     	p4.setBirthDate(LocalDate.parse("27.02.2005", formatter));
@@ -111,7 +111,7 @@ public class HousingBenefitApplicationTest
     	hm4.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm4.setEndDate(LocalDate.parse("01.10.2020", formatter));
 
-    	HousingBenefitApplication hba = new HousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = new HousingBenefitApplicationEntity();
     	hba.setId(1);
     	hba.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
@@ -130,7 +130,7 @@ public class HousingBenefitApplicationTest
     @Test
     public void testGoodApplication()
     {
-    	HousingBenefitApplication hba = goodHousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = goodHousingBenefitApplication();
     	violations = validator.validate(hba);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -138,7 +138,7 @@ public class HousingBenefitApplicationTest
     @Test
     public void testBadApplicaton()
     {
-    	HousingBenefitApplication hba = goodHousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = goodHousingBenefitApplication();
     	hba.getIncomes().iterator().next().setStartDate(LocalDate.parse("01.11.2020", formatter));
     	hba.getIncomes().iterator().next().setEndDate(LocalDate.parse("01.08.2020", formatter));
     	violations = validator.validate(hba,ApplicationChecks.class);
@@ -154,20 +154,20 @@ public class HousingBenefitApplicationTest
     @Test
     public void testVeryBadApplicaton()
     {
-    	HousingBenefitApplication hba = goodHousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = goodHousingBenefitApplication();
     	hba.getIncomes().iterator().next().setStartDate(LocalDate.parse("01.11.2020", formatter));
     	hba.getIncomes().iterator().next().setEndDate(LocalDate.parse("01.08.2020", formatter));
 
-    	Iterator<Expense> i1 = hba.getHousingExpenses().iterator();
+    	Iterator<ExpenseEntity> i1 = hba.getHousingExpenses().iterator();
     	i1.next();
-    	Expense e = i1.next();
+    	ExpenseEntity e = i1.next();
     	e.setStartDate(LocalDate.parse("01.11.2019", formatter));
     	e.setEndDate(LocalDate.parse("01.08.2019", formatter));
     	
-    	Iterator<HouseholdMember> i2 = hba.getHouseholdMembers().iterator();
+    	Iterator<HouseholdMemberEntity> i2 = hba.getHouseholdMembers().iterator();
     	i2.next();
     	i2.next();
-    	HouseholdMember hm = i2.next();
+    	HouseholdMemberEntity hm = i2.next();
     	hm.getPerson().setPersonNumber("020202A002B");
     	
     	violations = validator.validate(hba,AllChecks.class);
@@ -178,7 +178,7 @@ public class HousingBenefitApplicationTest
     @Test
     public void testChangeOfApplicationDateRange()
     {
-    	HousingBenefitApplication hba = goodHousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = goodHousingBenefitApplication();
     	violations = validator.validate(hba, AllChecks.class);
         Assertions.assertTrue(violations.isEmpty());
         // This should invalidate really many sub-objects

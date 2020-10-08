@@ -7,10 +7,10 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
-import fi.rikusarlin.housingserver.data.Expense;
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Income;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
 
 /**
  * Implementation of {@link ValidApplicationDataRanges} validator.
@@ -27,12 +27,12 @@ public class ValidApplicationDataRangesValidator
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext ctx) {
 
-        if (!(value instanceof HousingBenefitApplication)) {
+        if (!(value instanceof HousingBenefitApplicationEntity)) {
             return false;
         }
 
         boolean isValid = true;
-        HousingBenefitApplication hba = (HousingBenefitApplication) value;
+        HousingBenefitApplicationEntity hba = (HousingBenefitApplicationEntity) value;
         
         HibernateConstraintValidatorContext hibernateContext = ctx.unwrap(
                 HibernateConstraintValidatorContext.class );
@@ -41,7 +41,7 @@ public class ValidApplicationDataRangesValidator
        	// I guess you could generalize the following a bit...
        	
         int index=0;
-       	for(HouseholdMember hm:hba.getHouseholdMembers()) {
+       	for(HouseholdMemberEntity hm:hba.getHouseholdMembers()) {
            	if( hba.getEndDate().isBefore(hm.getStartDate()) ||
            		hba.getStartDate().isAfter(hm.getEndDate())) {
            		ValidatorUtils.addViolation(
@@ -61,7 +61,7 @@ public class ValidApplicationDataRangesValidator
        	}
        	
         index=0;
-       	for(Expense expense:hba.getHousingExpenses()) {
+       	for(ExpenseEntity expense:hba.getHousingExpenses()) {
            	if( hba.getEndDate().isBefore(expense.getStartDate()) ||
            		hba.getStartDate().isAfter(expense.getEndDate())) {
            		ValidatorUtils.addViolation(
@@ -81,7 +81,7 @@ public class ValidApplicationDataRangesValidator
        	}
 
         index=0;
-       	for(Income income:hba.getIncomes()) {
+       	for(IncomeEntity income:hba.getIncomes()) {
        		if( hba.getEndDate().isBefore(income.getStartDate()) ||
            		hba.getStartDate().isAfter(income.getEndDate())) {
            		ValidatorUtils.addViolation(

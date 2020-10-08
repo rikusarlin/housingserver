@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import fi.rikusarlin.housingserver.data.Income;
-import fi.rikusarlin.housingserver.data.IncomeType;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
+import fi.rikusarlin.housingserver.model.IncomeType;
 
 public class IncomeTest 
 {
 	private static boolean setUpIsDone = false;
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
-	Set<ConstraintViolation<Income>> violations;
+	Set<ConstraintViolation<IncomeEntity>> violations;
 
 	@BeforeAll
 	public static void setUp() {
@@ -39,7 +39,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithGoodDateRange()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(1520.25);
@@ -55,7 +55,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithGoodDateRangeNegativeAmount()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(-1520.25);
@@ -71,7 +71,7 @@ public class IncomeTest
     @Test
     public void testOpenEndedRange()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(1520.25);
@@ -87,7 +87,7 @@ public class IncomeTest
     @Test
     public void testOpenStartRange()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(1520.25);
@@ -103,7 +103,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithBadDateRange()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.SALARY);
     	income1.setAmount(1520.25);
@@ -117,7 +117,7 @@ public class IncomeTest
     @Test
     public void testOtherIncomeWithDescription()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.OTHER);
     	income1.setAmount(1520.25);
@@ -131,7 +131,7 @@ public class IncomeTest
     @Test
     public void testOtherIncomeWithoutDescription()
     {
-    	Income income1 = new Income();
+    	IncomeEntity income1 = new IncomeEntity();
     	income1.setId(1);
     	income1.setIncomeType(IncomeType.OTHER);
     	income1.setAmount(1520.25);

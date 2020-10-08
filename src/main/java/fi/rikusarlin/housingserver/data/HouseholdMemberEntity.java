@@ -11,26 +11,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "householdmember")
-public class HouseholdMember extends DateRangedEntity{
+public class HouseholdMemberEntity extends DateRangedEntity{
 	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="application_id", nullable=false)
-    private HousingBenefitApplication application;
+    private HousingBenefitApplicationEntity application;
 	@Valid
 	@OneToOne
     @JoinColumn(name="customer_id", nullable=false)
-    private Person person;
+    private PersonEntity person;
 	
-	public HousingBenefitApplication getApplication() {
+	public HousingBenefitApplicationEntity getApplication() {
 		return application;
 	}
-	public void setApplication(HousingBenefitApplication application) {
+	public void setApplication(HousingBenefitApplicationEntity application) {
 		this.application = application;
 	}
-	public Person getPerson() {
+	public PersonEntity getPerson() {
 		return person;
 	}
-	public void setPerson(Person person) {
+	public void setPerson(PersonEntity person) {
 		this.person = person;
 	}
 }

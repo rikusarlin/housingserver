@@ -2,9 +2,9 @@ package fi.rikusarlin.housingserver.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 
 public interface HousingBenefitApplicationRepository extends 
-	CrudRepository<HousingBenefitApplication, Integer>,
+	CrudRepository<HousingBenefitApplicationEntity, Integer>,
 	HousingBenefitApplicationRepositoryCustom {
 }

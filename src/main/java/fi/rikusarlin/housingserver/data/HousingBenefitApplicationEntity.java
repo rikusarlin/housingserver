@@ -22,42 +22,42 @@ import fi.rikusarlin.housingserver.validation.SubCollectionOverlappingDateRange;
 })
 @Entity
 @Table(name="application")
-public class HousingBenefitApplication extends DateRangedEntity {
+public class HousingBenefitApplicationEntity extends DateRangedEntity {
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	Set<HouseholdMember> householdMembers = new HashSet<HouseholdMember>();
+	Set<HouseholdMemberEntity> householdMembers = new HashSet<HouseholdMemberEntity>();
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	Set<Income> incomes = new HashSet<Income>();
+	Set<IncomeEntity> incomes = new HashSet<IncomeEntity>();
 	@Valid
 	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="application")
-	Set<Expense> housingExpenses = new HashSet<Expense>();
+	Set<ExpenseEntity> housingExpenses = new HashSet<ExpenseEntity>();
 	
-	public Set<HouseholdMember> getHouseholdMembers() {
+	public Set<HouseholdMemberEntity> getHouseholdMembers() {
 		return householdMembers;
 	}
-	public void setHouseholdMembers(Set<HouseholdMember> householdMembers) {
+	public void setHouseholdMembers(Set<HouseholdMemberEntity> householdMembers) {
 		this.householdMembers = householdMembers;
 	}
-	public void addHouseholdMember(HouseholdMember hm) {
+	public void addHouseholdMember(HouseholdMemberEntity hm) {
 		this.householdMembers.add(hm);		
 	}
-	public Set<Income> getIncomes() {
+	public Set<IncomeEntity> getIncomes() {
 		return incomes;
 	}
-	public void setIncomes(Set<Income> incomes) {
+	public void setIncomes(Set<IncomeEntity> incomes) {
 		this.incomes = incomes;
 	}
-	public void addIncome(Income income) {
+	public void addIncome(IncomeEntity income) {
 		this.incomes.add(income);		
 	}
-	public Set<Expense> getHousingExpenses() {
+	public Set<ExpenseEntity> getHousingExpenses() {
 		return housingExpenses;
 	}
-	public void setHousingExpenses(Set<Expense> housingExpenses) {
+	public void setHousingExpenses(Set<ExpenseEntity> housingExpenses) {
 		this.housingExpenses = housingExpenses;
 	}
-	public void addExpense(Expense expense) {
+	public void addExpense(ExpenseEntity expense) {
 		this.housingExpenses.add(expense);		
 	}
 	

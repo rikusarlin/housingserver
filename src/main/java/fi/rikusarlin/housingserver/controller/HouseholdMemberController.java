@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
@@ -47,27 +47,27 @@ public class HouseholdMemberController {
     PersonRepository personRepo;
 
     @GetMapping("/api/v1/housing/{caseId}/householdmembers")
-    public @ResponseBody Iterable<HouseholdMember> findHouseholdMembers(
+    public @ResponseBody Iterable<HouseholdMemberEntity> findHouseholdMembers(
     		@PathVariable int caseId) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
         return householdMemberRepo.findByApplication(hba);
     }
      
 	@GetMapping(value = "/api/v1/housing/{caseId}/householdmember/{id}")
-	public HouseholdMember findHouseholdMemberById(
+	public HouseholdMemberEntity findHouseholdMemberById(
 			@PathVariable int caseId, 
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
 		return householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/housing/{caseId}/householdmember")
-	public HouseholdMember addHouseholdMember(
+	public HouseholdMemberEntity addHouseholdMember(
 			@PathVariable int caseId,
-			@RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	Person p = personRepo.findById(householdMember.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", householdMember.getPerson().getId()));
+			@RequestBody @Validated(InputChecks.class) HouseholdMemberEntity householdMember) {
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	PersonEntity p = personRepo.findById(householdMember.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", householdMember.getPerson().getId()));
     	householdMember.setApplication(hba);
     	householdMember.setPerson(p);
 		return householdMemberRepo.save(householdMember);
@@ -78,12 +78,12 @@ public class HouseholdMemberController {
 	 * Note how Spring validation checks and manual checks are combined
 	 */
 	@GetMapping(value = "/api/v1/housing/{caseId}/householdmember/{id}/check")
-	public HouseholdMember checkHouseholdMemberById(
+	public HouseholdMemberEntity checkHouseholdMemberById(
 			@PathVariable int caseId, 
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		HouseholdMember hm = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
-		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(hm, HouseholdChecks.class);
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		HouseholdMemberEntity hm = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
+		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hm, HouseholdChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
@@ -104,16 +104,16 @@ public class HouseholdMemberController {
 	
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PutMapping("/api/v1/housing/{caseId}/householdmember/{id}")
-	public HouseholdMember updateHouseholdMember(
+	public HouseholdMemberEntity updateHouseholdMember(
 			@PathVariable int caseId, 
 			@PathVariable int id, 
-			@RequestBody @Validated(InputChecks.class) HouseholdMember householdMember) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Set<ConstraintViolation<HouseholdMember>> violations =  validator.validate(householdMember, InputChecks.class);
+			@RequestBody @Validated(InputChecks.class) HouseholdMemberEntity householdMember) {
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(householdMember, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<HouseholdMember> hm = householdMemberRepo.findByApplicationAndId(hba, id);
+		Optional<HouseholdMemberEntity> hm = householdMemberRepo.findByApplicationAndId(hba, id);
 		hm.ifPresentOrElse(
 				(value) 
 					-> {
@@ -133,8 +133,8 @@ public class HouseholdMemberController {
 	public void deleteHouseholdMember(
 			@PathVariable int caseId, 
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	HouseholdMember hm = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HouseholdMemberEntity hm = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
  		householdMemberRepo.delete(hm);
 	}
 	

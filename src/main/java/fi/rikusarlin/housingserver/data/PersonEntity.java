@@ -16,13 +16,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
+import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidPersonNumber;
 
 @Entity
 @Table(name = "person")
-public class Person extends EntityClass {
+public class PersonEntity extends EntityClass {
 	@Basic
     @Column(name = "personNumber", nullable = false)	
 	@NotNull(groups=InputChecks.class, payload={Severity.Error.class})
@@ -47,6 +48,25 @@ public class Person extends EntityClass {
 	@JsonSerialize(using = LocalDateSerializer.class)  
 	LocalDate birthDate;
 	
+	public PersonEntity() {
+	}
+
+	public PersonEntity(Person person) {
+		this.birthDate = person.getBirthDate();
+		this.personNumber = person.getPersonNumber();
+		this.lastName = person.getLastName();
+		this.firstName = person.getFirstName();
+	}
+
+	public Person toPerson() {
+		Person person = new Person();
+		person.setBirthDate(this.birthDate);
+		person.setFirstName(this.firstName);
+		person.setLastName(this.lastName);
+		person.setPersonNumber(this.personNumber);
+		return person;
+	}
+
 	public String getPersonNumber() {
 		return personNumber;
 	}

@@ -12,23 +12,23 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.PersonEntity;
 
 public class HouseholdMemberTest 
 {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-	Set<ConstraintViolation<HouseholdMember>> violations;
+	Set<ConstraintViolation<HouseholdMemberEntity>> violations;
 
     @Test
     public void testValidHouseholdMember()
     {
-    	HouseholdMember hm1 = new HouseholdMember();
+    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -54,11 +54,11 @@ public class HouseholdMemberTest
     @Test
     public void testBadPerson()
     {
-    	HouseholdMember hm1 = new HouseholdMember();
+    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0092");
     	p1.setFirstName("Riku");
@@ -72,11 +72,11 @@ public class HouseholdMemberTest
     @Test
     public void testTooShortPersonNumber()
     {
-    	HouseholdMember hm1 = new HouseholdMember();
+    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
     	hm1.setId(1);
     	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-009");
     	p1.setFirstName("Riku");

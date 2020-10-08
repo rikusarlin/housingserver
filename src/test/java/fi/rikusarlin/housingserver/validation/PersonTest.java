@@ -12,18 +12,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.PersonEntity;
 
 public class PersonTest 
 {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-	Set<ConstraintViolation<Person>> violations;
+	Set<ConstraintViolation<PersonEntity>> violations;
 
     @Test
     public void testValidPersonNumbers()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -48,7 +48,7 @@ public class PersonTest
     @Test
     public void testInvalidControlChar()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0092");
     	p1.setFirstName("Riku");
@@ -61,7 +61,7 @@ public class PersonTest
     @Test
     public void testTooShortPersonNumber()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-009");
     	p1.setFirstName("Riku");
@@ -75,7 +75,7 @@ public class PersonTest
     @Test
     public void testMissingPersonNumber()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setFirstName("Riku");
     	p1.setLastName("Sarlin");
@@ -89,7 +89,7 @@ public class PersonTest
     @Test
     public void testMissingBirthDate()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -102,7 +102,7 @@ public class PersonTest
     @Test
     public void testMissingFirstName()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setLastName("Sarlin");
@@ -116,7 +116,7 @@ public class PersonTest
     @Test
     public void testMissingLastName()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -129,7 +129,7 @@ public class PersonTest
     @Test
     public void testTooLongFirstName()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("Riku");
@@ -143,7 +143,7 @@ public class PersonTest
     @Test
     public void testTooLongLastName()
     {
-    	Person p1 = new Person();
+    	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
     	p1.setPersonNumber("170871-0091");
     	p1.setFirstName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");

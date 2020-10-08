@@ -10,40 +10,41 @@ import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import fi.rikusarlin.housingserver.validation.IncomeChecks;
+import fi.rikusarlin.housingserver.model.ExpenseType;
+import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.NotNullIfAnotherFieldHasValue;
 import fi.rikusarlin.housingserver.validation.Severity;
 
 @NotNullIfAnotherFieldHasValue(
-	    fieldName = "incomeType",
+	    fieldName = "expenseType",
 	    fieldValue = "OTHER",
-	    dependFieldName = "otherIncomeDescription",
-	    groups=IncomeChecks.class,
+	    dependFieldName = "otherExpenseDescription",
+	    groups=ExpenseChecks.class,
 	    payload={Severity.Error.class})
 @Entity
-@Table(name = "income")
-public class Income extends DateRangedEntity{
+@Table(name = "expense")
+public class ExpenseEntity extends DateRangedEntity{
 	@JsonIgnore
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name="application_id", nullable=false)
-    private HousingBenefitApplication application;
+    private HousingBenefitApplicationEntity application;  
 	@Basic
-    @Column(name = "incomeType")	
-	IncomeType incomeType;
+    @Column(name = "expenseType")	
+	ExpenseType expenseType;
 	@Basic
-    @Column(name = "otherIncomeDescription")	
-	String otherIncomeDescription;
+    @Column(name = "otherExpenseDescription")	
+	String otherExpenseDescription;
 	@Basic
     @Column(name = "amount", nullable=false)	
 	@Min(value = 0, message = "Amount must be greater than zero", groups=InputChecks.class, payload={Severity.Error.class})
     Double amount;
     
-	public IncomeType getIncomeType() {
-		return incomeType;
+	public ExpenseType getExpenseType() {
+		return expenseType;
 	}
-	public void setIncomeType(IncomeType incomeType) {
-		this.incomeType = incomeType;
+	public void setExpenseType(ExpenseType expenseType) {
+		this.expenseType = expenseType;
 	}
 	public Double getAmount() {
 		return amount;
@@ -51,23 +52,16 @@ public class Income extends DateRangedEntity{
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	public String getOtherIncomeDescription() {
-		return otherIncomeDescription;
+	public String getOtherExpenseDescription() {
+		return otherExpenseDescription;
 	}
-	public void setOtherIncomeDescription(String otherIncomeDescription) {
-		this.otherIncomeDescription = otherIncomeDescription;
+	public void setOtherExpenseDescription(String otherExpenseDescription) {
+		this.otherExpenseDescription = otherExpenseDescription;
 	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public HousingBenefitApplication getApplication() {
+	public HousingBenefitApplicationEntity getApplication() {
 		return application;
 	}
-	public void setApplication(HousingBenefitApplication application) {
+	public void setApplication(HousingBenefitApplicationEntity application) {
 		this.application = application;
 	}
-
 }

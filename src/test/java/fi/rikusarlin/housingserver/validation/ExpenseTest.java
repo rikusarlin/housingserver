@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import fi.rikusarlin.housingserver.data.Expense;
-import fi.rikusarlin.housingserver.data.ExpenseType;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
+import fi.rikusarlin.housingserver.model.ExpenseType;
 
 public class ExpenseTest 
 {
 	private static boolean setUpIsDone = false;
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
-	Set<ConstraintViolation<Expense>> violations;
+	Set<ConstraintViolation<ExpenseEntity>> violations;
 
 	@BeforeAll
 	public static void setUp() {
@@ -36,7 +36,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithGoodDateRange()
     {
-    	Expense expense1 = new Expense();
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.RENT);
     	expense1.setAmount(1520.25);
@@ -49,7 +49,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithBadDateRange()
     {
-    	Expense expense1 = new Expense();
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.RENT);
     	expense1.setAmount(1520.25);
@@ -63,7 +63,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithBadDateRangeAndNegativeAmount()
     {
-    	Expense expense1 = new Expense();
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.RENT);
     	expense1.setAmount(-1520.25);
@@ -77,7 +77,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithOtherDescription()
     {
-    	Expense expense1 = new Expense();
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.OTHER);
     	expense1.setOtherExpenseDescription("A liter of cognac");
@@ -91,7 +91,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithoutOtherDescription()
     {
-    	Expense expense1 = new Expense();
+    	ExpenseEntity expense1 = new ExpenseEntity();
     	expense1.setId(1);
     	expense1.setExpenseType(ExpenseType.OTHER);
     	expense1.setAmount(220.0);

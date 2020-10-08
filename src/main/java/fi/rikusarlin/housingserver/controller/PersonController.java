@@ -21,13 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Income;
-import fi.rikusarlin.housingserver.data.Person;
+import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
-import fi.rikusarlin.housingserver.validation.IncomeChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
 @RestController
@@ -40,28 +37,28 @@ public class PersonController {
     PersonRepository personRepo;
 
     @GetMapping("/api/v1/persons")
-    public @ResponseBody Iterable<Person> findPersons() {
+    public @ResponseBody Iterable<PersonEntity> findPersons() {
         return  personRepo.findAll();
     }
      
 	@GetMapping(value = "/api/v1/person/{id}")
-	public Person findPersonById(
+	public PersonEntity findPersonById(
 			@PathVariable int id) {
 		return personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/person")
-	public Person addPerson(
-			@RequestBody @Validated(InputChecks.class) Person person) {
+	public PersonEntity addPerson(
+			@RequestBody @Validated(InputChecks.class) PersonEntity person) {
     	return personRepo.save(person);
 	}
 
 	@GetMapping(value = "/api/v1/person/{id}/check")
-	public Person checkPersonById(
+	public PersonEntity checkPersonById(
 			@PathVariable int id) {
-    	Person p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		Set<ConstraintViolation<Person>> violations =  validator.validate(p, AllChecks.class);
+    	PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
+		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, AllChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
@@ -70,14 +67,14 @@ public class PersonController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PutMapping("/api/v1/person/{id}")
-	public Person updatePerson(
+	public PersonEntity updatePerson(
 			@PathVariable int id,
-			@RequestBody @Validated(InputChecks.class) Person person) {
-		Set<ConstraintViolation<Person>> violations =  validator.validate(person, InputChecks.class);
+			@RequestBody @Validated(InputChecks.class) PersonEntity person) {
+		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(person, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<Person> previousPerson = personRepo.findById(id);
+		Optional<PersonEntity> previousPerson = personRepo.findById(id);
 		previousPerson.ifPresentOrElse(
 				(value) 
 					-> {
@@ -98,7 +95,7 @@ public class PersonController {
 	@DeleteMapping("/api/v1/person/{id}")
 	public void deleteIncome(
 			@PathVariable int id) {
-		Person person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
+		PersonEntity person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
  		personRepo.delete(person);
 	}
 

@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.data.Income;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
@@ -41,37 +41,37 @@ public class IncomeController {
     HousingBenefitApplicationRepository hbaRepo;
 
     @GetMapping("/api/v1/housing/{caseId}/incomes")
-    public @ResponseBody Iterable<Income> findIncomes(
+    public @ResponseBody Iterable<IncomeEntity> findIncomes(
     		@PathVariable int caseId) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
         return incomeRepo.findByApplication(hba);
     }
      
 	@GetMapping(value = "/api/v1/housing/{caseId}/income/{id}")
-	public Income findIncomeById(
+	public IncomeEntity findIncomeById(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
 		return incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Income", id));
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/housing/{caseId}/income")
-	public Income addIncome(
+	public IncomeEntity addIncome(
 			@PathVariable int caseId,
-			@RequestBody @Validated(InputChecks.class) Income income) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+			@RequestBody @Validated(InputChecks.class) IncomeEntity income) {
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
     	income.setApplication(hba);
 		return incomeRepo.save(income);
 	}
 
 	@GetMapping(value = "/api/v1/housing/{caseId}/income/{id}/check")
-	public Income checkIncomeById(
+	public IncomeEntity checkIncomeById(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Income income = incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Income", id));
-		Set<ConstraintViolation<Income>> violations =  validator.validate(income, IncomeChecks.class);
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		IncomeEntity income = incomeRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Income", id));
+		Set<ConstraintViolation<IncomeEntity>> violations =  validator.validate(income, IncomeChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
@@ -80,16 +80,16 @@ public class IncomeController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PutMapping("/api/v1/housing/{caseId}/income/{id}")
-	public Income updateIncome(
+	public IncomeEntity updateIncome(
 			@PathVariable int caseId,
 			@PathVariable int id,
-			@RequestBody @Validated(InputChecks.class) Income income) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Set<ConstraintViolation<Income>> violations =  validator.validate(income, IncomeChecks.class);
+			@RequestBody @Validated(InputChecks.class) IncomeEntity income) {
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		Set<ConstraintViolation<IncomeEntity>> violations =  validator.validate(income, IncomeChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<Income> previousIncome = incomeRepo.findByApplicationAndId(hba, id);
+		Optional<IncomeEntity> previousIncome = incomeRepo.findByApplicationAndId(hba, id);
 		previousIncome.ifPresentOrElse(
 				(value) 
 					-> {
@@ -112,8 +112,8 @@ public class IncomeController {
 	public void deleteIncome(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplication hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		Income income = incomeRepo.findByApplicationAndId(hba,id).orElseThrow(() -> new NotFoundException("Income", id));
+    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		IncomeEntity income = incomeRepo.findByApplicationAndId(hba,id).orElseThrow(() -> new NotFoundException("Income", id));
  		incomeRepo.delete(income);
 	}
 

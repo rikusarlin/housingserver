@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import fi.rikusarlin.housingserver.data.HouseholdMember;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplication;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 
-public interface HouseholdMemberRepository extends CrudRepository<HouseholdMember, Integer>, HousingBenefitApplicationRepositoryCustom {
-	List<HouseholdMember> findByApplication(HousingBenefitApplication application);
-	Optional<HouseholdMember> findByApplicationAndId(HousingBenefitApplication application, Integer id);
+public interface HouseholdMemberRepository extends CrudRepository<HouseholdMemberEntity, Integer>, HousingBenefitApplicationRepositoryCustom {
+	List<HouseholdMemberEntity> findByApplication(HousingBenefitApplicationEntity application);
+	Optional<HouseholdMemberEntity> findByApplicationAndId(HousingBenefitApplicationEntity application, Integer id);
 }
