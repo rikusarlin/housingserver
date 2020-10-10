@@ -985,21 +985,14 @@ components:
                 type: string
                 description: error code
     Id:
-      type: object
+      type: integer
       description: Unique identifier of a resource
-      properties:
-        id:
-          type: string
-          format: integer
-          example: 2134
     IdAndDateRange:
       type: object
       description: Id and possibly open range between two dates - that is, both start end end dates can be empty
       properties:
         id:
-          type: string
-          format: integer
-          example: 2134
+          $ref: '#/components/schemas/Id'
         startDate:
           type: string
           format: date
@@ -1011,24 +1004,23 @@ components:
     Person:
       type: object
       description: A natural person residing in Finland
-      allOf:
-        - $ref: '#/components/schemas/Id'
-        - type: object
-          properties: 
-            personNumber:
-              $ref: '#/components/schemas/PersonNumber'
-            firstName:
-              type: string
-              description: First name of a person
-              maxLength: 80
-            lastName:
-              type: string
-              description: Last name of a person
-              maxLength: 80
-            birthDate:
-              type: string
-              format: date
-              example: '1971-08-71'
+      properties: 
+        id:
+          $ref: '#/components/schemas/Id'
+        personNumber:
+          $ref: '#/components/schemas/PersonNumber'
+        firstName:
+          type: string
+          description: First name of a person
+          maxLength: 80
+        lastName:
+          type: string
+          description: Last name of a person
+          maxLength: 80
+        birthDate:
+          type: string
+          format: date
+          example: '1971-08-71'
     HouseholdMember:
       type: object
       description: Household member info
@@ -1043,7 +1035,7 @@ components:
       description: Finnish person number
       minLength: 11
       maxLength: 11
-      pattern: '^([0-9]{6})[+-A][0-9]{3}[0-9]|[ABCDEFHJKLMNPRSTUVWXY]$'
+      pattern: '^\d{6}[A+-]\d{3}[0-9A-FHJ-NPR-Y]$'
     ExpenseType:
       type: string
       enum: 

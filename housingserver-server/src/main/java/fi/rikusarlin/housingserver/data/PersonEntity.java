@@ -52,6 +52,7 @@ public class PersonEntity extends EntityClass {
 	}
 
 	public PersonEntity(Person person) {
+		this.id = person.getId();
 		this.birthDate = person.getBirthDate();
 		this.personNumber = person.getPersonNumber();
 		this.lastName = person.getLastName();
@@ -60,6 +61,7 @@ public class PersonEntity extends EntityClass {
 
 	public Person toPerson() {
 		Person person = new Person();
+		person.setId(this.id);
 		person.setBirthDate(this.birthDate);
 		person.setFirstName(this.firstName);
 		person.setLastName(this.lastName);

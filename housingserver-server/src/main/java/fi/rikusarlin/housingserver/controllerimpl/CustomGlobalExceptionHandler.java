@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controller;
+package fi.rikusarlin.housingserver.controllerimpl;
 
 import java.util.ArrayList;
 import java.util.Date;
