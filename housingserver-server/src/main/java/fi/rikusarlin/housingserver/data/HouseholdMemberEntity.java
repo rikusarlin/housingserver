@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fi.rikusarlin.housingserver.model.HouseholdMember;
+
 @Entity
 @Table(name = "householdmember")
 public class HouseholdMemberEntity extends DateRangedEntity{
@@ -21,6 +23,25 @@ public class HouseholdMemberEntity extends DateRangedEntity{
     @JoinColumn(name="customer_id", nullable=false)
     private PersonEntity person;
 	
+	public HouseholdMemberEntity() {
+	}
+
+	public HouseholdMemberEntity(HouseholdMember hm) {
+		this.id = hm.getId();
+		this.startDate = hm.getStartDate();
+		this.endDate = hm.getEndDate();
+		this.setPerson(new PersonEntity(hm.getPerson()));
+	}
+
+	public HouseholdMember toHouseholdMember() {
+		HouseholdMember hm = new HouseholdMember();
+		hm.setId(this.id);
+		hm.setStartDate(this.startDate);
+		hm.setEndDate(this.endDate);
+		hm.setPerson(person.toPerson());
+		return hm;
+	}
+
 	public HousingBenefitApplicationEntity getApplication() {
 		return application;
 	}

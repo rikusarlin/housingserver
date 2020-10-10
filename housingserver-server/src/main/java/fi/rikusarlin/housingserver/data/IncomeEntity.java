@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fi.rikusarlin.housingserver.model.Income;
 import fi.rikusarlin.housingserver.model.IncomeType;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
@@ -39,6 +40,30 @@ public class IncomeEntity extends DateRangedEntity{
     @Column(name = "amount", nullable=false)	
 	@Min(value = 0, message = "Amount must be greater than zero", groups=InputChecks.class, payload={Severity.Error.class})
     Double amount;
+	
+	public IncomeEntity() {
+	}
+
+	public IncomeEntity(Income income) {
+		this.id = income.getId();
+		this.startDate = income.getStartDate();
+		this.endDate = income.getEndDate();
+		this.amount = income.getAmount();
+		this.incomeType = income.getIncomeType();
+		this.otherIncomeDescription = income.getOtherIncomeDescription();
+	}
+
+	public Income toIncome() {
+		Income income = new Income();
+		income.setId(this.id);
+		income.setStartDate(this.startDate);
+		income.setEndDate(this.endDate);
+		income.setAmount(this.amount);
+		income.setIncomeType(this.incomeType);
+		income.setOtherIncomeDescription(this.otherIncomeDescription);
+		return income;
+	}
+
     
 	public IncomeType getIncomeType() {
 		return incomeType;

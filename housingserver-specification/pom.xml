@@ -20,6 +20,7 @@
         <junit-version>4.12</junit-version>
         <migbase64-version>2.2</migbase64-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <base-path>/api/v1</base-path>
 	</properties>
 
     <dependencies>
@@ -144,6 +145,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Generated code skips server / basePath settings, add manually... -->
+            <plugin>
+            	<groupId>com.google.code.maven-replacer-plugin</groupId>
+            	<artifactId>replacer</artifactId>
+            	<version>1.5.3</version>
+            	<inherited>false</inherited>
+            	<executions> 
+					<execution>
+					    <id>add-base-path</id>
+					    <phase>process-sources</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+				   <basedir>${project.build.directory}/generated-sources</basedir>
+					<includes>
+						<include>**/*Api.java</include>
+					</includes>
+					<regex>false</regex>
+					<replacements>
+						<replacement>
+							<token>RequestMapping(value = "/</token>
+							<value>RequestMapping(value = "${base-path}/</value>
+						</replacement>
+					</replacements> 
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

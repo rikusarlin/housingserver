@@ -209,14 +209,14 @@ paths:
         Fetch household member by id in a given case
       parameters:
         - in: path
-          name: id
-          description: id of household member to return
+          name: caseId
+          description: id of case
           required: true
           schema:
             $ref: '#/components/schemas/Id'
         - in: path
-          name: caseId
-          description: id of case
+          name: id
+          description: id of household member to return
           required: true
           schema:
             $ref: '#/components/schemas/Id'
@@ -406,14 +406,14 @@ paths:
         Fetch expense by id in a given case
       parameters:
         - in: path
-          name: id
-          description: id of expense to return
+          name: caseId
+          description: id of case
           required: true
           schema:
             $ref: '#/components/schemas/Id'
         - in: path
-          name: caseId
-          description: id of case
+          name: id
+          description: id of expense to return
           required: true
           schema:
             $ref: '#/components/schemas/Id'
@@ -603,14 +603,14 @@ paths:
         Fetch income by id in a given case
       parameters:
         - in: path
-          name: id
-          description: id of income to return
+          name: caseId
+          description: id of case
           required: true
           schema:
             $ref: '#/components/schemas/Id'
         - in: path
-          name: caseId
-          description: id of case
+          name: id
+          description: id of income to return
           required: true
           schema:
             $ref: '#/components/schemas/Id'

@@ -27,7 +27,7 @@ import fi.rikusarlin.housingserver.validation.InputChecks;
 @RestController
 @Service
 @Validated
-public class PersonControllerImpl implements PersonApi{
+public class PersonControllerImpl implements PersonApi {
 	
     @Autowired
     PersonRepository personRepo;
