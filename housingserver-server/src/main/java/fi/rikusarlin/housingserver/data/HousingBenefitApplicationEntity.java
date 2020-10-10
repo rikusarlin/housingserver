@@ -58,7 +58,8 @@ public class HousingBenefitApplicationEntity extends DateRangedEntity {
 		for(HouseholdMember hm:hba.getHouseholdMembers()) {
 			HouseholdMemberEntity hme = new HouseholdMemberEntity(hm);
 			hme.setApplication(this);
-			this.addHouseholdMember(hme);
+			hme.setPerson(new PersonEntity(hm.getPerson()));
+			this.getHouseholdMembers().add(hme);
 		}
 	}
 
@@ -87,9 +88,6 @@ public class HousingBenefitApplicationEntity extends DateRangedEntity {
 	}
 	public void setHouseholdMembers(Set<HouseholdMemberEntity> householdMembers) {
 		this.householdMembers = householdMembers;
-	}
-	public void addHouseholdMember(HouseholdMemberEntity hm) {
-		this.householdMembers.add(hm);		
 	}
 	public Set<IncomeEntity> getIncomes() {
 		return incomes;

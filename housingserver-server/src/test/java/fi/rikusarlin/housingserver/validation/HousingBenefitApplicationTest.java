@@ -119,10 +119,10 @@ public class HousingBenefitApplicationTest
     	hba.addExpense(expense2);
     	hba.addIncome(income1);
     	hba.addIncome(income2);
-    	hba.addHouseholdMember(hm1);
-    	hba.addHouseholdMember(hm2);
-    	hba.addHouseholdMember(hm3);
-    	hba.addHouseholdMember(hm4);
+    	hba.getHouseholdMembers().add(hm1);
+    	hba.getHouseholdMembers().add(hm2);
+    	hba.getHouseholdMembers().add(hm3);
+    	hba.getHouseholdMembers().add(hm4);
 
     	return hba;
 	}

@@ -783,7 +783,7 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/HousingBenefitApplication'
-  /housing/{personNumber}:
+  /housing/person/{personNumber}:
     get:
       tags:
         - developers
