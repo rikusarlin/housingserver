@@ -1,0 +1,1114 @@
+openapi: 3.0.0
+servers:
+  - url: http://localhost:8080/api/v2
+    description: Local development server
+info:
+  description: Housing benefit application handling demo API
+  version: "1.0.0"
+  title: Housing benefit api API
+  contact:
+    email: riku.sarlin@gmail.com
+  license:
+    name: MIT
+    url: 'https://mit-license.org/'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /persons:
+    get:
+      tags:
+        - developers
+      summary: fetch persons
+      operationId: fetchPersons
+      description: |
+        Fetch all persons
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Person'
+  /person/{id}:
+    get:
+      tags:
+        - developers
+      summary: fetch person
+      operationId: fetchPersonById
+      description: |
+        Fetch person by person id
+      parameters:
+        - in: path
+          name: id
+          description: id of person to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: person found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: bad input parameter
+        '404':
+          description: person not found
+    put:
+      tags:
+        - developers
+      summary: update person
+      operationId: updatePerson
+      description: Updates person info
+      parameters:
+        - in: path
+          name: id
+          description: id of person to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: person updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+
+        '400':
+          description: update not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        description: Person to update
+    delete:
+      tags:
+        - admins
+      summary: delete person
+      operationId: deletePerson
+      description: Deletes person
+      parameters:
+        - in: path
+          name: id
+          description: id of person to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: person deleted successfully
+        '400':
+          description: delete not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: person not found
+  /person/{id}/check:
+    get:
+      tags:
+        - developers
+      summary: cross-check person info
+      operationId: checkPersonById
+      description: |
+        Cross validate by person id
+      parameters:
+        - in: path
+          name: id
+          description: id of person to check
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: person validation ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: person validation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: person not found
+  /person:
+    post:
+      tags:
+        - admins
+      summary: add person
+      operationId: addPerson
+      description: Adds a person to the system
+      responses:
+        '201':
+          description: person created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: person creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: an existing person already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        description: Person to add
+  /housing/{caseId}/householdmembers:
+    get:
+      tags:
+        - developers
+      summary: fetch household members of a given case
+      operationId: fetchHouseholdMembers
+      description: |
+        Fetch all household members of a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/HouseholdMember'
+  /housing/{caseId}/householdmember/{id}:
+    get:
+      tags:
+        - developers
+      summary: fetch household member
+      operationId: fetchHouseholdMemberById
+      description: |
+        Fetch household member by id in a given case
+      parameters:
+        - in: path
+          name: id
+          description: id of household member to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: household member found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdMember'
+        '400':
+          description: fetch not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: person not found
+    put:
+      tags:
+        - developers
+      summary: update household member in a given case
+      operationId: updateHouseholdMember
+      description: Updates household member info
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of household member to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: updated household member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdMember'
+        '400':
+          description: update not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseholdMember'
+        description: Household member to update
+    delete:
+      tags:
+        - developers
+      summary: delete household member in a given case
+      operationId: deleteHouseholdMember
+      description: Deletes household member in a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of household member to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: household member deleted successfully
+        '400':
+          description: delete not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: household member not found
+  /housing/{caseId}/householdmember/{id}/check:
+    get:
+      tags:
+        - developers
+      summary: cross-check household member info in a housing benefit application
+      operationId: checkHouseholdMemberById
+      description: |
+        Cross validate by person id
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of household member to check
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: household member validation ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdMember'
+        '400':
+          description: household member validation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: household member not found
+  /housing/{caseId}/householdmember:
+    post:
+      tags:
+        - developers
+      summary: add household member
+      operationId: addHouseholdMember
+      description: Adds a household member to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: household member created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdMember'
+        '400':
+          description: household member creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseholdMember'
+        description: Household member to add
+  /housing/{caseId}/expenses:
+    get:
+      tags:
+        - developers
+      summary: fetch expenses of a given case
+      operationId: fetchExpenses
+      description: |
+        Fetch all expenses of a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Expense'
+  /housing/{caseId}/expense/{id}:
+    get:
+      tags:
+        - developers
+      summary: fetch expense
+      operationId: fetchExpenseById
+      description: |
+        Fetch expense by id in a given case
+      parameters:
+        - in: path
+          name: id
+          description: id of expense to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: expense found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: fetch not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: expense not found
+    put:
+      tags:
+        - developers
+      summary: update expense in a given case
+      operationId: updateExpense
+      description: Updates expense info
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of expense to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: updated expense
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: update not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Expense to update
+    delete:
+      tags:
+        - developers
+      summary: delete expense in a given case
+      operationId: deleteExpense
+      description: Deletes expense in a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of expense to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: expense deleted successfully
+        '400':
+          description: delete not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: expense not found
+  /housing/{caseId}/expense/{id}/check:
+    get:
+      tags:
+        - developers
+      summary: cross-check expense info in a housing benefit application
+      operationId: checkExpenseById
+      description: |
+        Cross validate by expense id
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of expense to check
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: expense validation ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: expense validation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: expense not found
+  /housing/{caseId}/expense:
+    post:
+      tags:
+        - developers
+      summary: add expense
+      operationId: addExpense
+      description: Adds an expense to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: expense created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: expense creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Expense to add
+  /housing/{caseId}/incomes:
+    get:
+      tags:
+        - developers
+      summary: fetch incomes of a given case
+      operationId: fetchIncomes
+      description: |
+        Fetch all incomes of a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Income'
+  /housing/{caseId}/income/{id}:
+    get:
+      tags:
+        - developers
+      summary: fetch income
+      operationId: fetchIncomeById
+      description: |
+        Fetch income by id in a given case
+      parameters:
+        - in: path
+          name: id
+          description: id of income to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: income found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: fetch not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: income not found
+    put:
+      tags:
+        - developers
+      summary: update income in a given case
+      operationId: updateIncome
+      description: Updates income info
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of income to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: updated income
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: update not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Income'
+        description: Income to update
+    delete:
+      tags:
+        - developers
+      summary: delete income in a given case
+      operationId: deleteIncome
+      description: Deletes income in a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of income to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: income deleted successfully
+        '400':
+          description: delete not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: income not found
+  /housing/{caseId}/income/{id}/check:
+    get:
+      tags:
+        - developers
+      summary: cross-check income info in a housing benefit application
+      operationId: checkIncomeById
+      description: |
+        Cross validate by income id
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+        - in: path
+          name: id
+          description: id of income to check
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: income validation ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: income validation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: income not found
+  /housing/{caseId}/income:
+    post:
+      tags:
+        - developers
+      summary: add income
+      operationId: addIncome
+      description: Adds an income to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: income created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: income creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Income'
+        description: Income to add
+  /housings:
+    get:
+      tags:
+        - admins
+      summary: fetch housing benefit applications
+      operationId: fetchHousingBenefitApplications
+      description: |
+        Fetch all housing benefit applications
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/HousingBenefitApplication'
+  /housing/{personNumber}:
+    get:
+      tags:
+        - developers
+      summary: fetch housing benefit applications for a given person
+      operationId: fetchHousingBenefitApplicationsByPersonNumber
+      description: |
+        Fetch all housing benefit applications of a given person
+        A housing benefit application is returned if the given person is
+        a household member in the application
+      parameters:
+        - in: path
+          name: personNumber
+          description: person number of the person in question 
+          required: true
+          schema:
+            $ref: '#/components/schemas/PersonNumber'
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/HousingBenefitApplication'
+  /housing/{caseId}:
+    get:
+      tags:
+        - developers
+      summary: fetch housing benefit application
+      operationId: fetchHousingBenefitApplicationById
+      description: |
+        Fetch housing benefit application by id
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: housing benefit application found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousingBenefitApplication'
+        '400':
+          description: fetch not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: housing benefit application not found
+    put:
+      tags:
+        - developers
+      summary: update huosing benefit application
+      operationId: updateHousingBenefitApplication
+      description: Updates housing benefit application
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: updated housing benefit application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousingBenefitApplication'
+        '400':
+          description: update not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HousingBenefitApplication'
+        description: Housing benefit application to update
+    delete:
+      tags:
+        - admins
+      summary: delete housing benefit application
+      operationId: deleteHousingBenefitApplication
+      description: Deletes housing benefit application
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '204':
+          description: housing benefit application deleted successfully
+        '400':
+          description: delete not successful, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: housing benefit applicatioin not found
+  /housing/{caseId}/check:
+    get:
+      tags:
+        - developers
+      summary: cross-check housing benefit application
+      operationId: checkHousingBenefitApplication
+      description: |
+        Cross validate housing benefit application
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '200':
+          description: housing benefit application validation ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousingBenefitApplication'
+        '400':
+          description: housing benefit application validation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: housing benefit application not found
+  /housing:
+    post:
+      tags:
+        - developers
+      summary: add housing benefit application
+      operationId: addHousingBenefitApplication
+      description: Adds housing benefit application
+      responses:
+        '201':
+          description: housing benefit application created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousingBenefitApplication'
+        '400':
+          description: housing benefit application creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HousingBenefitApplication'
+        description: housing benefit application to add
+components:
+  schemas:
+    ErrorMessage:
+      type: object
+      description: Info about error(s) in backend processing
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: number
+          format: integer
+          description: HTTP status code
+        error:
+          type: string
+          description: description of error
+        path:
+          type: string
+          description: URL path of error
+        message:
+          type: array
+          items:
+            type: object
+            properties:
+              fieldName:
+                type: string
+                description: name of field, if applicable, where error occured
+              errorMessage:
+                type: string
+                description: a more detailed description of the error
+              errorCode:
+                type: string
+                description: error code
+    Id:
+      type: object
+      description: Unique identifier of a resource
+      properties:
+        id:
+          type: string
+          format: integer
+          example: 2134
+    IdAndDateRange:
+      type: object
+      description: Id and possibly open range between two dates - that is, both start end end dates can be empty
+      properties:
+        id:
+          type: string
+          format: integer
+          example: 2134
+        startDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        endDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+    Person:
+      type: object
+      description: A natural person residing in Finland
+      allOf:
+        - $ref: '#/components/schemas/Id'
+        - type: object
+          properties: 
+            personNumber:
+              $ref: '#/components/schemas/PersonNumber'
+            firstName:
+              type: string
+              description: First name of a person
+              maxLength: 80
+            lastName:
+              type: string
+              description: Last name of a person
+              maxLength: 80
+            birthDate:
+              type: string
+              format: date
+              example: '1971-08-71'
+    HouseholdMember:
+      type: object
+      description: Household member info
+      allOf:
+          - $ref: '#/components/schemas/IdAndDateRange'
+          - type: object
+            properties: 
+              person:
+                $ref: '#/components/schemas/Person'
+    PersonNumber:
+      type: string
+      description: Finnish person number
+      minLength: 11
+      maxLength: 11
+      pattern: '^([0-9]{6})[+-A][0-9]{3}[0-9]|[ABCDEFHJKLMNPRSTUVWXY]$'
+    ExpenseType:
+      type: string
+      enum: 
+        - RENT
+        - ELECTRICITY
+        - WATER
+        - INTEREST
+        - MAINTENANCE_CHARGE
+        - OTHER
+    IncomeType:
+      type: string
+      enum:
+        - SALARY
+        - PENSION
+        - SOCIAL_BENEFIT
+        - STUDY_GRANT
+        - DIVIDEND
+        - INTEREST
+        - OTHER
+    Income:
+      type: object
+      description: Income info
+      allOf:
+          - $ref: '#/components/schemas/IdAndDateRange'
+          - type: object
+            properties: 
+              incomeType:
+                $ref: '#/components/schemas/IncomeType'
+              amount:
+                type: number
+                format: double
+              otherIncomeDescription:
+                type: string
+                description: A textual description for income if income type is OTHER
+    Expense:
+      type: object
+      description: Expense info
+      allOf:
+          - $ref: '#/components/schemas/IdAndDateRange'
+          - type: object
+            properties: 
+              expenseType:
+                $ref: '#/components/schemas/ExpenseType'
+              amount:
+                type: number
+                format: double
+              otherExpenseDescription:
+                type: string
+                description: A textual description for expense if expense type is OTHER
+    HousingBenefitApplication:
+      type: object
+      description: Housing benefit application info
+      allOf:
+          - $ref: '#/components/schemas/IdAndDateRange'
+          - type: object
+            properties:
+              householdMembers:
+                type: array
+                items:
+                   $ref: '#/components/schemas/HouseholdMember'
+              housingExpenses:
+                type: array
+                items:
+                   $ref: '#/components/schemas/Expense'
+              incomes:
+                type: array
+                items:
+                   $ref: '#/components/schemas/Income'
