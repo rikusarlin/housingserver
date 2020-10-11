@@ -17,10 +17,14 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import fi.rikusarlin.housingserver.validation.DateRangeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidDateRange;
+import lombok.Getter;
+import lombok.Setter;
 
 @ValidDateRange(groups=DateRangeChecks.class,payload={Severity.Error.class})
 @MappedSuperclass
 @Validated
+@Getter
+@Setter
 public abstract class DateRangedEntity extends EntityClass {
 	@Basic
     @Column(name = "startDate", nullable = true)	
@@ -34,16 +38,4 @@ public abstract class DateRangedEntity extends EntityClass {
 	@JsonDeserialize(using = LocalDateDeserializer.class)  
 	@JsonSerialize(using = LocalDateSerializer.class)  
 	LocalDate endDate;
-	public LocalDate getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
 }

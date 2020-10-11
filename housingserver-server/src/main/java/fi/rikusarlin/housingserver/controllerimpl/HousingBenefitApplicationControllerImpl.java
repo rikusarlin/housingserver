@@ -1,7 +1,6 @@
 package fi.rikusarlin.housingserver.controllerimpl;
 
 import java.time.Period;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -13,6 +12,8 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,8 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+    ModelMapper modelMapper = new ModelMapper();
+
     @Autowired
     HousingBenefitApplicationRepository hbaRepo;
     @Autowired
@@ -65,38 +68,49 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     	Iterable<HousingBenefitApplicationEntity> hbas = hbaRepo.findByPersonNumber(personNumber);
     	return ResponseEntity.ok(
      			StreamSupport.stream(hbas.spliterator(), false)
-     			.map(hba -> hba.toHousingBenefitApplication())
+     			.map(hbae -> modelMapper.map(hbae, HousingBenefitApplication.class))
      			.collect(Collectors.toList()));
     }
 
     @Override
 	public ResponseEntity<HousingBenefitApplication> fetchHousingBenefitApplicationById(Integer caseId) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	return ResponseEntity.ok(hba.toHousingBenefitApplication());
+    	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	return ResponseEntity.ok(modelMapper.map(hbae, HousingBenefitApplication.class));
 	}
  
     @Override
 	public ResponseEntity<HousingBenefitApplication> addHousingBenefitApplication(HousingBenefitApplication hba) {
-		HousingBenefitApplicationEntity hbae = new HousingBenefitApplicationEntity(hba);
-		HousingBenefitApplicationEntity hbaSaved = hbaRepo.save(hbae);
+    	HousingBenefitApplicationEntity hbae = new HousingBenefitApplicationEntity();
+    	BeanUtils.copyProperties(hba, hbae, "id");
+		Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations =  validator.validate(hbae, InputChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		HousingBenefitApplicationEntity hbaeSaved = hbaRepo.save(hbae);
 		for(HouseholdMember hm:hba.getHouseholdMembers()) {
 			PersonEntity p = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
-			HouseholdMemberEntity hme = new HouseholdMemberEntity(hm);
-			hme.setApplication(hbaSaved);
+	    	HouseholdMemberEntity hme = new HouseholdMemberEntity();
+	    	BeanUtils.copyProperties(hm, hme, "id");
+			hme.setApplication(hbaeSaved);
 			hme.setPerson(p);
 			householdMemberRepo.save(hme);
+			hbae.getHouseholdMembers().add(hme);
 		}
 		for(Expense e:hba.getHousingExpenses()) {
-			ExpenseEntity ee = new ExpenseEntity(e);
-			ee.setApplication(hbaSaved);
+			ExpenseEntity ee = new ExpenseEntity();
+			BeanUtils.copyProperties(e, ee, "id");
+			ee.setApplication(hbaeSaved);
 			expenseRepo.save(ee);
+			hbae.getHousingExpenses().add(ee);
 		}
 		for(Income i:hba.getIncomes()) {
-			IncomeEntity ie = new IncomeEntity(i);
-			ie.setApplication(hbaSaved);
+			IncomeEntity ie = new IncomeEntity();
+			BeanUtils.copyProperties(i, ie, "id");
+			ie.setApplication(hbaeSaved);
 			incomeRepo.save(ie);
+			hbae.getIncomes().add(ie);
 		}
-		return ResponseEntity.ok(hbaSaved.toHousingBenefitApplication());
+		return ResponseEntity.ok(modelMapper.map(hbaeSaved, HousingBenefitApplication.class));
 	}
 
     @Override
@@ -106,14 +120,14 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(hbae.toHousingBenefitApplication());
+		return ResponseEntity.ok(modelMapper.map(hbae, HousingBenefitApplication.class));
 	}
 
     @Override
 	public ResponseEntity<HousingBenefitApplication> updateHousingBenefitApplication(
 			Integer caseId,
 			HousingBenefitApplication hba) {
-    	HousingBenefitApplicationEntity hbae = new HousingBenefitApplicationEntity(hba);
+		HousingBenefitApplicationEntity hbae = modelMapper.map(hba, HousingBenefitApplicationEntity.class);
 		Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations =  validator.validate(hbae, AllChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -122,36 +136,39 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 		previousHbae.ifPresentOrElse(
 				(value) 
 					-> {
-				 		value.setEndDate(hba.getEndDate());
-				 		value.setStartDate(hba.getStartDate());
-				 		value.setHouseholdMembers(new HashSet<HouseholdMemberEntity>());
-				 		value.setIncomes(new HashSet<IncomeEntity>());
-				 		value.setHousingExpenses(new HashSet<ExpenseEntity>());
+						BeanUtils.copyProperties(hba, value, "id");
+						value = hbaRepo.save(value);
+						// Remove all children and add those received in parameter
+						value.getHouseholdMembers().removeAll(value.getHouseholdMembers());
 						for(HouseholdMember hm:hba.getHouseholdMembers()) {
-							HouseholdMemberEntity hme = new HouseholdMemberEntity(hm);
+							HouseholdMemberEntity hme = new HouseholdMemberEntity();
+					    	BeanUtils.copyProperties(hm, hme, "id");
 							PersonEntity pe = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
 							hme.setApplication(value);
 							hme.setPerson(pe);
 							value.getHouseholdMembers().add(hme);
 							householdMemberRepo.save(hme);
 						}
+						value.getHousingExpenses().removeAll(value.getHousingExpenses());
 						for(Expense e:hba.getHousingExpenses()) {
-							ExpenseEntity ee = new ExpenseEntity(e);
+							ExpenseEntity ee = new ExpenseEntity();
+					    	BeanUtils.copyProperties(e, ee, "id");
 							ee.setApplication(value);
-							value.addExpense(ee);
+							value.getHousingExpenses().add(ee);
 							expenseRepo.save(ee);
 						}
+						value.getIncomes().removeAll(value.getIncomes());
 						for(Income i:hba.getIncomes()) {
-							IncomeEntity ie = new IncomeEntity(i);
+							IncomeEntity ie = new IncomeEntity();
+					    	BeanUtils.copyProperties(i, ie, "id");
 							ie.setApplication(value);
-							value.addIncome(ie);
+							value.getIncomes().add(ie);
 							incomeRepo.save(ie);
 						}
-						value = hbaRepo.save(value);
 					},
 				()
 				 	-> {
-				 		hbaRepo.save(new HousingBenefitApplicationEntity(hba));
+				 		hbaRepo.save(hbae);
 				 	});
 		return fetchHousingBenefitApplicationById(caseId);
 	}
@@ -166,10 +183,10 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     @Override
     public ResponseEntity<List<Expense>> fetchExpenses(Integer caseId) {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	Iterable<ExpenseEntity> expenses = expenseRepo.findByApplication(hba);
+    	Iterable<ExpenseEntity> ees = expenseRepo.findByApplication(hba);
     	return ResponseEntity.ok(
-    			StreamSupport.stream(expenses.spliterator(), false)
-    			.map(expense -> expense.toExpense())
+    			StreamSupport.stream(ees.spliterator(), false)
+    			.map(ee -> modelMapper.map(ee, Expense.class))
     			.collect(Collectors.toList()));
     }
 
@@ -178,19 +195,20 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
 		ExpenseEntity ee = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
 		ee.setApplication(hba);
-		return ResponseEntity.ok(ee.toExpense());
+		return ResponseEntity.ok(modelMapper.map(ee, Expense.class));
 	}
  
 	@Override
 	public ResponseEntity<Expense> addExpense(Integer caseId, Expense expense) {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		ExpenseEntity ee = new ExpenseEntity(expense);
+		ExpenseEntity ee = modelMapper.map(expense, ExpenseEntity.class);
 		ee.setApplication(hba);
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(expenseRepo.save(ee).toExpense());
+		ee.setId(null);
+		return ResponseEntity.ok(modelMapper.map(expenseRepo.save(ee), Expense.class));
 	}
 
 	@Override
@@ -201,13 +219,13 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(ee.toExpense());
+		return ResponseEntity.ok(modelMapper.map(ee, Expense.class));
 	}
 
 	@Override
 	public ResponseEntity<Expense> updateExpense(Integer caseId, Integer id, Expense expense) {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		ExpenseEntity ee = new ExpenseEntity(expense);
+		ExpenseEntity ee = modelMapper.map(expense, ExpenseEntity.class);
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -216,11 +234,7 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 		previousExpense.ifPresentOrElse(
 			(value) 
 				-> {
-					value.setStartDate(expense.getStartDate());
-					value.setEndDate(expense.getEndDate());
-					value.setAmount(expense.getAmount());
-					value.setExpenseType(expense.getExpenseType());
-					value.setOtherExpenseDescription(expense.getOtherExpenseDescription());
+					BeanUtils.copyProperties(expense, value, "id");
 					expenseRepo.save(value);
 				},
 			()
@@ -244,7 +258,7 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     	Iterable<HouseholdMemberEntity> householdMembers = householdMemberRepo.findByApplication(hba);
     	return ResponseEntity.ok(
     			StreamSupport.stream(householdMembers.spliterator(), false)
-    			.map(hm -> hm.toHouseholdMember())
+    			.map(hm -> modelMapper.map(hm, HouseholdMember.class))
     			.collect(Collectors.toList()));
     }
      
@@ -252,23 +266,25 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 	public ResponseEntity<HouseholdMember> fetchHouseholdMemberById(Integer caseId, Integer id) {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
 		HouseholdMemberEntity hme = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
-		return ResponseEntity.ok(hme.toHouseholdMember());
+		return ResponseEntity.ok(modelMapper.map(hme, HouseholdMember.class));
 	}
  
     @Override
 	public ResponseEntity<HouseholdMember> addHouseholdMember(
 			Integer caseId,
-			HouseholdMember householdMember) {
+			HouseholdMember hm) {
     	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	PersonEntity pe = personRepo.findById(householdMember.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", householdMember.getPerson().getId()));
-    	HouseholdMemberEntity hme = new HouseholdMemberEntity(householdMember);
+    	PersonEntity pe = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
+    	HouseholdMemberEntity hme = new HouseholdMemberEntity();
+    	BeanUtils.copyProperties(hm,  hme);
     	hme.setApplication(hbae);
     	hme.setPerson(pe);
 		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(householdMemberRepo.save(hme).toHouseholdMember());
+		hme.setId(null);
+		return ResponseEntity.ok(modelMapper.map(householdMemberRepo.save(hme), HouseholdMember.class));
 	}
 
 	/**
@@ -278,8 +294,8 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     @Override
 	public ResponseEntity<HouseholdMember> checkHouseholdMemberById(Integer caseId, Integer id) {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		HouseholdMemberEntity hm = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
-		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hm, HouseholdChecks.class);
+		HouseholdMemberEntity hme = householdMemberRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Household member", id));
+		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, HouseholdChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
@@ -288,13 +304,13 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 		 * Yes, we could have written a validator for this, too, but wanted to show
 		 * manual checks are added to Spring Validation checks
 		 */
-		if(hm.getStartDate() != null && hm.getEndDate() != null){
-			Period  period = Period.between(hm.getStartDate(), hm.getEndDate());
+		if(hme.getStartDate() != null && hme.getEndDate() != null){
+			Period  period = Period.between(hme.getStartDate(), hme.getEndDate());
 			if(period.getYears() >= 1) {
-				throw new TooLongRangeException(hm.getStartDate(), hm.getEndDate());
+				throw new TooLongRangeException(hme.getStartDate(), hme.getEndDate());
 			}
 		}
-		return ResponseEntity.ok(hm.toHouseholdMember());
+		return ResponseEntity.ok(modelMapper.map(hme, HouseholdMember.class));
 	}
 
 	
@@ -302,20 +318,18 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 	public ResponseEntity<HouseholdMember> updateHouseholdMember(
 			Integer caseId, 
 			Integer id, 
-			HouseholdMember householdMember) {
+			HouseholdMember hm) {
     	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		HouseholdMemberEntity hme = new HouseholdMemberEntity(householdMember);
+		HouseholdMemberEntity hme = modelMapper.map(hm, HouseholdMemberEntity.class);
     	Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<HouseholdMemberEntity> hm = householdMemberRepo.findByApplicationAndId(hbae, id);
-		hm.ifPresentOrElse(
+		Optional<HouseholdMemberEntity> previousHme = householdMemberRepo.findByApplicationAndId(hbae, id);
+		previousHme.ifPresentOrElse(
 				(value) 
 					-> {
-				 		value.setEndDate(householdMember.getEndDate());
-				 		value.setStartDate(householdMember.getStartDate());
-				 		value.setPerson(new PersonEntity(householdMember.getPerson()));
+						BeanUtils.copyProperties(hm, value, "id");
 				 		value.setApplication(hbae);
 						householdMemberRepo.save(value);
 					},
@@ -338,11 +352,11 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 
     @Override
     public ResponseEntity<List<Income>> fetchIncomes(Integer caseId) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	Iterable<IncomeEntity> incomes = incomeRepo.findByApplication(hba);
+    	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	Iterable<IncomeEntity> incomes = incomeRepo.findByApplication(hbae);
     	return ResponseEntity.ok(
     			StreamSupport.stream(incomes.spliterator(), false)
-    			.map(income -> income.toIncome())
+    			.map(ie -> modelMapper.map(ie, Income.class))
     			.collect(Collectors.toList()));
     }
 
@@ -351,19 +365,20 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
     	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
 		IncomeEntity ie = incomeRepo.findById(id).orElseThrow(() -> new NotFoundException("Income", id));
 		ie.setApplication(hba);
-		return ResponseEntity.ok(ie.toIncome());
+		return ResponseEntity.ok(modelMapper.map(ie, Income.class));
 	}
  
 	@Override
 	public ResponseEntity<Income> addIncome(Integer caseId, Income income) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		IncomeEntity ie = new IncomeEntity(income);
-		ie.setApplication(hba);
+    	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		IncomeEntity ie = new IncomeEntity();
+		BeanUtils.copyProperties(income, ie, "id");
+		ie.setApplication(hbae);
 		Set<ConstraintViolation<IncomeEntity>> violations =  validator.validate(ie, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(incomeRepo.save(ie).toIncome());
+		return ResponseEntity.ok(modelMapper.map(incomeRepo.save(ie), Income.class));
 	}
 
 	@Override
@@ -379,21 +394,18 @@ public class HousingBenefitApplicationControllerImpl implements HousingApi {
 
 	@Override
 	public ResponseEntity<Income> updateIncome(Integer caseId, Integer id, Income income) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		IncomeEntity ie = new IncomeEntity(income);
+    	HousingBenefitApplicationEntity hbae = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+		IncomeEntity ie = modelMapper.map(income, IncomeEntity.class);
 		Set<ConstraintViolation<IncomeEntity>> violations =  validator.validate(ie, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<IncomeEntity> previousIncome = incomeRepo.findByApplicationAndId(hba, id);
+		Optional<IncomeEntity> previousIncome = incomeRepo.findByApplicationAndId(hbae, id);
 		previousIncome.ifPresentOrElse(
 			(value) 
 				-> {
-					value.setStartDate(income.getStartDate());
-					value.setEndDate(income.getEndDate());
-					value.setAmount(income.getAmount());
-					value.setIncomeType(income.getIncomeType());
-					value.setOtherIncomeDescription(income.getOtherIncomeDescription());
+					BeanUtils.copyProperties(income, value, "id");
+					value.setApplication(hbae);
 					incomeRepo.save(value);
 				},
 			()

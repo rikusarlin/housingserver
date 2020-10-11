@@ -115,10 +115,10 @@ public class HousingBenefitApplicationTest
     	hba.setId(1);
     	hba.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	hba.addExpense(expense1);
-    	hba.addExpense(expense2);
-    	hba.addIncome(income1);
-    	hba.addIncome(income2);
+    	hba.getHousingExpenses().add(expense1);
+    	hba.getHousingExpenses().add(expense2);
+    	hba.getIncomes().add(income1);
+    	hba.getIncomes().add(income2);
     	hba.getHouseholdMembers().add(hm1);
     	hba.getHouseholdMembers().add(hm2);
     	hba.getHouseholdMembers().add(hm3);

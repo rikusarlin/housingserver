@@ -8,6 +8,8 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,18 +33,20 @@ public class PersonControllerImpl implements PersonApi {
 	
     @Autowired
     PersonRepository personRepo;
+    
+    ModelMapper modelMapper = new ModelMapper();
 
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Override
 	public ResponseEntity<Person> fetchPersonById(Integer id) {
 		PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		return ResponseEntity.ok(p.toPerson());
+		return ResponseEntity.ok(modelMapper.map(p,  Person.class));
 	}
  
 	@Override
 	public ResponseEntity<Person> addPerson(Person person) {
-		PersonEntity p = new PersonEntity(person);
+		PersonEntity p = modelMapper.map(person, PersonEntity.class);
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -51,7 +55,7 @@ public class PersonControllerImpl implements PersonApi {
 				thePerson -> {
 					throw new DuplicateNotAllowedException("personNumber "+thePerson.getPersonNumber());
 				});
-		return ResponseEntity.ok(personRepo.save(p).toPerson());
+		return ResponseEntity.ok(modelMapper.map(personRepo.save(p), Person.class));
 	}
 
 	@Override
@@ -66,26 +70,23 @@ public class PersonControllerImpl implements PersonApi {
 
 	@Override
 	public ResponseEntity<Person> updatePerson(Integer id, Person person) {
-			PersonEntity p = new PersonEntity(person);
-			Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
-			if (!violations.isEmpty()) {
-				throw new ConstraintViolationException(violations);
-			}
-			Optional<PersonEntity> previousPerson = personRepo.findById(id);
-			previousPerson.ifPresentOrElse(
-				(value) 
-					-> {
-						value.setBirthDate(person.getBirthDate());
-						value.setFirstName(person.getFirstName());
-						value.setLastName(person.getLastName());
-						value.setPersonNumber(person.getPersonNumber());
-						personRepo.save(value);
-					},
-				()
-				 	-> {
-				 		personRepo.save(p);
-				 	});
-			return fetchPersonById(id);
+		PersonEntity p = modelMapper.map(person, PersonEntity.class);
+		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		Optional<PersonEntity> previousPerson = personRepo.findById(id);
+		previousPerson.ifPresentOrElse(
+			(value) 
+				-> {
+					BeanUtils.copyProperties(person, value, "id");
+					personRepo.save(value);
+				},
+			()
+			 	-> {
+			 		personRepo.save(p);
+			 	});
+		return fetchPersonById(id);
 	}
 	
 	@Override
