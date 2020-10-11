@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 
-public interface HouseholdMemberRepository extends CrudRepository<HouseholdMemberEntity, Integer>, HousingBenefitApplicationRepositoryCustom {
-	List<HouseholdMemberEntity> findByApplication(HousingBenefitApplicationEntity application);
-	Optional<HouseholdMemberEntity> findByApplicationAndId(HousingBenefitApplicationEntity application, Integer id);
+public interface HouseholdMemberRepository extends CrudRepository<HouseholdMemberEntity, Integer> {
+	List<HouseholdMemberEntity> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase);
+	Optional<HouseholdMemberEntity> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity housingBenefitCase, Integer id);
 }

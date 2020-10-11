@@ -21,8 +21,8 @@ import lombok.Setter;
 public class HouseholdMemberEntity extends DateRangedEntity{
 	@JsonIgnore
 	@ManyToOne
-    @JoinColumn(name="application_id", nullable=false)
-    private HousingBenefitApplicationEntity application;
+    @JoinColumn(name="case_id", nullable=false)
+    HousingBenefitCaseEntity housingBenefitCase;
 	
 	@Valid
 	@OneToOne

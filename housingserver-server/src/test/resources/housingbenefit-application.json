@@ -1,59 +1,78 @@
 {
-  "startDate": "2020-01-01",
-  "endDate": "2020-12-31",
-  "incomes": [
-  	{
+  "caseState":"NEW",
+  "customer": {
+    "id": 1,
+    "personNumber": "170871-0091",
+    "firstName": "Riku",
+    "lastName": "Sarlin",
+    "birthDate": "1971-08-17"
+  },
+  "application": {
       "startDate": "2020-09-30",
-      "endDate": "2020-11-01",
-      "incomeType":"OTHER",
-      "amount":1200,
-      "otherIncomeDescription":"Sold 100 liters of moonshine"
+      "endDate": "2020-12-01",
+      "received": "2020-12-01 09:03:04",
+      "applicant": {
+        "id": 1,
+        "personNumber": "170871-0091",
+        "firstName": "Riku",
+        "lastName": "Sarlin",
+        "birthDate": "1971-08-17"
+      }
+  },
+  "householdMembers": [
+    {
+      "startDate": "2020-09-30",
+      "endDate": "2020-12-01",
+      "person": {
+        "id": 1,
+        "personNumber": "170871-0091",
+        "firstName": "Riku",
+        "lastName": "Sarlin",
+        "birthDate": "1971-08-17"
+      }
     },
-  	{
+    {
       "startDate": "2020-09-30",
-      "incomeType":"SALARY",
-      "amount":2200
+      "endDate": "2020-12-01",
+      "person": {
+        "id": 2,
+        "personNumber": "130570-0091",
+        "firstName": "Helena",
+        "lastName": "Sarlin",
+        "birthDate": "1970-05-13"
+      }
     }
   ],
   "housingExpenses": [
-  	{
+    {
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
-      "expenseType":"RENT",
-      "amount":820    
+      "expenseType": "OTHER",
+      "amount": 70,
+      "otherExpenseDescription": "bought some rodent repeller"
     },
-  	{
-      "startDate": "2020-11-30",
+    {
+      "startDate": "2020-09-30",
       "endDate": "2020-11-01",
-      "expenseType":"WATER",
-      "amount":84
+      "expenseType": "RENT",
+      "amount": 430,
+      "otherExpenseDescription": null
     }
   ],
-  "householdMembers": [
-  	{
-      "startDate": "2020-01-01",
-      "person" : {
-    	"id":1,
-  		"personNumber":"170871-0091",
-  		"birthDate":"1971-08-17",
-  		"firstName":"Riku",
-  		"lastName":"Sarlin"
-  	  }
-      
+  "incomes": [
+    {
+      "startDate": "2020-09-30",
+      "endDate": "2020-11-01",
+      "incomeType": "SALARY",
+      "amount": 1700,
+      "otherIncomeDescription": null
     },
-  	{
-      "startDate": "2022-01-01",
-      "person" : {
-    	"id":2,
-  		"personNumber":"130570-216E",
-  		"birthDate":"1970-05-13",
-  		"firstName":"Helena",
-  		"lastName":"Sarlin"
-  	  }
+    {
+      "startDate": "2020-09-30",
+      "endDate": "2020-11-01",
+      "incomeType": "OTHER",
+      "amount": 2200,
+      "otherIncomeDescription": "Sold 100 liters of moonshine"
     }
   ]
-  
 }
- 
- 
- 

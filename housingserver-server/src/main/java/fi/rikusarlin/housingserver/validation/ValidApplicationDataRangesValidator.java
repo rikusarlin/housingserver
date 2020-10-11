@@ -9,7 +9,7 @@ import org.hibernate.validator.constraintvalidation.HibernateConstraintValidator
 
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 
 /**
@@ -27,12 +27,12 @@ public class ValidApplicationDataRangesValidator
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext ctx) {
 
-        if (!(value instanceof HousingBenefitApplicationEntity)) {
+        if (!(value instanceof HousingBenefitCaseEntity)) {
             return false;
         }
 
         boolean isValid = true;
-        HousingBenefitApplicationEntity hba = (HousingBenefitApplicationEntity) value;
+        HousingBenefitCaseEntity hbce = (HousingBenefitCaseEntity) value;
         
         HibernateConstraintValidatorContext hibernateContext = ctx.unwrap(
                 HibernateConstraintValidatorContext.class );
@@ -41,17 +41,17 @@ public class ValidApplicationDataRangesValidator
        	// I guess you could generalize the following a bit...
        	
         int index=0;
-       	for(HouseholdMemberEntity hm:hba.getHouseholdMembers()) {
-           	if( hba.getEndDate().isBefore(hm.getStartDate()) ||
-           		hba.getStartDate().isAfter(hm.getEndDate())) {
+       	for(HouseholdMemberEntity hm:hbce.getHouseholdMembers()) {
+           	if( hbce.getApplication().getEndDate().isBefore(hm.getStartDate()) ||
+           		hbce.getApplication().getStartDate().isAfter(hm.getEndDate())) {
            		ValidatorUtils.addViolation(
            	    		"householdMembers", 
            	    		index, 
            	    		"dateRange",
            	    		"must overlap with application date range, and {0}-{1} and {2}-{3} do not overlap",
            				hibernateContext,
-                   		hba.getStartDate().format(formatter),
-                   		hba.getEndDate().format(formatter),
+           				hbce.getApplication().getStartDate().format(formatter),
+           				hbce.getApplication().getEndDate().format(formatter),
                    		hm.getStartDate().format(formatter),
                    		hm.getEndDate().format(formatter)
            		);
@@ -61,17 +61,17 @@ public class ValidApplicationDataRangesValidator
        	}
        	
         index=0;
-       	for(ExpenseEntity expense:hba.getHousingExpenses()) {
-           	if( hba.getEndDate().isBefore(expense.getStartDate()) ||
-           		hba.getStartDate().isAfter(expense.getEndDate())) {
+       	for(ExpenseEntity expense:hbce.getHousingExpenses()) {
+           	if( hbce.getApplication().getEndDate().isBefore(expense.getStartDate()) ||
+           		hbce.getApplication().getStartDate().isAfter(expense.getEndDate())) {
            		ValidatorUtils.addViolation(
            	    		"housingExpenses", 
            	    		index, 
            	    		"dateRange",
            	    		"must overlap with application date range, and {0}-{1} and {2}-{3} do not overlap",
            				hibernateContext,
-                   		hba.getStartDate().format(formatter),
-                   		hba.getEndDate().format(formatter),
+           				hbce.getApplication().getStartDate().format(formatter),
+           				hbce.getApplication().getEndDate().format(formatter),
                    		expense.getStartDate().format(formatter),
                    		expense.getEndDate().format(formatter)
            		);
@@ -81,17 +81,17 @@ public class ValidApplicationDataRangesValidator
        	}
 
         index=0;
-       	for(IncomeEntity income:hba.getIncomes()) {
-       		if( hba.getEndDate().isBefore(income.getStartDate()) ||
-           		hba.getStartDate().isAfter(income.getEndDate())) {
+       	for(IncomeEntity income:hbce.getIncomes()) {
+       		if( hbce.getApplication().getEndDate().isBefore(income.getStartDate()) ||
+       			hbce.getApplication().getStartDate().isAfter(income.getEndDate())) {
            		ValidatorUtils.addViolation(
            	    		"incomes", 
            	    		index, 
            	    		"dateRange",
            	    		"must overlap with application date range, and {0}-{1} and {2}-{3} do not overlap",
            				hibernateContext,
-                   		hba.getStartDate().format(formatter),
-                   		hba.getEndDate().format(formatter),
+           				hbce.getApplication().getStartDate().format(formatter),
+           				hbce.getApplication().getEndDate().format(formatter),
                    		income.getStartDate().format(formatter),
                    		income.getEndDate().format(formatter)
            		);

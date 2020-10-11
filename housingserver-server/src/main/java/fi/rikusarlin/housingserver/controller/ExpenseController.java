@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
-import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -38,21 +38,21 @@ public class ExpenseController {
     @Autowired
     ExpenseRepository expenseRepo;
     @Autowired
-    HousingBenefitApplicationRepository hbaRepo;
+    CaseRepository caseRepo;
 
     @GetMapping("/api/v1/housing/{caseId}/expenses")
     public @ResponseBody Iterable<ExpenseEntity> findExpenses(
     		@PathVariable int caseId) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-        return expenseRepo.findByApplication(hba);
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+        return expenseRepo.findByHousingBenefitCase(hbce);
     }
      
 	@GetMapping(value = "/api/v1/housing/{caseId}/expense/{id}")
 	public ExpenseEntity findExpenseById(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		return expenseRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Expense", id));
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		return expenseRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Expense", id));
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
@@ -60,8 +60,8 @@ public class ExpenseController {
 	public ExpenseEntity addExpense(
 			@PathVariable int caseId,
 			@RequestBody @Validated(InputChecks.class) ExpenseEntity expense) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-    	expense.setApplication(hba);
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+    	expense.setHousingBenefitCase(hbce);
 		return expenseRepo.save(expense);
 	}
 
@@ -69,8 +69,8 @@ public class ExpenseController {
 	public ExpenseEntity checkExpenseById(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		ExpenseEntity expense = expenseRepo.findByApplicationAndId(hba, id).orElseThrow(() -> new NotFoundException("Expense", id));
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		ExpenseEntity expense = expenseRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Expense", id));
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(expense, ExpenseChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -84,12 +84,12 @@ public class ExpenseController {
 			@PathVariable int caseId,
 			@PathVariable int id,
 			@RequestBody @Validated(InputChecks.class) ExpenseEntity expense) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(expense, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<ExpenseEntity> previousExpense = expenseRepo.findByApplicationAndId(hba, id);
+		Optional<ExpenseEntity> previousExpense = expenseRepo.findByHousingBenefitCaseAndId(hbce, id);
 		previousExpense.ifPresentOrElse(
 				(value) 
 					-> {
@@ -112,8 +112,8 @@ public class ExpenseController {
 	public void deleteExpense(
 			@PathVariable int caseId,
 			@PathVariable int id) {
-    	HousingBenefitApplicationEntity hba = hbaRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit application", caseId));
-		ExpenseEntity expense = expenseRepo.findByApplicationAndId(hba,id).orElseThrow(() -> new NotFoundException("Expense", id));
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		ExpenseEntity expense = expenseRepo.findByHousingBenefitCaseAndId(hbce,id).orElseThrow(() -> new NotFoundException("Expense", id));
  		expenseRepo.delete(expense);
 	}
 

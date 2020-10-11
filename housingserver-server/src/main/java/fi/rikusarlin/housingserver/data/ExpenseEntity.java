@@ -33,8 +33,8 @@ import lombok.Setter;
 public class ExpenseEntity extends DateRangedEntity{
 	@JsonIgnore
     @ManyToOne
-    @JoinColumn(name="application_id", nullable=false)
-    private HousingBenefitApplicationEntity application;  
+    @JoinColumn(name="case_id", nullable=false)
+    HousingBenefitCaseEntity housingBenefitCase;
 	
 	@Basic
     @Column(name = "expenseType")	

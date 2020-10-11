@@ -20,7 +20,7 @@
         <junit-version>4.12</junit-version>
         <migbase64-version>2.2</migbase64-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <base-path>/api/v1</base-path>
+        <base-path>/api/v1/housing</base-path>
 	</properties>
 
     <dependencies>
