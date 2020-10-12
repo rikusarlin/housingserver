@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
+import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;
@@ -61,8 +63,9 @@ public class IncomeController {
 			@PathVariable int caseId,
 			@RequestBody @Validated(InputChecks.class) IncomeEntity income) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	income.setHousingBenefitCase(hbce);
-		return incomeRepo.save(income);
+    	IncomeEntity incomeNew = MappingUtil.modelMapperInsert.map(income, IncomeEntity.class);
+    	incomeNew.setHousingBenefitCase(hbce);
+		return incomeRepo.save(incomeNew);
 	}
 
 	@GetMapping(value = "/api/v1/housing/{caseId}/income/{id}/check")
@@ -93,11 +96,7 @@ public class IncomeController {
 		previousIncome.ifPresentOrElse(
 				(value) 
 					-> {
-				 		value.setEndDate(income.getEndDate());
-				 		value.setStartDate(income.getStartDate());
-				 		value.setAmount(income.getAmount());
-				 		value.setIncomeType(income.getIncomeType());
-				 		value.setOtherIncomeDescription(income.getOtherIncomeDescription());
+						value = MappingUtil.modelMapper.map(income, IncomeEntity.class);
 						incomeRepo.save(value);
 					},
 				()

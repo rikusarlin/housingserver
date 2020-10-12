@@ -28,6 +28,7 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
@@ -76,29 +77,27 @@ public class HousingBenefitCaseController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/housing")
 	public HousingBenefitCaseEntity addHousingBenefitCase(
-			@RequestBody @Validated(InputChecks.class) HousingBenefitCaseEntity hbc) {
-		
+			@RequestBody @Validated(InputChecks.class) HousingBenefitCaseEntity hbcInput) {
+		// This deletes the potential ids
+		HousingBenefitCaseEntity hbc = MappingUtil.modelMapperInsert.map(hbcInput, HousingBenefitCaseEntity.class);
 		PersonEntity customer = personRepo.findById(hbc.getCustomer().getId()).orElseThrow(() -> new NotFoundException("Customer", hbc.getCustomer().getId()));
 		hbc.setCustomer(customer);
-		HousingBenefitCaseEntity hbcSaved = caseRepo.save(hbc);
-		PersonEntity applicant = personRepo.findById(hbc.getApplication().getApplicant().getId()).orElseThrow(() -> new NotFoundException("Applicant", hbc.getApplication().getApplicant().getId()));
-		hbc.getApplication().setApplicant(applicant);
-		hbc.getApplication().setHousingBenefitCase(hbcSaved);
-		hbaRepo.save(hbc.getApplication());
 		for(HouseholdMemberEntity hm:hbc.getHouseholdMembers()) {
 			PersonEntity p = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
-			hm.setHousingBenefitCase(hbcSaved);
+			hm.setHousingBenefitCase(hbc);
 			hm.setPerson(p);
-			hmRepo.save(hm);
 		}
 		for(ExpenseEntity e:hbc.getHousingExpenses()) {
-			e.setHousingBenefitCase(hbcSaved);
-			expenseRepo.save(e);
+			e.setHousingBenefitCase(hbc);
 		}
 		for(IncomeEntity i:hbc.getIncomes()) {
-			i.setHousingBenefitCase(hbcSaved);
-			incomeRepo.save(i);
+			i.setHousingBenefitCase(hbc);
 		}
+		hbc.getApplication().setHousingBenefitCase(hbc);
+		PersonEntity applicant = personRepo.findById(hbc.getApplication().getApplicant().getId()).orElseThrow(() -> new NotFoundException("Applicant", hbc.getApplication().getApplicant().getId()));
+		hbc.getApplication().setApplicant(applicant);
+		hbc.getApplication().setHousingBenefitCase(hbc);
+		HousingBenefitCaseEntity hbcSaved = caseRepo.save(hbc);
 		return hbcSaved;
 	}
 

@@ -17,11 +17,13 @@ public class SubCollectionOverlappingDateRangeValidator
     implements ConstraintValidator<SubCollectionOverlappingDateRange, Object> {
 
     private String collectionName;
+    private String fieldName;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Override
     public void initialize(SubCollectionOverlappingDateRange annotation) {
         collectionName = annotation.collectionName();
+        fieldName = annotation.fieldName();
     }
 
     @Override
@@ -32,7 +34,7 @@ public class SubCollectionOverlappingDateRangeValidator
         }
 
         boolean isValid = true;
-       	DateRangedEntity entity1 = (DateRangedEntity) value;
+       	DateRangedEntity entity1 = (DateRangedEntity) ValidatorUtils.getProperty(value, fieldName);
        	Collection<?> collection = (Collection<?>) ValidatorUtils.getProperty(value, collectionName);
 
         HibernateConstraintValidatorContext hibernateContext = ctx.unwrap(

@@ -8,8 +8,6 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,7 @@ import fi.rikusarlin.housingserver.api.ExpenseApi;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
@@ -34,8 +33,6 @@ public class ExpenseControllerImpl implements ExpenseApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    ModelMapper modelMapper = new ModelMapper();
-
     @Autowired
     ExpenseRepository expenseRepo;
     @Autowired
@@ -46,21 +43,21 @@ public class ExpenseControllerImpl implements ExpenseApi {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		ExpenseEntity ee = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
 		ee.setHousingBenefitCase(hbce);
-		return ResponseEntity.ok(modelMapper.map(ee, Expense.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(ee, Expense.class));
 	}
  
 	@Override
 	public ResponseEntity<Expense> addExpense(Integer caseId, Expense expense) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	ExpenseEntity ee = new ExpenseEntity();
-    	BeanUtils.copyProperties(expense, ee, "id");
+    	MappingUtil.modelMapperInsert.map(expense, ee);
     	ee.setHousingBenefitCase(hbce);
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
 		ee.setId(null);
-		return ResponseEntity.ok(modelMapper.map(expenseRepo.save(ee), Expense.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(expenseRepo.save(ee), Expense.class));
 	}
 
 	@Override
@@ -71,13 +68,13 @@ public class ExpenseControllerImpl implements ExpenseApi {
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(modelMapper.map(ee, Expense.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(ee, Expense.class));
 	}
 
 	@Override
 	public ResponseEntity<Expense> updateExpense(Integer caseId, Integer id, Expense expense) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-		ExpenseEntity ee = modelMapper.map(expense, ExpenseEntity.class);
+		ExpenseEntity ee = MappingUtil.modelMapper.map(expense, ExpenseEntity.class);
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -86,7 +83,7 @@ public class ExpenseControllerImpl implements ExpenseApi {
 		previousExpense.ifPresentOrElse(
 			(value) 
 				-> {
-					BeanUtils.copyProperties(expense, value, "id");
+					MappingUtil.modelMapper.map(expense, value);
 					expenseRepo.save(value);
 				},
 			()

@@ -12,10 +12,10 @@ import javax.validation.Payload;
 
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(ValidApplicationDataRanges.List.class)
-@Constraint(validatedBy = ValidApplicationDataRangesValidator.class)
+@Repeatable(ValidApplicationDateRanges.List.class)
+@Constraint(validatedBy = ValidApplicationDateRangesValidator.class)
 @Documented
-public @interface ValidApplicationDataRanges {
+public @interface ValidApplicationDateRanges {
 
     String message() default "ValidApplicationDataRanges default message";
     Class<?>[] groups() default {};
@@ -25,7 +25,7 @@ public @interface ValidApplicationDataRanges {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        ValidApplicationDataRanges[] value();
+        ValidApplicationDateRanges[] value();
     }
 
 }

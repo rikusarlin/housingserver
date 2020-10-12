@@ -22,6 +22,7 @@ import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HousingBenefitApplication;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
@@ -35,8 +36,6 @@ import fi.rikusarlin.housingserver.validation.InputChecks;
 public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     HousingBenefitApplicationRepository hbaRepo;
@@ -52,14 +51,14 @@ public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
     	HousingBenefitApplicationEntity hbae = hbaRepo.findByHousingBenefitCase(hbce).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		PersonEntity p = personRepo.findById(hbae.getApplicant().getId()).orElseThrow(() -> new NotFoundException("Applicant", hbae.getApplicant().getId()));
 		hbae.setApplicant(p);
-    	return ResponseEntity.ok(modelMapper.map(hbae, HousingBenefitApplication.class));
+    	return ResponseEntity.ok(MappingUtil.modelMapper.map(hbae, HousingBenefitApplication.class));
 	}
  
     @Override
 	public ResponseEntity<HousingBenefitApplication> addApplication(Integer caseId, HousingBenefitApplication hba) {
        	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
         HousingBenefitApplicationEntity hbae = new HousingBenefitApplicationEntity();
-    	BeanUtils.copyProperties(hba, hbae, "id");
+        MappingUtil.modelMapperInsert.map(hba, hbae);
 		Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations =  validator.validate(hbae, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -68,7 +67,7 @@ public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
 		hbae.setApplicant(pe);
 		hbae.setHousingBenefitCase(hbce);
 		HousingBenefitApplicationEntity hbaeSaved = hbaRepo.save(hbae);
-		return ResponseEntity.ok(modelMapper.map(hbaeSaved, HousingBenefitApplication.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(hbaeSaved, HousingBenefitApplication.class));
 	}
 
     @Override
@@ -79,7 +78,7 @@ public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(modelMapper.map(hbae, HousingBenefitApplication.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(hbae, HousingBenefitApplication.class));
 	}
 
     @Override
@@ -87,7 +86,7 @@ public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
 			Integer caseId,
 			HousingBenefitApplication hba) {
        	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	HousingBenefitApplicationEntity hbae = modelMapper.map(hba, HousingBenefitApplicationEntity.class);
+    	HousingBenefitApplicationEntity hbae = MappingUtil.modelMapper.map(hba, HousingBenefitApplicationEntity.class);
 		Set<ConstraintViolation<HousingBenefitApplicationEntity>> violations =  validator.validate(hbae, AllChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);

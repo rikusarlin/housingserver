@@ -13,15 +13,15 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 
 /**
- * Implementation of {@link ValidApplicationDataRanges} validator.
+ * Implementation of {@link ValidApplicationDateRanges} validator.
  **/
-public class ValidApplicationDataRangesValidator
-    implements ConstraintValidator<ValidApplicationDataRanges, Object> {
+public class ValidApplicationDateRangesValidator
+    implements ConstraintValidator<ValidApplicationDateRanges, Object> {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Override
-    public void initialize(ValidApplicationDataRanges annotation) {
+    public void initialize(ValidApplicationDateRanges annotation) {
     }
 
     @Override

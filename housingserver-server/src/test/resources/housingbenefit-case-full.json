@@ -1,4 +1,5 @@
 {
+  "id": 10,
   "caseState":"NEW",
   "customer": {
     "id": 1,
@@ -8,9 +9,10 @@
     "birthDate": "1971-08-17"
   },
   "application": {
+	  "id":120,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
-      "received": "2020-12-01 09:03:04",
+      "received": "2020-10-12T07:29:44.907Z",
       "applicant": {
         "id": 1,
         "personNumber": "170871-0091",
@@ -21,6 +23,7 @@
   },
   "householdMembers": [
     {
+      "id":1321,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
       "person": {
@@ -32,11 +35,12 @@
       }
     },
     {
+      "id":13,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
       "person": {
         "id": 2,
-        "personNumber": "130570-0091",
+        "personNumber": "130570-216E",
         "firstName": "Helena",
         "lastName": "Sarlin",
         "birthDate": "1970-05-13"
@@ -45,6 +49,7 @@
   ],
   "housingExpenses": [
     {
+      "id":14,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "expenseType": "OTHER",
@@ -52,6 +57,7 @@
       "otherExpenseDescription": "bought some rodent repeller"
     },
     {
+      "id":15,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "expenseType": "RENT",
@@ -61,6 +67,7 @@
   ],
   "incomes": [
     {
+      "id":16,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "incomeType": "SALARY",
@@ -68,6 +75,7 @@
       "otherIncomeDescription": null
     },
     {
+      "id":17,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "incomeType": "OTHER",

@@ -8,7 +8,6 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import fi.rikusarlin.housingserver.api.PersonApi;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
@@ -34,19 +34,17 @@ public class PersonControllerImpl implements PersonApi {
     @Autowired
     PersonRepository personRepo;
     
-    ModelMapper modelMapper = new ModelMapper();
-
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Override
 	public ResponseEntity<Person> fetchPersonById(Integer id) {
 		PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		return ResponseEntity.ok(modelMapper.map(p,  Person.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(p,  Person.class));
 	}
  
 	@Override
 	public ResponseEntity<Person> addPerson(Person person) {
-		PersonEntity p = modelMapper.map(person, PersonEntity.class);
+		PersonEntity p = MappingUtil.modelMapper.map(person, PersonEntity.class);
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -55,7 +53,7 @@ public class PersonControllerImpl implements PersonApi {
 				thePerson -> {
 					throw new DuplicateNotAllowedException("personNumber "+thePerson.getPersonNumber());
 				});
-		return ResponseEntity.ok(modelMapper.map(personRepo.save(p), Person.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(personRepo.save(p), Person.class));
 	}
 
 	@Override
@@ -70,7 +68,7 @@ public class PersonControllerImpl implements PersonApi {
 
 	@Override
 	public ResponseEntity<Person> updatePerson(Integer id, Person person) {
-		PersonEntity p = modelMapper.map(person, PersonEntity.class);
+		PersonEntity p = MappingUtil.modelMapper.map(person, PersonEntity.class);
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);

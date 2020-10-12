@@ -1,6 +1,7 @@
 package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,7 +30,6 @@ public class HousingBenefitApplicationTest
 	private static boolean setUpIsDone = false;
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
-	private static DateTimeFormatter timestampFormatter;
 	Set<ConstraintViolation<HousingBenefitCaseEntity>> violations;
 
 	@BeforeAll
@@ -39,7 +39,6 @@ public class HousingBenefitApplicationTest
 	    }
     	validator = Validation.buildDefaultValidatorFactory().getValidator();
     	formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    	timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
    	    setUpIsDone = true;
 	}
 	
@@ -120,7 +119,7 @@ public class HousingBenefitApplicationTest
     	hba.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	hba.setApplicant(p1);
-    	hba.setReceived(LocalDate.parse("2020-10-01 09:02:03", timestampFormatter));
+    	hba.setReceived(OffsetDateTime.parse("2020-10-12T07:29:44.907Z"));
     	
     	HousingBenefitCaseEntity hbc = new HousingBenefitCaseEntity();
     	hbc.setCaseState(CaseState.ACTIVE);
@@ -200,8 +199,7 @@ public class HousingBenefitApplicationTest
         Assertions.assertTrue(violations.isEmpty());
     	violations = validator.validate(hbc, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
-        /* TODO fix later
-        Assertions.assertTrue(violations.size() == 7);
+        Assertions.assertTrue(violations.size() == 4);
     	violations = validator.validate(hbc, ExpenseChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
@@ -211,7 +209,6 @@ public class HousingBenefitApplicationTest
     	violations = validator.validate(hbc, AllChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 8);
-        */
     }
     
     @AfterEach

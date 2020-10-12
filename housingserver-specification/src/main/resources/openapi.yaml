@@ -982,7 +982,7 @@ paths:
     put:
       tags:
         - developers
-      summary: update huosing benefit case
+      summary: update housing benefit case
       operationId: updateHousingBenefitCase
       description: Updates housing benefit case
       parameters:
@@ -1069,18 +1069,18 @@ paths:
     post:
       tags:
         - developers
-      summary: add housing benefit case
+      summary: add housing benefit case based on application
       operationId: addHousingBenefitCase
       description: Adds housing benefit case
       responses:
         '201':
-          description: housing benefit case created
+          description: housing benefit case nad application created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HousingBenefitCase'
         '400':
-          description: housing benefit case creation not ok, error message returned
+          description: housing benefit case and application creation not ok, error message returned
           content:
             application/json:
               schema:
@@ -1089,8 +1089,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HousingBenefitCase'
-        description: housing benefit application to add
+              $ref: '#/components/schemas/NewHousingBenefitCase'
+        description: housing benefit case and application to add
 components:
   schemas:
     ErrorMessage:
@@ -1236,7 +1236,7 @@ components:
                 $ref: '#/components/schemas/Person'
               received:
                 type: string
-                format: datetime
+                format: date-time
     CaseState:
       type: string
       enum:
@@ -1269,3 +1269,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Income'
+    NewHousingBenefitCase:
+      type: object
+      description: Housing benefit case
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        caseState:
+          $ref: '#/components/schemas/CaseState'
+        customer:
+          $ref: '#/components/schemas/Person'
+        housingBenefitApplication:
+          $ref: '#/components/schemas/HousingBenefitApplication'

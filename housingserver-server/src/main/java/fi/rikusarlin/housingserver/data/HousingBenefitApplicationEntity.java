@@ -1,6 +1,6 @@
 package fi.rikusarlin.housingserver.data;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,10 +11,6 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,13 +29,11 @@ public class HousingBenefitApplicationEntity extends DateRangedEntity {
 
 	@Basic
     @Column(name = "received", nullable = true)
-	@JsonDeserialize(using = LocalDateDeserializer.class)  
-	@JsonSerialize(using = LocalDateSerializer.class)  
-	LocalDate received;
+	OffsetDateTime received;
 
 	@Valid
 	@OneToOne
     @JoinColumn(name="applicant_id", nullable=false)
-    private PersonEntity applicant;
+    PersonEntity applicant;
 
 }

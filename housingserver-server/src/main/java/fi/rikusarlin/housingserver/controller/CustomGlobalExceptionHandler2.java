@@ -28,7 +28,7 @@ import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.validation.Severity;
 
 @ControllerAdvice
-public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomGlobalExceptionHandler2 extends ResponseEntityExceptionHandler {
 
 	/*
     @ExceptionHandler(NotFoundException.class)

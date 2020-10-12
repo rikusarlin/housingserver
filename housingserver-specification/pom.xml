@@ -19,8 +19,9 @@
         <spring-boot-starter-web-version>2.1.0.RELEASE</spring-boot-starter-web-version>
         <junit-version>4.12</junit-version>
         <migbase64-version>2.2</migbase64-version>
+        <jackson-jsr310-version>2.11.3</jackson-jsr310-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <base-path>/api/v1/housing</base-path>
+        <base-path>/api/v2/housing</base-path>
 	</properties>
 
     <dependencies>
@@ -75,11 +76,6 @@
             <version>${jackson-version}</version>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${jodatime-version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.brsanthu</groupId>
             <artifactId>migbase64</artifactId>
             <version>${migbase64-version}</version>
@@ -111,16 +107,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.threeten</groupId>
-            <artifactId>threetenbp</artifactId>
-            <version>${threetenbp-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.joschi.jackson</groupId>
-            <artifactId>jackson-datatype-threetenbp</artifactId>
-            <version>${datatype-threetenbp-version}</version>
-        </dependency>
+		<dependency>
+    		<groupId>com.fasterxml.jackson.datatype</groupId>
+    		<artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-jsr310-version}</version>
+		</dependency>
     </dependencies>
 
     <build>
@@ -161,6 +152,16 @@
 					</execution>
 				</executions>
 				<configuration>
+				   <configOptions>
+				   		<java8>true</java8>
+    					<dateLibrary>custom</dateLibrary>
+  					</configOptions>
+  					<typeMappings>
+						<typeMapping>OffsetDateTime=Instant</typeMapping>
+					</typeMappings>
+					<importMappings>                                
+     					<importMapping>java.time.OffsetDateTime=java.time.Instant</importMapping>
+					</importMappings>
 				   <basedir>${project.build.directory}/generated-sources</basedir>
 					<includes>
 						<include>**/*Api.java</include>

@@ -16,13 +16,8 @@ public class CaseRepositoryCustomImpl implements CaseRepositoryCustom {
 	public List<HousingBenefitCaseEntity> findByPersonNumber(String personNumber) {
 	    TypedQuery<HousingBenefitCaseEntity> query 
 	      = entityManager.createQuery(
-	          "Select distinct housingBenefitCase from CaseEntity c "
-	    	  + "join fetch c.customer customer "
-	          + "join fetch c.application app "
-	          + "join fetch app.applicant applicant "
+	          "Select distinct c from HousingBenefitCaseEntity c "
 	          + "join fetch c.householdMembers hm "
-	          + "join fetch c.housingExpenses e "
-	          + "join fetch c.incomes i "
 	          + "join fetch hm.person hmPerson "
 	          + "where hmPerson.personNumber=:personNumber", 
 	          HousingBenefitCaseEntity.class);

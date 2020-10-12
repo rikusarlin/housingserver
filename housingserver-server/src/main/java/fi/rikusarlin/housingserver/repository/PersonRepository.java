@@ -2,10 +2,10 @@ package fi.rikusarlin.housingserver.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
 
-public interface PersonRepository extends CrudRepository<PersonEntity, Integer> {
+public interface PersonRepository extends JpaRepository<PersonEntity, Integer> {
 	Optional<PersonEntity> findByPersonNumber(String personNumber);
 }

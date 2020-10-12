@@ -9,8 +9,6 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +22,7 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
@@ -38,9 +37,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    ModelMapper modelMapper = new ModelMapper();
-
-    @Autowired
+	@Autowired
     CaseRepository caseRepo;
     @Autowired
     HouseholdMemberRepository householdMemberRepo;
@@ -51,7 +48,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 	public ResponseEntity<HouseholdMember> fetchHouseholdMemberById(Integer caseId, Integer id) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		HouseholdMemberEntity hme = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Household member", id));
-		return ResponseEntity.ok(modelMapper.map(hme, HouseholdMember.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(hme, HouseholdMember.class));
 	}
  
     @Override
@@ -61,7 +58,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	PersonEntity pe = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
     	HouseholdMemberEntity hme = new HouseholdMemberEntity();
-    	BeanUtils.copyProperties(hm,  hme);
+    	MappingUtil.modelMapperInsert.map(hm,  hme);
     	hme.setHousingBenefitCase(hbce);
     	hme.setPerson(pe);
 		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, InputChecks.class);
@@ -69,7 +66,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 			throw new ConstraintViolationException(violations);
 		}
 		hme.setId(null);
-		return ResponseEntity.ok(modelMapper.map(householdMemberRepo.save(hme), HouseholdMember.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(householdMemberRepo.save(hme), HouseholdMember.class));
 	}
 
 	/**
@@ -95,7 +92,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 				throw new TooLongRangeException(hme.getStartDate(), hme.getEndDate());
 			}
 		}
-		return ResponseEntity.ok(modelMapper.map(hme, HouseholdMember.class));
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(hme, HouseholdMember.class));
 	}
 
 	
@@ -105,7 +102,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 			Integer id, 
 			HouseholdMember hm) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-		HouseholdMemberEntity hme = modelMapper.map(hm, HouseholdMemberEntity.class);
+		HouseholdMemberEntity hme = MappingUtil.modelMapper.map(hm, HouseholdMemberEntity.class);
     	Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -114,7 +111,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
 		previousHme.ifPresentOrElse(
 				(value) 
 					-> {
-						BeanUtils.copyProperties(hm, value, "id");
+						MappingUtil.modelMapper.map(hm, value);
 				 		value.setHousingBenefitCase(hbce);
 						householdMemberRepo.save(value);
 					},

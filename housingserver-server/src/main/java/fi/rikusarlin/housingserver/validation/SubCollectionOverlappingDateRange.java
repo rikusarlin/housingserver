@@ -18,6 +18,7 @@ import javax.validation.Payload;
 public @interface SubCollectionOverlappingDateRange {
 
     String collectionName();
+    String fieldName();
 
     String message() default "SubCollectionOverlappingDateRange default message";
     Class<?>[] groups() default {};

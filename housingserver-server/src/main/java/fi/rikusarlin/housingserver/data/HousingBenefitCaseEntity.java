@@ -17,12 +17,16 @@ import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
-import fi.rikusarlin.housingserver.validation.ValidApplicationDataRanges;
+import fi.rikusarlin.housingserver.validation.SubCollectionOverlappingDateRange;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@ValidApplicationDataRanges(groups= {HouseholdChecks.class,IncomeChecks.class,ExpenseChecks.class},payload={Severity.Info.class})
+@SubCollectionOverlappingDateRange.List({
+	  @SubCollectionOverlappingDateRange(fieldName = "application", collectionName = "householdMembers", groups= {HouseholdChecks.class}, payload={Severity.Info.class}),
+	  @SubCollectionOverlappingDateRange(fieldName = "application", collectionName = "incomes", groups= {IncomeChecks.class}, payload={Severity.Info.class}),
+	  @SubCollectionOverlappingDateRange(fieldName = "application", collectionName = "housingExpenses", groups= {ExpenseChecks.class}, payload={Severity.Info.class})
+})
 @Entity
 @Table(name = "cases")
 @NoArgsConstructor
@@ -30,19 +34,19 @@ import lombok.Setter;
 @Setter
 public class HousingBenefitCaseEntity extends EntityClass{
 	@Valid
-	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="housingBenefitCase")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
 	Set<HouseholdMemberEntity> householdMembers = new HashSet<HouseholdMemberEntity>();
 	
 	@Valid
-	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="housingBenefitCase")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
 	Set<IncomeEntity> incomes = new HashSet<IncomeEntity>();
 	
 	@Valid
-	@OneToMany(cascade=CascadeType.REMOVE, mappedBy="housingBenefitCase")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
 	Set<ExpenseEntity> housingExpenses = new HashSet<ExpenseEntity>();
 	
 	@Valid
-	@OneToOne(mappedBy = "housingBenefitCase")
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "housingBenefitCase")
     private HousingBenefitApplicationEntity application;
 	
 	@Valid
@@ -53,5 +57,4 @@ public class HousingBenefitCaseEntity extends EntityClass{
 	@Basic
 	@Valid
     private CaseState caseState;
-
 }
