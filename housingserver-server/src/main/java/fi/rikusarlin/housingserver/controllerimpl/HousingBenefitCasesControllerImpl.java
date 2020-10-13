@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.CasesApi;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 
@@ -34,10 +33,8 @@ public class HousingBenefitCasesControllerImpl implements CasesApi{
 
     @Override
     public ResponseEntity<List<HousingBenefitCase>> fetchHousingBenefitCasesByPersonNumber(String personNumber) {
-    	List<HousingBenefitCaseEntity> cases = caseRepo.findByPersonNumber(personNumber);
-    	List<Integer> caseIds = cases.stream().map(HousingBenefitCaseEntity::getId).collect(Collectors.toList());
     	return ResponseEntity.ok(
-    			StreamSupport.stream(caseRepo.findAllById(caseIds).spliterator(), false)
+    			StreamSupport.stream(caseRepo.findAllById(caseRepo.findByPersonNumber(personNumber)).spliterator(), false)
     			.map(hbce -> modelMapper.map(hbce, HousingBenefitCase.class))
     			.collect(Collectors.toList()));
     }    

@@ -1255,7 +1255,7 @@ components:
           $ref: '#/components/schemas/CaseState'
         customer:
           $ref: '#/components/schemas/Person'
-        housingBenefitApplication:
+        application:
           $ref: '#/components/schemas/HousingBenefitApplication'
         householdMembers:
           type: array
@@ -1279,5 +1279,5 @@ components:
           $ref: '#/components/schemas/CaseState'
         customer:
           $ref: '#/components/schemas/Person'
-        housingBenefitApplication:
+        application:
           $ref: '#/components/schemas/HousingBenefitApplication'

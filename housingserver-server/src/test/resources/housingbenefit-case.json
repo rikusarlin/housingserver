@@ -8,7 +8,7 @@
     "lastName": "Sarlin",
     "birthDate": "1971-08-17"
   },
-  "housingBenefitApplication": {
+  "application": {
 	  "id":11,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",

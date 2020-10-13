@@ -62,8 +62,8 @@ public class HousingBenefitCaseControllerImpl implements CaseApi {
 		hbce.setApplication(null);
 		HousingBenefitCaseEntity hbceSaved = caseRepo.save(hbce);
 		HousingBenefitApplicationEntity hbae = new HousingBenefitApplicationEntity();
-		MappingUtil.modelMapperInsert.map(nhbc.getHousingBenefitApplication(), hbae);
-		PersonEntity applicant = personRepo.findById(nhbc.getHousingBenefitApplication().getApplicant().getId()).orElseThrow(() -> new NotFoundException("Applicant", nhbc.getHousingBenefitApplication().getApplicant().getId()));
+		MappingUtil.modelMapperInsert.map(nhbc.getApplication(), hbae);
+		PersonEntity applicant = personRepo.findById(nhbc.getApplication().getApplicant().getId()).orElseThrow(() -> new NotFoundException("Applicant", nhbc.getApplication().getApplicant().getId()));
 		hbae.setApplicant(applicant);
 		hbae.setHousingBenefitCase(hbceSaved);
 		HousingBenefitApplicationEntity hbaeSaved = hbaRepo.save(hbae);

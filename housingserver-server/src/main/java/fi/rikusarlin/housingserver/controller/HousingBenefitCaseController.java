@@ -64,8 +64,8 @@ public class HousingBenefitCaseController {
 
     @GetMapping("/api/v1/housings/{personNumber}")
     public @ResponseBody Iterable<HousingBenefitCaseEntity> findHousingBenefitCasesForPerson(
-    		@PathVariable String personNumber) {
-    	return caseRepo.findByPersonNumber(personNumber);
+    		 @PathVariable String personNumber) {
+    	return caseRepo.findAllById(caseRepo.findByPersonNumber(personNumber));
     }
 
 	@GetMapping(value = "/api/v1/housing/{caseId}")
