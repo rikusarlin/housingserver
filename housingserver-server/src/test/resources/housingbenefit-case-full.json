@@ -1,55 +1,50 @@
 {
-  "id": 10,
   "caseState":"NEW",
   "customer": {
-    "id": 1,
-    "personNumber": "170871-0091",
-    "firstName": "Riku",
-    "lastName": "Sarlin",
-    "birthDate": "1971-08-17"
+	    "id":1,
+  		"personNumber":"010170-904N",
+  		"birthDate":"1970-01-01",
+  		"firstName":"Suvi-Tuulia",
+  		"lastName":"Retsetenpe"
   },
   "application": {
-	  "id":120,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
       "received": "2020-10-12T07:29:44.907Z",
       "applicant": {
-        "id": 1,
-        "personNumber": "170871-0091",
-        "firstName": "Riku",
-        "lastName": "Sarlin",
-        "birthDate": "1971-08-17"
+	    "id":1,
+  		"personNumber":"010170-904N",
+  		"birthDate":"1970-01-01",
+  		"firstName":"Suvi-Tuulia",
+  		"lastName":"Retsetenpe"
       }
   },
   "householdMembers": [
     {
-      "id":1321,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
       "person": {
-        "id": 1,
-        "personNumber": "170871-0091",
-        "firstName": "Riku",
-        "lastName": "Sarlin",
-        "birthDate": "1971-08-17"
+	    "id":1,
+  		"personNumber":"010170-904N",
+  		"birthDate":"1970-01-01",
+  		"firstName":"Suvi-Tuulia",
+  		"lastName":"Retsetenpe"
       }
     },
     {
-      "id":13,
       "startDate": "2020-09-30",
       "endDate": "2020-12-01",
       "person": {
-        "id": 2,
-        "personNumber": "130570-216E",
-        "firstName": "Helena",
-        "lastName": "Sarlin",
-        "birthDate": "1970-05-13"
+	    "id":2,
+  		"personNumber":"010170-903M",
+  		"birthDate":"1970-01-01",
+  		"firstName":"Walter",
+  		"lastName":"Nutbekk"
       }
     }
   ],
   "housingExpenses": [
     {
-      "id":14,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "expenseType": "OTHER",
@@ -57,7 +52,6 @@
       "otherExpenseDescription": "bought some rodent repeller"
     },
     {
-      "id":15,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "expenseType": "RENT",
@@ -67,7 +61,6 @@
   ],
   "incomes": [
     {
-      "id":16,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "incomeType": "SALARY",
@@ -75,7 +68,6 @@
       "otherIncomeDescription": null
     },
     {
-      "id":17,
       "startDate": "2020-09-30",
       "endDate": "2020-11-01",
       "incomeType": "OTHER",

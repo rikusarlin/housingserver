@@ -4,9 +4,9 @@
   "endDate": "2020-10-01",
     "person" : {
     "id":1,
-  	"birthDate":"1971-08-17",
-  	"firstName":"Riku",
-  	"lastName":"Sarlin"
+  	"birthDate":"1970-01-01",
+  	"firstName":"Suvi-Tuulia",
+  	"lastName":"Retsetenpe"
   }
   
 }

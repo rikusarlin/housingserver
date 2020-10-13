@@ -180,7 +180,7 @@ public class PersonSchemaTest
 	        Assertions.assertTrue(!validationResult.isEmpty());
 	        Assertions.assertTrue(validationResult.size() == 1);
 	        Iterator<ValidationMessage> iter = validationResult.iterator();
-	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("birthDate: 1971-13-17 is an invalid date"));
+	        Assertions.assertTrue(((ValidationMessage)iter.next()).getMessage().contains("birthDate: 1970-13-01 is an invalid date"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

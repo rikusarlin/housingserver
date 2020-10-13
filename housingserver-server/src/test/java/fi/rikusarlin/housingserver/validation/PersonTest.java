@@ -25,22 +25,19 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setFirstName("Riku");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010170-904N");
+    	p1.setFirstName("Suvi-Tuulia");
+    	p1.setLastName("Retsetenpe");
+    	p1.setBirthDate(LocalDate.parse("01.01.1970", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("170871+0091");
+    	p1.setPersonNumber("010170+904N");
     	violations = validator.validate(p1);
         Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("130570-216E");
+    	p1.setPersonNumber("010100A900F");
     	violations = validator.validate(p1);
         Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("020103A678R");
-    	violations = validator.validate(p1);
-        Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("270205A515X");
+    	p1.setPersonNumber("010170-901K");
     	violations = validator.validate(p1);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -50,10 +47,10 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0092");
-    	p1.setFirstName("Riku");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900G");
+    	p1.setFirstName("Annastiina");
+    	p1.setLastName("Tenepaer");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
     }
@@ -63,10 +60,10 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-009");
-    	p1.setFirstName("Riku");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900");
+    	p1.setFirstName("Annastiina");
+    	p1.setLastName("Tenepaer");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
@@ -77,9 +74,9 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setFirstName("Riku");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setFirstName("Annastiina");
+    	p1.setLastName("Tenepaer");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         // Is both invalid and missing (several validators)        
@@ -91,9 +88,9 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setFirstName("Riku");
-    	p1.setLastName("Sarlin");
+    	p1.setPersonNumber("010100A900F");
+    	p1.setFirstName("Annastiina");
+    	p1.setLastName("Tenepaer");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
@@ -104,9 +101,9 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900F");
+    	p1.setLastName("Tenepaer");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
@@ -118,9 +115,9 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setFirstName("Riku");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900F");
+    	p1.setFirstName("Annastiina");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
@@ -131,10 +128,10 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setFirstName("Riku");
-    	p1.setLastName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900F");
+    	p1.setFirstName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+    	p1.setLastName("Tenepaer");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
@@ -145,10 +142,10 @@ public class PersonTest
     {
     	PersonEntity p1 = new PersonEntity();
     	p1.setId(1);
-    	p1.setPersonNumber("170871-0091");
-    	p1.setFirstName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
-    	p1.setLastName("Sarlin");
-    	p1.setBirthDate(LocalDate.parse("17.08.1971", formatter));
+    	p1.setPersonNumber("010100A900F");
+    	p1.setFirstName("Annastiina");
+    	p1.setLastName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
+    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
