@@ -49,49 +49,48 @@ The service is accessed via Rest api. Swagger UI is included in the package in t
 http://localhost:8080/swagger-ui.html
 
 ### Housing benefit case
-* GET /api/v1/housing/cases - fetch all housing benefit cases
-* GET /api/v1/housing/cases/{personNumber} - fetch all housing benefit cases where a person given is a member of household
-* GET /api/v1/housing/{caseId} - fetch one housing benefit case
-* PUT /api/v1/housing - add housing benefit case
-* POST /api/v1/housing - update (or add) housing benefit application in a case
-* GET /api/v1/housing/{caseId}/check - cross validate housing benefit application
+* GET /api/v2/housing/cases - fetch all housing benefit cases
+* GET /api/v2/housing/cases/{personNumber} - fetch all housing benefit cases where a person given is a member of household
+* GET /api/v2/housing/case/{caseId} - fetch one housing benefit case
+* PUT /api/v2/housing/case/{caseId} - update housing benefit case
+* POST /api/v2/housing/case - add housing benefit case
+* GET /api/v2/housing/case/{caseId}/check - cross validate housing benefit application
 
 ### Persons
 These are considered to be stored in a separate database, reflected in the fact they are accessed through api in another "context root", and not needing a case id
-* GET /api/v1/housing/persons - fetch all persons
-* GET /api/v1/housing/person/{id} - fetch one person
-* PUT /api/v1/housing/person - add person
-* POST /api/v1/housing/person/{id} - update (or add) person
-* GET /api/v1/housing/person/{id}/check - cross validate person
+* GET /api/v2/housing/persons - fetch all persons
+* GET /api/v2/housing/person/{id} - fetch one person
+* PUT /api/v2/housing/person - add person
+* POST /api/v2/housing/person/{id} - update person
+* GET /api/v2/housing/person/{id}/check - cross validate person
  
 ### Household member
-* GET /api/v1/housing/{caseId}/householdmembers - fetch all household members of a case
-* GET /api/v1/housing/{caseId}/householdmember/{id} - fetch one household member of a case
-* PUT /api/v1/housing/{caseId}/householdmember - add household member to a case, a Household member containing a Person needs to be in payload
-* POST /api/v1/housing/{caseId}/householdmember/{id} - update (or add) household member in a case
-* GET /api/v1/housing/{caseId}/householdmember/{id}/check - cross validate household member
+* GET /api/v2/housing/householdmembers/{caseId} - fetch all household members of a case
+* GET /api/v2/housing/householdmember/{caseId}/{id} - fetch one household member of a case
+* PUT /api/v2/housing/householdmember/{caseId} - add household member to a case, a Household member containing a Person needs to be in payload
+* POST /api/v2/housing/householdmember/{caseId}/{id} - add household member to a case
+* GET /api/v2/housing/householdmember/{caseId}/{id}/check - cross validate household member
 
 ### Expense
-* GET /api/v1/housing/{caseId}/expenses - fetch all expenses of a case
-* GET /api/v1/housing/{caseId}/expense/{id} - fetch one expense
-* PUT /api/v1/housing/{caseId}/expense - add expense to a case
-* POST /api/v1/housing/{caseId}/expense/{id} - update (or add) expense in a case
-* GET /api/v1/housing/{caseId}/expense/{id}/check - cross validate expense
+* GET /api/v2/housing/expenses/{caseId} - fetch all expenses of a case
+* GET /api/v2/housing/expense/{caseId}/{id} - fetch one expense
+* PUT /api/v2/housing/expense/{caseId} - update expense in case
+* POST /api/v2/housing/expense/{caseId}/{id} - add expense to a case
+* GET /api/v2/housing/expense/{caseId}/{id}/check - cross validate expense
 
 ### Income
-* GET /api/v1/housing/{caseId}/incomes - fetch all incomes of a case
-* GET /api/v1/housing/{caseId}/income/{id} - fetch one income
-* PUT /api/v1/housing/{caseId}/income - add income to a case
-* POST /api/v1/housing/{caseId}/income/{id} - update (or add) income in a case
-* GET /api/v1/housing/{caseId}/income/{id}/check - cross validate income
+* GET /api/v2/housing/incomes/{caseId} - fetch all incomes of a case
+* GET /api/v2/housing/income/{caseId}/{id} - fetch one income
+* PUT /api/v2/housing/income/{caseId} - add income to a case
+* POST /api/v2/housing/income/{caseId}/{id} - update (or add) income in a case
+* GET /api/v2/housing/income/{caseId}/{id}/check - cross validate income
 
 ### Housing benefit application
-* GET /api/v1/housing/{caseId}/application - fetch all housing benefit applications
-* GET /api/v1/case/{personNumber} - fetch all housing benefit applications of a person
-* GET /api/v1/housing/{caseId} - fetch one housing benefit application
-* PUT /api/v1/housing - add housing benefit application
-* POST /api/v1/housing - update (or add) housing benefit application in a case
-* GET /api/v1/housing/{caseId}/check - cross validate housing benefit application
+* GET /api/v2/housing/applications/{caseId} - fetch all housing benefit applications of a case
+* GET /api/v2/housing/application/{caseId} - fetch one housing benefit application
+* PUT /api/v2/housing/application/{caseId} - update housing benefit application in a case
+* POST /api/v2/housing/application/ - add housing benefit application in a case
+* GET /api/v2/housing//application/{caseId}/{id}/check - cross validate housing benefit application
  
  In addition to the actual Rest service, there are experiments with JSON schema based validation in class JsonSchemaValidition application (in src/test/main). JSON schema files can be found in src/main/resources and some example JSON input in src/test/resources. JsonSchemaValidation app also shows how to combine JSON schema validation to Spring validation (in a rather unsatisfactory way, though). This could also be applied to Rest service, see [this blog post](https://www.mscharhag.com/spring/json-schema-validation-handlermethodargumentresolver). All in all, only quite basic validation can be done through JSON schema validation - no cross-validation can be done, and no validation containing complex logic (such as validating control characters). 
  
