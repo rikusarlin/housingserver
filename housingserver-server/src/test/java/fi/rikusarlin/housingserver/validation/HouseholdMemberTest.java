@@ -2,7 +2,9 @@ package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -20,6 +22,13 @@ public class HouseholdMemberTest
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	Set<ConstraintViolation<HouseholdMemberEntity>> violations;
+
+	private List<String> getMessages(Set<ConstraintViolation<HouseholdMemberEntity>> violations){
+		return violations
+    		.stream()
+    		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
+    		.collect(Collectors.toList());
+	}
 
     @Test
     public void testValidHouseholdMember()
@@ -64,6 +73,7 @@ public class HouseholdMemberTest
     	hm1.setPerson(p1);
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(getMessages(violations).contains("person.personNumber: invalid person number '010170-901L'"));
     }
     
     @Test
@@ -83,6 +93,8 @@ public class HouseholdMemberTest
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
+        Assertions.assertTrue(getMessages(violations).contains("person.personNumber: invalid person number '010170-901'"));
+        Assertions.assertTrue(getMessages(violations).contains("person.personNumber: size must be between 11 and 11"));
     }
 
     @AfterEach

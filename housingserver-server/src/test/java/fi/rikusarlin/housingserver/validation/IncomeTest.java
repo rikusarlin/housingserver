@@ -2,7 +2,9 @@ package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,6 +24,13 @@ public class IncomeTest
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
 	Set<ConstraintViolation<IncomeEntity>> violations;
+
+	private List<String> getMessages(Set<ConstraintViolation<IncomeEntity>> violations){
+		return violations
+    		.stream()
+    		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
+    		.collect(Collectors.toList());
+	}
 
 	@BeforeAll
 	public static void setUp() {
@@ -63,6 +72,8 @@ public class IncomeTest
     	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(getMessages(violations).contains("amount: Amount must be greater than zero"));
+
     }
 
     /**
@@ -112,6 +123,7 @@ public class IncomeTest
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains(": start date must be less than end date if both are given, here start date is '2020-10-01' and end date '2020-09-01'"));
     }
     
     @Test
@@ -140,6 +152,7 @@ public class IncomeTest
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("otherIncomeDescription: Field otherIncomeDescription cannot be empty since field incomeType has value OTHER"));
     }
     
     @AfterEach

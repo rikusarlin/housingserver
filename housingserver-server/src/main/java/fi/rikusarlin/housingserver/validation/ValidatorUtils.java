@@ -17,6 +17,7 @@ import javax.validation.Payload;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
 public class ValidatorUtils {
+	
     public static Object getProperty(Object bean, String propertyName) {
         BeanInfo beanInfo;
 		try {

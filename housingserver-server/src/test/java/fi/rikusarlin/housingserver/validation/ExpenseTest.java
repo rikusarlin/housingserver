@@ -2,7 +2,9 @@ package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -22,6 +24,13 @@ public class ExpenseTest
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
 	Set<ConstraintViolation<ExpenseEntity>> violations;
+
+	private List<String> getMessages(Set<ConstraintViolation<ExpenseEntity>> violations){
+		return violations
+    		.stream()
+    		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
+    		.collect(Collectors.toList());
+	}
 
 	@BeforeAll
 	public static void setUp() {
@@ -58,6 +67,7 @@ public class ExpenseTest
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains(": start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
     }
 
     @Test
@@ -72,6 +82,8 @@ public class ExpenseTest
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
+        Assertions.assertTrue(getMessages(violations).contains(": start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
+        Assertions.assertTrue(getMessages(violations).contains("amount: Amount must be greater than zero"));
     }
 
     @Test
@@ -100,7 +112,7 @@ public class ExpenseTest
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
-
+        Assertions.assertTrue(getMessages(violations).contains("otherExpenseDescription: Field otherExpenseDescription cannot be empty since field expenseType has value OTHER"));
     }
 
     @AfterEach

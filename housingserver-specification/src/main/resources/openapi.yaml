@@ -1141,6 +1141,12 @@ components:
           type: string
           format: date
           example: '2020-10-08'
+    Gender:
+      type: string
+      enum:
+        - WOMAN
+        - MAN
+        - OTHER
     Person:
       type: object
       description: A natural person residing in Finland
@@ -1161,6 +1167,12 @@ components:
           type: string
           format: date
           example: '1971-08-71'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        email:
+          type: string
+          format: email
+          maxLength: 80
     HouseholdMember:
       type: object
       description: Household member info

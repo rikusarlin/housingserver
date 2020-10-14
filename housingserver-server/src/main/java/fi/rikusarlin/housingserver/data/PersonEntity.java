@@ -16,8 +16,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
+import fi.rikusarlin.housingserver.model.Gender;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
+import fi.rikusarlin.housingserver.validation.ValidEmailAddress;
 import fi.rikusarlin.housingserver.validation.ValidPersonNumber;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,10 +51,20 @@ public class PersonEntity extends EntityClass {
 	String lastName;
 	
 	@Basic
-    @Column(name = "birthDate", nullable = true)	
+    @Column(name = "birthDate", nullable = false)	
 	@NotNull(groups=InputChecks.class, payload={Severity.Error.class})
 	@DateTimeFormat(pattern="dd.MM.yyyy")
 	@JsonDeserialize(using = LocalDateDeserializer.class)  
 	@JsonSerialize(using = LocalDateSerializer.class)  
 	LocalDate birthDate;
+
+	@Basic
+    @Column(name = "gender", nullable = true)	
+	Gender gender;
+
+	@Basic
+    @Column(name = "email", nullable = true)	
+	@Size(max = 80,groups=InputChecks.class, payload={Severity.Error.class})
+	@ValidEmailAddress(groups=InputChecks.class, payload={Severity.Error.class})
+	String email;
 }

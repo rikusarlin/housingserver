@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -31,6 +33,13 @@ public class HousingBenefitCaseTest
 	private static Validator validator;
 	private static DateTimeFormatter formatter;
 	Set<ConstraintViolation<HousingBenefitCaseEntity>> violations;
+
+	private List<String> getMessages(Set<ConstraintViolation<HousingBenefitCaseEntity>> violations){
+		return violations
+    		.stream()
+    		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
+    		.collect(Collectors.toList());
+	}
 
 	@BeforeAll
 	public static void setUp() {
@@ -154,12 +163,17 @@ public class HousingBenefitCaseTest
     	hbc.getIncomes().iterator().next().setEndDate(LocalDate.parse("01.08.2020", formatter));
     	violations = validator.validate(hbc,ApplicationChecks.class);
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("incomes[]: start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
     	violations = validator.validate(hbc, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
+        Assertions.assertTrue(getMessages(violations).contains("incomes[0].startEndDate: must overlap with application date range, and 01.09.2020-01.10.2020 and 01.11.2020-01.08.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("incomes[]: start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
     	violations = validator.validate(hbc, AllChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
+        Assertions.assertTrue(getMessages(violations).contains("incomes[0].startEndDate: must overlap with application date range, and 01.09.2020-01.10.2020 and 01.11.2020-01.08.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("incomes[]: start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
     }
 
     @Test
@@ -184,7 +198,12 @@ public class HousingBenefitCaseTest
     	violations = validator.validate(hbc,AllChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 5);
-    }
+        Assertions.assertTrue(getMessages(violations).contains("incomes[0].startEndDate: must overlap with application date range, and 01.09.2020-01.10.2020 and 01.11.2020-01.08.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("householdMembers[].person.personNumber: invalid person number '020202A002B'"));
+        Assertions.assertTrue(getMessages(violations).contains("incomes[]: start date must be less than end date if both are given, here start date is '2020-11-01' and end date '2020-08-01'"));
+        Assertions.assertTrue(getMessages(violations).contains("housingExpenses[]: start date must be less than end date if both are given, here start date is '2019-11-01' and end date '2019-08-01'"));
+        Assertions.assertTrue(getMessages(violations).contains("housingExpenses[1].startEndDate: must overlap with application date range, and 01.09.2020-01.10.2020 and 01.11.2019-01.08.2019 do not overlap"));
+     }
     
     @Test
     public void testChangeOfApplicationDateRange()
@@ -209,6 +228,14 @@ public class HousingBenefitCaseTest
     	violations = validator.validate(hbc, AllChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 8);
+        Assertions.assertTrue(getMessages(violations).contains("householdMembers[2].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("housingExpenses[0].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("householdMembers[3].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("householdMembers[1].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("incomes[0].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("incomes[1].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("householdMembers[0].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
+        Assertions.assertTrue(getMessages(violations).contains("housingExpenses[1].startEndDate: must overlap with application date range, and 01.01.2019-01.06.2019 and 01.09.2020-01.10.2020 do not overlap"));
     }
     
     @AfterEach

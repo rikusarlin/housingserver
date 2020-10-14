@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS person(
   id int(11) NOT NULL,
-  firstName varchar(40),
-  lastName varchar(40),
+  firstName varchar(80),
+  lastName varchar(80),
   personNumber varchar(11) NOT NULL,
   birthDate date,
+  gender varchar(5),
+  email varchar(80),
   PRIMARY KEY (id),
   UNIQUE(personNumber)
 );

@@ -2,7 +2,9 @@ package fi.rikusarlin.housingserver.validation;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.model.Gender;
 
 public class PersonTest 
 {
@@ -20,15 +23,29 @@ public class PersonTest
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	Set<ConstraintViolation<PersonEntity>> violations;
 
+	private PersonEntity goodPerson() {
+    	PersonEntity p = new PersonEntity();
+    	p.setId(1);
+    	p.setPersonNumber("010170-904N");
+    	p.setFirstName("Suvi-Tuulia");
+    	p.setLastName("Retsetenpe");
+    	p.setBirthDate(LocalDate.parse("01.01.1970", formatter));
+    	p.setGender(Gender.WOMAN); // Woman
+    	p.setEmail("suvi-tuuli.retsenape@gmail.com");
+    	return p;
+	}
+	
+	private List<String> getMessages(Set<ConstraintViolation<PersonEntity>> violations){
+		return violations
+    		.stream()
+    		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
+    		.collect(Collectors.toList());
+	}
+	
     @Test
     public void testValidPersonNumbers()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010170-904N");
-    	p1.setFirstName("Suvi-Tuulia");
-    	p1.setLastName("Retsetenpe");
-    	p1.setBirthDate(LocalDate.parse("01.01.1970", formatter));
+    	PersonEntity p1 = goodPerson();
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     	p1.setPersonNumber("010170+904N");
@@ -45,110 +62,123 @@ public class PersonTest
     @Test
     public void testInvalidControlChar()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
+    	PersonEntity p1 = goodPerson();
     	p1.setPersonNumber("010100A900G");
-    	p1.setFirstName("Annastiina");
-    	p1.setLastName("Tenepaer");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(getMessages(violations).contains("personNumber: invalid person number '010100A900G'"));
     }
     
     @Test
     public void testTooShortPersonNumber()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
+    	PersonEntity p1 = goodPerson();
     	p1.setPersonNumber("010100A900");
-    	p1.setFirstName("Annastiina");
-    	p1.setLastName("Tenepaer");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);
+        List<String> messages = getMessages(violations);
+        Assertions.assertTrue(messages.contains("personNumber: size must be between 11 and 11"));
+        Assertions.assertTrue(messages.contains("personNumber: invalid person number '010100A900'"));
     }
 
     @Test
     public void testMissingPersonNumber()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setFirstName("Annastiina");
-    	p1.setLastName("Tenepaer");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
+    	PersonEntity p1 = goodPerson();
+    	p1.setPersonNumber(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         // Is both invalid and missing (several validators)        
         Assertions.assertTrue(violations.size() == 2);
+        List<String> messages = getMessages(violations);
+        Assertions.assertTrue(messages.contains("personNumber: must not be null"));
+        Assertions.assertTrue(messages.contains("personNumber: invalid person number ''"));
     }
 
     @Test
     public void testMissingBirthDate()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010100A900F");
-    	p1.setFirstName("Annastiina");
-    	p1.setLastName("Tenepaer");
+    	PersonEntity p1 = goodPerson();
+    	p1.setBirthDate(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("birthDate: must not be null"));
     }
     
     @Test
     public void testMissingFirstName()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010100A900F");
-    	p1.setLastName("Tenepaer");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
+    	PersonEntity p1 = goodPerson();
+    	p1.setFirstName(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("firstName: must not be null"));
     }
 
     
     @Test
     public void testMissingLastName()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010100A900F");
-    	p1.setFirstName("Annastiina");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
+    	PersonEntity p1 = goodPerson();
+    	p1.setLastName(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("lastName: must not be null"));
     }
 
     @Test
     public void testTooLongFirstName()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010100A900F");
+    	PersonEntity p1 = goodPerson();
     	p1.setFirstName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
-    	p1.setLastName("Tenepaer");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("firstName: size must be between 0 and 80"));
     }
 
     @Test
     public void testTooLongLastName()
     {
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010100A900F");
-    	p1.setFirstName("Annastiina");
+    	PersonEntity p1 = goodPerson();
     	p1.setLastName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
-    	p1.setBirthDate(LocalDate.parse("01.01.2000", formatter));
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("lastName: size must be between 0 and 80"));
+    }
+
+    @Test
+    public void testNoGender()
+    {
+    	PersonEntity p1 = goodPerson();
+    	p1.setGender(null);
+    	violations = validator.validate(p1, InputChecks.class);
+        Assertions.assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testNoEmail()
+    {
+    	PersonEntity p1 = goodPerson();
+    	p1.setEmail(null);
+    	violations = validator.validate(p1, InputChecks.class);
+        Assertions.assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testInvalidEmail()
+    {
+    	PersonEntity p1 = goodPerson();
+    	p1.setEmail("username@yahoo..com");
+    	violations = validator.validate(p1, InputChecks.class);
+        Assertions.assertTrue(!violations.isEmpty());
+        Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("email: invalid emailAddress 'username@yahoo..com'"));
     }
 
     @AfterEach
