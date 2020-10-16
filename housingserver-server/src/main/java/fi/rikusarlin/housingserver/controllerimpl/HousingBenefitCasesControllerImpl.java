@@ -8,13 +8,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.CasesApi;
 import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 
-@RestController
 @Validated
 public class HousingBenefitCasesControllerImpl implements CasesApi{
 	

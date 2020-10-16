@@ -15,13 +15,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
-import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
+import fi.rikusarlin.housingserver.testdata.HouseholdMemberData;
 
 public class HouseholdMemberTest 
 {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	Set<ConstraintViolation<HouseholdMemberEntity>> violations;
+	
+	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
 
 	private List<String> getMessages(Set<ConstraintViolation<HouseholdMemberEntity>> violations){
 		return violations
@@ -33,63 +36,39 @@ public class HouseholdMemberTest
     @Test
     public void testValidHouseholdMember()
     {
-    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
-    	hm1.setId(1);
-    	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010170-901K");
-    	p1.setFirstName("Rauli");
-    	p1.setLastName("Wnape");
-    	p1.setBirthDate(LocalDate.parse("01.01.1970", formatter));
-    	hm1.setPerson(p1);
+    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
+    			HouseholdMemberData.getHouseholdMember1(),HouseholdMemberEntity.class);
     	violations = validator.validate(hm1, HouseholdChecks.class);
-        Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("010170+901K");
+    	Assertions.assertTrue(violations.isEmpty());
+    	hm1.getPerson().setPersonNumber("010170+901K");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("010170-902L");
+        hm1.getPerson().setPersonNumber("010170-902L");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
-    	p1.setPersonNumber("010100A900F");
+        hm1.getPerson().setPersonNumber("010100A900F");
     	violations = validator.validate(hm1);
         Assertions.assertTrue(violations.isEmpty());
     }
 
     @Test
-    public void testBadPerson()
+    public void testBadDateRange()
     {
-    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
-    	hm1.setId(1);
-    	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010170-901L");
-    	p1.setFirstName("Rauli");
-    	p1.setLastName("Wnape");
-    	p1.setBirthDate(LocalDate.parse("01.01.1970", formatter));
-    	hm1.setPerson(p1);
+    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
+    			HouseholdMemberData.getHouseholdMember2(),HouseholdMemberEntity.class);
+    	hm1.setEndDate(LocalDate.parse("01.01.2019", formatter));
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
-        Assertions.assertTrue(getMessages(violations).contains("person.personNumber: invalid person number '010170-901L'"));
+        Assertions.assertTrue(violations.size() == 1);
+        Assertions.assertTrue(getMessages(violations).contains("startEndDate: start date must be less than end date if both are given, here start date is '01.09.2020' and end date '01.01.2019'"));
     }
     
     @Test
     public void testTooShortPersonNumber()
     {
-    	HouseholdMemberEntity hm1 = new HouseholdMemberEntity();
-    	hm1.setId(1);
-    	hm1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	hm1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	PersonEntity p1 = new PersonEntity();
-    	p1.setId(1);
-    	p1.setPersonNumber("010170-901");
-    	p1.setFirstName("Rauli");
-    	p1.setLastName("Wnape");
-    	p1.setBirthDate(LocalDate.parse("01.01.1970", formatter));
-    	hm1.setPerson(p1);
+    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
+    			HouseholdMemberData.getHouseholdMember1(),HouseholdMemberEntity.class);
+    	hm1.getPerson().setPersonNumber("010170-901");
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 2);

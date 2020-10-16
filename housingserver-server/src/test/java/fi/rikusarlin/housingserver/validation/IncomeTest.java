@@ -16,7 +16,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.housingserver.data.IncomeEntity;
-import fi.rikusarlin.housingserver.model.IncomeType;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
+import fi.rikusarlin.housingserver.testdata.IncomeData;
 
 public class IncomeTest 
 {
@@ -42,100 +43,65 @@ public class IncomeTest
    	    setUpIsDone = true;
 	}
 	
-    /**
-     * Test that income with start and end dates in sensible order is ok
-     */
     @Test
     public void testIncomeWithGoodDateRange()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.SALARY);
-    	income1.setAmount(1520.25);
-    	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
 
-    /**
-     * Test that income with start and end dates in sensible order is ok
-     */
     @Test
     public void testIncomeWithGoodDateRangeNegativeAmount()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.SALARY);
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
     	income1.setAmount(-1520.25);
-    	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(getMessages(violations).contains("amount: Amount must be greater than zero"));
 
     }
 
-    /**
-     * Test that income with only start date is ok
-     */
     @Test
     public void testOpenEndedRange()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.SALARY);
-    	income1.setAmount(1520.25);
-    	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
     	income1.setEndDate(null);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
     
-    /**
-     * Test that income with only start date is ok
-     */
     @Test
-    public void testOpenStartRange()
+    public void testOpenStartDate()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.SALARY);
-    	income1.setAmount(1520.25);
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
     	income1.setStartDate(null);
-    	income1.setEndDate(LocalDate.parse("01.09.2020", formatter));
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
 
-    /**
-     * Test that income with start and end dates in wrong order is NOT ok
-     */
     @Test
     public void testIncomeWithBadDateRange()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.SALARY);
-    	income1.setAmount(1520.25);
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
     	income1.setStartDate(LocalDate.parse("01.10.2020", formatter));
     	income1.setEndDate(LocalDate.parse("01.09.2020", formatter));
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
-        Assertions.assertTrue(getMessages(violations).contains(": start date must be less than end date if both are given, here start date is '2020-10-01' and end date '2020-09-01'"));
+        Assertions.assertTrue(getMessages(violations).contains("startEndDate: start date must be less than end date if both are given, here start date is '01.10.2020' and end date '01.09.2020'"));
     }
     
     @Test
     public void testOtherIncomeWithDescription()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.OTHER);
-    	income1.setAmount(1520.25);
-    	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
-    	income1.setOtherIncomeDescription("Heitin lestiä Hagiksessa yhden perjantai-illan");
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome2(),IncomeEntity.class);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -143,12 +109,9 @@ public class IncomeTest
     @Test
     public void testOtherIncomeWithoutDescription()
     {
-    	IncomeEntity income1 = new IncomeEntity();
-    	income1.setId(1);
-    	income1.setIncomeType(IncomeType.OTHER);
-    	income1.setAmount(1520.25);
-    	income1.setStartDate(LocalDate.parse("01.09.2020", formatter));
-    	income1.setEndDate(LocalDate.parse("01.10.2020", formatter));
+    	IncomeEntity income1 = 
+    			MappingUtil.modelMapper.map(IncomeData.getIncome2(),IncomeEntity.class);
+    	income1.setOtherIncomeDescription(null);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);

@@ -1,6 +1,6 @@
 package fi.rikusarlin.housingserver.data;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -35,15 +35,15 @@ import lombok.Setter;
 public class HousingBenefitCaseEntity extends EntityClass{
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
-	Set<HouseholdMemberEntity> householdMembers = new HashSet<HouseholdMemberEntity>();
+	Set<HouseholdMemberEntity> householdMembers = new LinkedHashSet<HouseholdMemberEntity>();
 	
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
-	Set<IncomeEntity> incomes = new HashSet<IncomeEntity>();
+	Set<IncomeEntity> incomes = new LinkedHashSet<IncomeEntity>();
 	
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
-	Set<ExpenseEntity> housingExpenses = new HashSet<ExpenseEntity>();
+	Set<ExpenseEntity> housingExpenses = new LinkedHashSet<ExpenseEntity>();
 	
 	@Valid
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "housingBenefitCase")

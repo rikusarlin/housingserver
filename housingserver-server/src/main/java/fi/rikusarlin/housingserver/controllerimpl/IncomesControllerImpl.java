@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.IncomesApi;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
@@ -19,7 +18,6 @@ import fi.rikusarlin.housingserver.model.Income;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
 
-@RestController
 @Service
 @Validated
 public class IncomesControllerImpl implements IncomesApi {

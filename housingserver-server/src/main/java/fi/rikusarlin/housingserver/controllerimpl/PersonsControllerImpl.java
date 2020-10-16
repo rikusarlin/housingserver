@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.PersonsApi;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 
-@RestController
 @Service
 @Validated
 public class PersonsControllerImpl implements PersonsApi {

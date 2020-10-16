@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.PersonApi;
 import fi.rikusarlin.housingserver.data.PersonEntity;
@@ -26,7 +25,6 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
-@RestController
 @Service
 @Validated
 public class PersonControllerImpl implements PersonApi {
@@ -36,6 +34,12 @@ public class PersonControllerImpl implements PersonApi {
     
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
+	
+	public PersonControllerImpl(PersonRepository personRepo) {
+		super();
+		this.personRepo = personRepo;
+	}
+
 	@Override
 	public ResponseEntity<Person> fetchPersonById(Integer id) {
 		PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
@@ -44,7 +48,7 @@ public class PersonControllerImpl implements PersonApi {
  
 	@Override
 	public ResponseEntity<Person> addPerson(Person person) {
-		PersonEntity p = MappingUtil.modelMapper.map(person, PersonEntity.class);
+		PersonEntity p = MappingUtil.modelMapperInsert.map(person, PersonEntity.class);
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -53,7 +57,9 @@ public class PersonControllerImpl implements PersonApi {
 				thePerson -> {
 					throw new DuplicateNotAllowedException("personNumber "+thePerson.getPersonNumber());
 				});
-		return ResponseEntity.ok(MappingUtil.modelMapper.map(personRepo.save(p), Person.class));
+		PersonEntity personEntitySaved = personRepo.save(p);
+		Person personSaved = MappingUtil.modelMapper.map(personEntitySaved, Person.class);
+		return ResponseEntity.ok(personSaved);
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class PersonControllerImpl implements PersonApi {
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return fetchPersonById(id);
+		return ResponseEntity.ok(MappingUtil.modelMapper.map(p,  Person.class));
 	}
 
 	@Override

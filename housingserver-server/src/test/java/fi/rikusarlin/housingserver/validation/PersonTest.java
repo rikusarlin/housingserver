@@ -1,7 +1,5 @@
 package fi.rikusarlin.housingserver.validation;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,25 +13,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
-import fi.rikusarlin.housingserver.model.Gender;
+import fi.rikusarlin.housingserver.mapping.MappingUtil;
+import fi.rikusarlin.housingserver.testdata.PersonData;
 
 public class PersonTest 
 {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	Set<ConstraintViolation<PersonEntity>> violations;
-
-	private PersonEntity goodPerson() {
-    	PersonEntity p = new PersonEntity();
-    	p.setId(1);
-    	p.setPersonNumber("010170-904N");
-    	p.setFirstName("Suvi-Tuulia");
-    	p.setLastName("Retsetenpe");
-    	p.setBirthDate(LocalDate.parse("01.01.1970", formatter));
-    	p.setGender(Gender.WOMAN); // Woman
-    	p.setEmail("suvi-tuuli.retsenape@gmail.com");
-    	return p;
-	}
 	
 	private List<String> getMessages(Set<ConstraintViolation<PersonEntity>> violations){
 		return violations
@@ -45,7 +31,7 @@ public class PersonTest
     @Test
     public void testValidPersonNumbers()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     	p1.setPersonNumber("010170+904N");
@@ -62,7 +48,7 @@ public class PersonTest
     @Test
     public void testInvalidControlChar()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setPersonNumber("010100A900G");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -72,7 +58,7 @@ public class PersonTest
     @Test
     public void testTooShortPersonNumber()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setPersonNumber("010100A900");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -85,7 +71,7 @@ public class PersonTest
     @Test
     public void testMissingPersonNumber()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setPersonNumber(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -99,7 +85,7 @@ public class PersonTest
     @Test
     public void testMissingBirthDate()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setBirthDate(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -110,7 +96,7 @@ public class PersonTest
     @Test
     public void testMissingFirstName()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setFirstName(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -122,7 +108,7 @@ public class PersonTest
     @Test
     public void testMissingLastName()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setLastName(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -133,7 +119,7 @@ public class PersonTest
     @Test
     public void testTooLongFirstName()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setFirstName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -144,7 +130,7 @@ public class PersonTest
     @Test
     public void testTooLongLastName()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setLastName("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -155,7 +141,7 @@ public class PersonTest
     @Test
     public void testNoGender()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setGender(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(violations.isEmpty());
@@ -164,7 +150,7 @@ public class PersonTest
     @Test
     public void testNoEmail()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setEmail(null);
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(violations.isEmpty());
@@ -173,7 +159,7 @@ public class PersonTest
     @Test
     public void testInvalidEmail()
     {
-    	PersonEntity p1 = goodPerson();
+    	PersonEntity p1 = MappingUtil.modelMapper.map(PersonData.getPerson1(), PersonEntity.class);
     	p1.setEmail("username@yahoo..com");
     	violations = validator.validate(p1, InputChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
