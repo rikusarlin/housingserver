@@ -32,9 +32,7 @@ public class HousingBenefitCaseTest
 	private List<String> getMessages(Set<ConstraintViolation<HousingBenefitCaseEntity>> violations){
 		return violations
     		.stream()
-    		.sequential()
     		.map(v -> v.getPropertyPath() + ": "+ v.getMessage())
-    		.sorted()
     		.collect(Collectors.toList());
 	}
 

@@ -59,7 +59,7 @@ public class PersonEntity extends EntityClass {
 	LocalDate birthDate;
 
 	@Basic
-    @Column(name = "gender", nullable = true)	
+    @Column(name = "gender")	
 	Gender gender;
 
 	@Basic

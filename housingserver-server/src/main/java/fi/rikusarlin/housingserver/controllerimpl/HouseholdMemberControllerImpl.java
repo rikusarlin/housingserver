@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.HouseholdmemberApi;
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
@@ -29,6 +30,7 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@RestController
 @Service
 @Validated
 public class HouseholdMemberControllerImpl implements HouseholdmemberApi {

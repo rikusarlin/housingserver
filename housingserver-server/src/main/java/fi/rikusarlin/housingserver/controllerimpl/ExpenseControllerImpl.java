@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.ExpenseApi;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
@@ -25,6 +26,7 @@ import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@RestController
 @Service
 @Validated
 public class ExpenseControllerImpl implements ExpenseApi {

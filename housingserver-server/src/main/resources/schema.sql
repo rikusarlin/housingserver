@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS person(
   lastName varchar(80),
   personNumber varchar(11) NOT NULL,
   birthDate date,
-  gender varchar(5),
+  gender varchar(20),
   email varchar(80),
   PRIMARY KEY (id),
   UNIQUE(personNumber)

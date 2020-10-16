@@ -155,5 +155,56 @@ class PersonControllerTest {
         Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
         verify(mockPersonRepo).findById(person1.getId());
     }
+    
+    @Test
+    public void testUpdatePerson_ok(){
+    	Person person1 = PersonData.getPerson1();
+        PersonEntity person1Entity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
+        Person person1out = MappingUtil.modelMapper.map(person1Entity, Person.class);
+
+    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1Entity);
+    	
+        ResponseEntity<Person> result = personService.updatePerson(person1.getId(), person1);
+
+        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        verify(mockPersonRepo).save(any(PersonEntity.class));
+    }
+
+    @Test
+    public void testUpdatePerson_failsValidation(){
+    	Person person1 = PersonData.getPerson1();
+    	person1.setEmail("username@yahoo..com");
+    	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            personService.updatePerson(person1.getId(), person1);
+        });
+        Assertions.assertTrue(e.getMessage().equals("email: invalid emailAddress 'username@yahoo..com'"));
+    }
+
+    @Test
+    public void testDeletePerson_found(){
+    	Person person1 = PersonData.getPerson1();
+        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
+ 
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
+    	
+        personService.deletePerson(person1.getId());
+
+        verify(mockPersonRepo).findById(person1.getId());
+    }
+
+    @Test
+    public void testDeletePerson_notFound(){
+    	Person person1 = PersonData.getPerson1();
+
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
+    	
+    	Exception e = Assertions.assertThrows(NotFoundException.class, () -> {
+    		personService.deletePerson(person1.getId());
+        });
+
+        Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
+        verify(mockPersonRepo).findById(person1.getId());
+    }
+
 
 }
