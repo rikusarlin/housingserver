@@ -1,17 +1,17 @@
-package fi.rikusarlin.housingserver.testdata;
+package fi.rikusarlin.housingserver.bottomup.testdata;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import fi.rikusarlin.housingserver.model.Expense;
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.model.ExpenseType;
 
 public class ExpenseData {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	public static Expense getExpense1() {
-    	Expense e = new Expense();
+	public static ExpenseEntity getExpense1() {
+    	ExpenseEntity e = new ExpenseEntity();
     	e.setId(1);
     	e.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	e.setEndDate(LocalDate.parse("01.10.2020", formatter));
@@ -21,8 +21,8 @@ public class ExpenseData {
     	return e;
 	}
 	
-	public static Expense getExpense2() {
-    	Expense e = new Expense();
+	public static ExpenseEntity getExpense2() {
+    	ExpenseEntity e = new ExpenseEntity();
     	e.setId(2);
     	e.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	e.setEndDate(LocalDate.parse("01.10.2020", formatter));

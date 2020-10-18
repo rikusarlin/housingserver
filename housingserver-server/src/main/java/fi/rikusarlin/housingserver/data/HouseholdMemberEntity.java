@@ -9,15 +9,8 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
 @Table(name = "householdmember")
-@NoArgsConstructor
-@Getter
-@Setter
 public class HouseholdMemberEntity extends DateRangedEntity{
 	@JsonIgnore
 	@ManyToOne
@@ -28,4 +21,24 @@ public class HouseholdMemberEntity extends DateRangedEntity{
 	@OneToOne
     @JoinColumn(name="customer_id", nullable=false)
     private PersonEntity person;
+
+	public HouseholdMemberEntity() {
+		
+	}
+	
+	public HousingBenefitCaseEntity getHousingBenefitCase() {
+		return housingBenefitCase;
+	}
+
+	public void setHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase) {
+		this.housingBenefitCase = housingBenefitCase;
+	}
+
+	public PersonEntity getPerson() {
+		return person;
+	}
+
+	public void setPerson(PersonEntity person) {
+		this.person = person;
+	}
 }

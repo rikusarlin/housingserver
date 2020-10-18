@@ -1,26 +1,26 @@
-package fi.rikusarlin.housingserver.testdata;
+package fi.rikusarlin.housingserver.bottomup.testdata;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
+import fi.rikusarlin.housingserver.data.ExpenseEntity;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
+import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.model.CaseState;
-import fi.rikusarlin.housingserver.model.Expense;
-import fi.rikusarlin.housingserver.model.HouseholdMember;
-import fi.rikusarlin.housingserver.model.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.model.HousingBenefitCase;
-import fi.rikusarlin.housingserver.model.Income;
 
 public class HousingBenefitCaseData {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	public static HousingBenefitCase getCase1() {
-		HousingBenefitCase hbc = new HousingBenefitCase();
+	public static HousingBenefitCaseEntity getCase1() {
+		HousingBenefitCaseEntity hbc = new HousingBenefitCaseEntity();
     	hbc.setId(1);
     	
-    	HousingBenefitApplication hba = new HousingBenefitApplication();
+    	HousingBenefitApplicationEntity hba = new HousingBenefitApplicationEntity();
     	hba.setId(1);
     	hba.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
@@ -31,9 +31,9 @@ public class HousingBenefitCaseData {
     	hbc.setApplication(hba);
     	hbc.setCustomer(PersonData.getPerson1());
     	
-    	hbc.setHousingExpenses(new ArrayList<Expense>());
-    	hbc.setIncomes(new ArrayList<Income>());
-    	hbc.setHouseholdMembers(new ArrayList<HouseholdMember>());
+    	hbc.setHousingExpenses(new LinkedHashSet<ExpenseEntity>());
+    	hbc.setIncomes(new LinkedHashSet<IncomeEntity>());
+    	hbc.setHouseholdMembers(new LinkedHashSet<HouseholdMemberEntity>());
     	
     	hbc.getHousingExpenses().add(ExpenseData.getExpense1());
     	hbc.getHousingExpenses().add(ExpenseData.getExpense1());

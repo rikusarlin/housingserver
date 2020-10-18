@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controller;
+package fi.rikusarlin.housingserver.bottomup.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -17,16 +17,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
-import fi.rikusarlin.housingserver.controllerimpl.PersonControllerImpl;
+import fi.rikusarlin.housingserver.bottomup.testdata.PersonData;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
-import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
-import fi.rikusarlin.housingserver.testdata.PersonData;
 
 @ExtendWith(MockitoExtension.class)
 class PersonControllerTest {
@@ -35,7 +31,7 @@ class PersonControllerTest {
     PersonRepository mockPersonRepo;
 
     @InjectMocks
-    PersonControllerImpl personService;
+    PersonController personService;
     
     @AfterEach
     public void tearDown() {
@@ -44,26 +40,21 @@ class PersonControllerTest {
 
     @Test
     public void testAddNewPerson(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
-        Person person1out = MappingUtil.modelMapper.map(person1outEntity, Person.class);
-
-    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1outEntity);
+    	PersonEntity person1 = PersonData.getPerson1();
+    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1);
     	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.empty());
     	
-        ResponseEntity<Person> result = personService.addPerson(person1);
+        PersonEntity result = personService.addPerson(person1);
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.equals(person1));
         verify(mockPersonRepo).findByPersonNumber(person1.getPersonNumber());
         verify(mockPersonRepo).save(any(PersonEntity.class));
     }
     
     @Test
     public void testTryAddingAlreadyExistingPerson(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
-
-    	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.of(person1outEntity));
+    	PersonEntity person1 = PersonData.getPerson1();
+    	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.of(person1));
     	
     	Exception e = Assertions.assertThrows(DuplicateNotAllowedException.class, () -> {
             personService.addPerson(person1);
@@ -74,8 +65,8 @@ class PersonControllerTest {
     
     @Test
     public void testTryAddingPersonWithBadPersonNumber(){
-    	Person person2 = PersonData.getPerson2();
-    	person2.setPersonNumber("010170-901L");
+    	PersonEntity person2 = PersonData.getPerson2();
+    	person2.setPersonNumber("010170-901O");
 
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
             personService.addPerson(person2);
@@ -88,21 +79,19 @@ class PersonControllerTest {
     
     @Test
     public void testFetchPersonById_found(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
-        Person person1out = MappingUtil.modelMapper.map(person1outEntity, Person.class);
+    	PersonEntity person1 = PersonData.getPerson1();
 
-    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
     	
-        ResponseEntity<Person> result = personService.fetchPersonById(person1.getId());
+        PersonEntity result = personService.fetchPersonById(person1.getId());
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.equals(person1));
         verify(mockPersonRepo).findById(person1.getId());
     }
 
     @Test
     public void testFetchPersonById_notFound(){
-    	Person person1 = PersonData.getPerson1();
+    	PersonEntity person1 = PersonData.getPerson1();
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	Exception e = Assertions.assertThrows(NotFoundException.class, () -> {
@@ -115,11 +104,10 @@ class PersonControllerTest {
 
     @Test
     public void testCheckPerson_foundButFailsValidation(){
-    	Person person1 = PersonData.getPerson1();
+    	PersonEntity person1 = PersonData.getPerson1();
     	person1.setEmail("username@yahoo..com");
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
     	
-    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
 
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
             personService.checkPersonById(person1.getId());
@@ -130,21 +118,19 @@ class PersonControllerTest {
     
     @Test
     public void testCheckById_foundAndIsValid(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
-        Person person1out = MappingUtil.modelMapper.map(person1outEntity, Person.class);
+    	PersonEntity person1 = PersonData.getPerson1();
 
-    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
     	
-        ResponseEntity<Person> result = personService.checkPersonById(person1.getId());
+        PersonEntity result = personService.checkPersonById(person1.getId());
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.equals(person1));
         verify(mockPersonRepo).findById(person1.getId());
     }
 
     @Test
     public void testCheckById_notFound(){
-    	Person person1 = PersonData.getPerson1();
+    	PersonEntity person1 = PersonData.getPerson1();
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	
@@ -158,21 +144,20 @@ class PersonControllerTest {
     
     @Test
     public void testUpdatePerson_ok(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1Entity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
-        Person person1out = MappingUtil.modelMapper.map(person1Entity, Person.class);
+    	PersonEntity person1 = PersonData.getPerson1();
 
-    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1Entity);
-    	
-        ResponseEntity<Person> result = personService.updatePerson(person1.getId(), person1);
+    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1);
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        PersonEntity result = personService.updatePerson(person1.getId(), person1);
+
+        Assertions.assertTrue(result.equals(person1));
         verify(mockPersonRepo).save(any(PersonEntity.class));
     }
 
     @Test
     public void testUpdatePerson_failsValidation(){
-    	Person person1 = PersonData.getPerson1();
+    	PersonEntity person1 = PersonData.getPerson1();
     	person1.setEmail("username@yahoo..com");
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
             personService.updatePerson(person1.getId(), person1);
@@ -182,10 +167,8 @@ class PersonControllerTest {
 
     @Test
     public void testDeletePerson_found(){
-    	Person person1 = PersonData.getPerson1();
-        PersonEntity person1outEntity = MappingUtil.modelMapper.map(person1, PersonEntity.class);
- 
-    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
+    	PersonEntity person1 = PersonData.getPerson1();
+    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
     	
         personService.deletePerson(person1.getId());
 
@@ -194,7 +177,7 @@ class PersonControllerTest {
 
     @Test
     public void testDeletePerson_notFound(){
-    	Person person1 = PersonData.getPerson1();
+    	PersonEntity person1 = PersonData.getPerson1();
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	

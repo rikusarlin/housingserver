@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controller;
+package fi.rikusarlin.housingserver.bottomup.controller;
 
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +28,6 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
@@ -77,9 +76,9 @@ public class HousingBenefitCaseController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/api/v1/housing")
 	public HousingBenefitCaseEntity addHousingBenefitCase(
-			@RequestBody @Validated(InputChecks.class) HousingBenefitCaseEntity hbcInput) {
+			@RequestBody @Validated(InputChecks.class) HousingBenefitCaseEntity hbc) {
 		// This deletes the potential ids
-		HousingBenefitCaseEntity hbc = MappingUtil.modelMapperInsert.map(hbcInput, HousingBenefitCaseEntity.class);
+		//HousingBenefitCaseEntity hbc = MappingUtil.modelMapperInsert.map(hbcInput, HousingBenefitCaseEntity.class);
 		PersonEntity customer = personRepo.findById(hbc.getCustomer().getId()).orElseThrow(() -> new NotFoundException("Customer", hbc.getCustomer().getId()));
 		hbc.setCustomer(customer);
 		for(HouseholdMemberEntity hm:hbc.getHouseholdMembers()) {

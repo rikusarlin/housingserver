@@ -6,6 +6,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,15 +22,10 @@ import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidEmailAddress;
 import fi.rikusarlin.housingserver.validation.ValidPersonNumber;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Valid
 @Entity
 @Table(name = "person")
-@NoArgsConstructor
-@Getter
-@Setter
 public class PersonEntity extends EntityClass {
 	@Basic
     @Column(name = "personNumber", nullable = false)	
@@ -67,4 +63,55 @@ public class PersonEntity extends EntityClass {
 	@Size(max = 80,groups=InputChecks.class, payload={Severity.Error.class})
 	@ValidEmailAddress(groups=InputChecks.class, payload={Severity.Error.class})
 	String email;
+	
+	public PersonEntity() {
+	}
+
+	public String getPersonNumber() {
+		return personNumber;
+	}
+
+	public void setPersonNumber(String personNumber) {
+		this.personNumber = personNumber;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

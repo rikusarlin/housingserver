@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controller;
+package fi.rikusarlin.housingserver.bottomup.controller;
 
 import java.time.Period;
 import java.util.Optional;

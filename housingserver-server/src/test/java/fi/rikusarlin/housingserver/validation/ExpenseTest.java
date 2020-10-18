@@ -15,9 +15,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import fi.rikusarlin.housingserver.bottomup.testdata.ExpenseData;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
-import fi.rikusarlin.housingserver.testdata.ExpenseData;
 
 public class ExpenseTest 
 {
@@ -46,8 +45,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithGoodDateRange()
     {
-    	ExpenseEntity expense1 = 
-    			MappingUtil.modelMapper.map(ExpenseData.getExpense1(),ExpenseEntity.class);
+    	ExpenseEntity expense1 = ExpenseData.getExpense1();
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -55,8 +53,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithBadDateRange()
     {
-    	ExpenseEntity expense1 = 
-    			MappingUtil.modelMapper.map(ExpenseData.getExpense1(),ExpenseEntity.class);
+    	ExpenseEntity expense1 = ExpenseData.getExpense1();
     	expense1.setStartDate(LocalDate.parse("01.11.2020", formatter));
     	expense1.setEndDate(LocalDate.parse("01.08.2020", formatter));
     	violations = validator.validate(expense1, ExpenseChecks.class);
@@ -68,8 +65,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithBadDateRangeAndNegativeAmount()
     {
-    	ExpenseEntity expense1 = 
-    			MappingUtil.modelMapper.map(ExpenseData.getExpense1(),ExpenseEntity.class);
+    	ExpenseEntity expense1 = ExpenseData.getExpense1();
     	expense1.setAmount(-1520.25);
     	expense1.setStartDate(LocalDate.parse("01.11.2020", formatter));
     	expense1.setEndDate(LocalDate.parse("01.08.2020", formatter));
@@ -83,8 +79,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithOtherDescription()
     {
-    	ExpenseEntity expense1 = 
-    			MappingUtil.modelMapper.map(ExpenseData.getExpense2(),ExpenseEntity.class);
+    	ExpenseEntity expense1 = ExpenseData.getExpense2();
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -92,8 +87,7 @@ public class ExpenseTest
     @Test
     public void testExpenseWithoutOtherDescription()
     {
-    	ExpenseEntity expense1 = 
-    			MappingUtil.modelMapper.map(ExpenseData.getExpense2(),ExpenseEntity.class);
+    	ExpenseEntity expense1 = ExpenseData.getExpense2();
     	expense1.setOtherExpenseDescription(null);
     	violations = validator.validate(expense1, ExpenseChecks.class);
         Assertions.assertTrue(!violations.isEmpty());

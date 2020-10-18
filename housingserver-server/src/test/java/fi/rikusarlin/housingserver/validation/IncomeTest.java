@@ -15,9 +15,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import fi.rikusarlin.housingserver.bottomup.testdata.IncomeData;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
-import fi.rikusarlin.housingserver.testdata.IncomeData;
 
 public class IncomeTest 
 {
@@ -46,8 +45,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithGoodDateRange()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome1();
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -55,8 +53,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithGoodDateRangeNegativeAmount()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome1();
     	income1.setAmount(-1520.25);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -67,8 +64,7 @@ public class IncomeTest
     @Test
     public void testOpenEndedRange()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome1();
     	income1.setEndDate(null);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
@@ -77,8 +73,7 @@ public class IncomeTest
     @Test
     public void testOpenStartDate()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome1();
     	income1.setStartDate(null);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
@@ -87,8 +82,7 @@ public class IncomeTest
     @Test
     public void testIncomeWithBadDateRange()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome1(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome1();
     	income1.setStartDate(LocalDate.parse("01.10.2020", formatter));
     	income1.setEndDate(LocalDate.parse("01.09.2020", formatter));
     	violations = validator.validate(income1, IncomeChecks.class);
@@ -100,8 +94,7 @@ public class IncomeTest
     @Test
     public void testOtherIncomeWithDescription()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome2(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome2();
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(violations.isEmpty());
     }
@@ -109,8 +102,7 @@ public class IncomeTest
     @Test
     public void testOtherIncomeWithoutDescription()
     {
-    	IncomeEntity income1 = 
-    			MappingUtil.modelMapper.map(IncomeData.getIncome2(),IncomeEntity.class);
+    	IncomeEntity income1 = IncomeData.getIncome2();
     	income1.setOtherIncomeDescription(null);
     	violations = validator.validate(income1, IncomeChecks.class);
         Assertions.assertTrue(!violations.isEmpty());

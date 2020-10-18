@@ -16,11 +16,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import fi.rikusarlin.housingserver.bottomup.testdata.HousingBenefitCaseData;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
-import fi.rikusarlin.housingserver.testdata.HousingBenefitCaseData;
 
 public class HousingBenefitCaseTest 
 {
@@ -47,8 +46,7 @@ public class HousingBenefitCaseTest
 	}
 	
 	private HousingBenefitCaseEntity goodHousingBenefitCase() {
-    	return MappingUtil.modelMapper.map(
-    			HousingBenefitCaseData.getCase1(), HousingBenefitCaseEntity.class);
+    	return HousingBenefitCaseData.getCase1();
 	}
 	
     @Test

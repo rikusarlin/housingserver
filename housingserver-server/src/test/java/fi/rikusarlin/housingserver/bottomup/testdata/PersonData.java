@@ -1,17 +1,17 @@
-package fi.rikusarlin.housingserver.testdata;
+package fi.rikusarlin.housingserver.bottomup.testdata;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.model.Gender;
-import fi.rikusarlin.housingserver.model.Person;
 
 public class PersonData {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	public static Person getPerson1() {
-		Person person1 = new Person();
+	public static PersonEntity getPerson1() {
+		PersonEntity person1 = new PersonEntity();
     	person1.setId(1);
     	person1.setPersonNumber("010170-901K");
     	person1.setFirstName("Rauli");
@@ -22,8 +22,8 @@ public class PersonData {
     	return person1;
 	}
 	
-	public static Person getPerson2() {
-		Person person2 = new Person();
+	public static PersonEntity getPerson2() {
+		PersonEntity person2 = new PersonEntity();
     	person2.setId(2);
     	person2.setPersonNumber("010170-902L");
     	person2.setFirstName("Marke");
@@ -34,8 +34,8 @@ public class PersonData {
     	return person2;
 	}
 
-	public static Person getPerson3() {
-		Person person3 = new Person();
+	public static PersonEntity getPerson3() {
+		PersonEntity person3 = new PersonEntity();
     	person3.setId(3);
     	person3.setPersonNumber("010170-903M");
     	person3.setFirstName("Walter");
@@ -46,8 +46,8 @@ public class PersonData {
     	return person3;
 	}
 	
-	public static Person getPerson4() {
-		Person person4 = new Person();
+	public static PersonEntity getPerson4() {
+		PersonEntity person4 = new PersonEntity();
     	person4.setId(4);
     	person4.setPersonNumber("010170-904N");
     	person4.setFirstName("Suvi-Tuulia");

@@ -1,17 +1,17 @@
-package fi.rikusarlin.housingserver.testdata;
+package fi.rikusarlin.housingserver.bottomup.testdata;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import fi.rikusarlin.housingserver.model.Income;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.model.IncomeType;
 
 public class IncomeData {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	public static Income getIncome1() {
-    	Income i = new Income();
+	public static IncomeEntity getIncome1() {
+    	IncomeEntity i = new IncomeEntity();
     	i.setId(1);
     	i.setStartDate(LocalDate.parse("01.08.2020", formatter));
     	i.setEndDate(LocalDate.parse("15.10.2020", formatter));
@@ -21,8 +21,8 @@ public class IncomeData {
     	return i;
 	}
 	
-	public static Income getIncome2() {
-    	Income i = new Income();
+	public static IncomeEntity getIncome2() {
+    	IncomeEntity i = new IncomeEntity();
     	i.setId(2);
     	i.setStartDate(LocalDate.parse("01.08.2020", formatter));
     	i.setEndDate(LocalDate.parse("15.10.2020", formatter));

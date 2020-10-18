@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controller;
+package fi.rikusarlin.housingserver.bottomup.controller;
 
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
@@ -42,7 +43,7 @@ public class PersonController {
     }
      
 	@GetMapping(value = "/api/v1/person/{id}")
-	public PersonEntity findPersonById(
+	public PersonEntity fetchPersonById(
 			@PathVariable int id) {
 		return personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
 	}
@@ -51,7 +52,15 @@ public class PersonController {
 	@PostMapping("/api/v1/person")
 	public PersonEntity addPerson(
 			@RequestBody @Validated(InputChecks.class) PersonEntity person) {
-    	return personRepo.save(person);
+		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(person, InputChecks.class);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		personRepo.findByPersonNumber(person.getPersonNumber()).ifPresent(
+				thePerson -> {
+					throw new DuplicateNotAllowedException("personNumber "+thePerson.getPersonNumber());
+				});
+		return personRepo.save(person);
 	}
 
 	@GetMapping(value = "/api/v1/person/{id}/check")
@@ -88,12 +97,12 @@ public class PersonController {
 				 	-> {
 				 		personRepo.save(person);
 				 	});
-		return findPersonById(id);
+		return fetchPersonById(id);
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/api/v1/person/{id}")
-	public void deleteIncome(
+	public void deletePerson(
 			@PathVariable int id) {
 		PersonEntity person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
  		personRepo.delete(person);

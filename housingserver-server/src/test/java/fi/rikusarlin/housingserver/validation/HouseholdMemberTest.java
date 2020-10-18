@@ -14,9 +14,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import fi.rikusarlin.housingserver.bottomup.testdata.HouseholdMemberData;
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
-import fi.rikusarlin.housingserver.mapping.MappingUtil;
-import fi.rikusarlin.housingserver.testdata.HouseholdMemberData;
 
 public class HouseholdMemberTest 
 {
@@ -36,8 +35,7 @@ public class HouseholdMemberTest
     @Test
     public void testValidHouseholdMember()
     {
-    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
-    			HouseholdMemberData.getHouseholdMember1(),HouseholdMemberEntity.class);
+    	HouseholdMemberEntity hm1 = HouseholdMemberData.getHouseholdMember1();
     	violations = validator.validate(hm1, HouseholdChecks.class);
     	Assertions.assertTrue(violations.isEmpty());
     	hm1.getPerson().setPersonNumber("010170+901K");
@@ -54,8 +52,7 @@ public class HouseholdMemberTest
     @Test
     public void testBadDateRange()
     {
-    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
-    			HouseholdMemberData.getHouseholdMember2(),HouseholdMemberEntity.class);
+    	HouseholdMemberEntity hm1 = HouseholdMemberData.getHouseholdMember2();
     	hm1.setEndDate(LocalDate.parse("01.01.2019", formatter));
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
@@ -66,8 +63,7 @@ public class HouseholdMemberTest
     @Test
     public void testTooShortPersonNumber()
     {
-    	HouseholdMemberEntity hm1 = MappingUtil.modelMapper.map(
-    			HouseholdMemberData.getHouseholdMember1(),HouseholdMemberEntity.class);
+    	HouseholdMemberEntity hm1 = HouseholdMemberData.getHouseholdMember1();
     	hm1.getPerson().setPersonNumber("010170-901");
     	violations = validator.validate(hm1, HouseholdChecks.class);
         Assertions.assertTrue(!violations.isEmpty());
