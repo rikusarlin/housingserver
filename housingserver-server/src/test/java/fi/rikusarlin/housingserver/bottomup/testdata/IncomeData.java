@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import fi.rikusarlin.housingserver.data.IncomeEntity;
-import fi.rikusarlin.housingserver.model.IncomeType;
+import fi.rikusarlin.housingserver.data.IncomeType;
 
 public class IncomeData {
 	

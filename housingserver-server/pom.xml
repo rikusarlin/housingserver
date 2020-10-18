@@ -34,11 +34,6 @@
             </exclusions>
         </dependency>
         <dependency>
-			<groupId>fi.rikusarlin</groupId>
-			<artifactId>housingserver-specification</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-        <dependency>
   			<groupId>org.modelmapper</groupId>
   			<artifactId>modelmapper</artifactId>
   			<version>2.3.0</version>

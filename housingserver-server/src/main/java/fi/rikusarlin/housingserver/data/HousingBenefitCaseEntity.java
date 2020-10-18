@@ -12,7 +12,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
-import fi.rikusarlin.housingserver.model.CaseState;
 import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;

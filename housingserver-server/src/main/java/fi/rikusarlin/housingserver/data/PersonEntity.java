@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
-import fi.rikusarlin.housingserver.model.Gender;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidEmailAddress;

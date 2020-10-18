@@ -10,7 +10,7 @@ import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
-import fi.rikusarlin.housingserver.model.CaseState;
+import fi.rikusarlin.housingserver.data.CaseState;
 
 public class HousingBenefitCaseData {
 	
@@ -26,22 +26,32 @@ public class HousingBenefitCaseData {
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	hba.setApplicant(PersonData.getPerson1());;
     	hba.setReceived(OffsetDateTime.parse("2020-10-12T07:29:44.907Z"));
+    	hba.setHousingBenefitCase(hbc);
+    	hbc.setApplication(hba);
     	
     	hbc.setCaseState(CaseState.ACTIVE);
-    	hbc.setApplication(hba);
     	hbc.setCustomer(PersonData.getPerson1());
     	
     	hbc.setHousingExpenses(new LinkedHashSet<ExpenseEntity>());
     	hbc.setIncomes(new LinkedHashSet<IncomeEntity>());
     	hbc.setHouseholdMembers(new LinkedHashSet<HouseholdMemberEntity>());
     	
+    	
+    	ExpenseData.getExpense1().setHousingBenefitCase(hbc);
     	hbc.getHousingExpenses().add(ExpenseData.getExpense1());
-    	hbc.getHousingExpenses().add(ExpenseData.getExpense1());
+    	ExpenseData.getExpense2().setHousingBenefitCase(hbc);
+    	hbc.getHousingExpenses().add(ExpenseData.getExpense2());
+    	IncomeData.getIncome1().setHousingBenefitCase(hbc);
     	hbc.getIncomes().add(IncomeData.getIncome1());
+    	IncomeData.getIncome2().setHousingBenefitCase(hbc);
     	hbc.getIncomes().add(IncomeData.getIncome2());
+    	HouseholdMemberData.getHouseholdMember1().setHousingBenefitCase(hbc);
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember1());
+    	HouseholdMemberData.getHouseholdMember2().setHousingBenefitCase(hbc);
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember2());
+    	HouseholdMemberData.getHouseholdMember3().setHousingBenefitCase(hbc);
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember3());
+    	HouseholdMemberData.getHouseholdMember4().setHousingBenefitCase(hbc);
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember4());
 
     	return hbc;

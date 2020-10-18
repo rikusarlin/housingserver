@@ -54,14 +54,6 @@ public class ValidatorUtils {
     }
 
     public static void addViolation(
-    		String propertyName,
-    		String messageTemplate,
-    		HibernateConstraintValidatorContext ctx,
-    		String... variableValues) {
-    	addViolation(null,0, propertyName, messageTemplate, ctx, variableValues);
-    }
-
-    public static void addViolation(
     		String collectionName, 
     		int collectionIndex, 
     		String propertyName,

@@ -10,7 +10,6 @@ import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import fi.rikusarlin.housingserver.model.IncomeType;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.NotNullIfAnotherFieldHasValue;

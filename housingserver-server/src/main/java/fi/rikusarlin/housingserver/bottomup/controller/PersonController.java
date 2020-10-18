@@ -1,6 +1,5 @@
 package fi.rikusarlin.housingserver.bottomup.controller;
 
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -38,13 +37,13 @@ public class PersonController {
     PersonRepository personRepo;
 
     @GetMapping("/api/v1/persons")
-    public @ResponseBody Iterable<PersonEntity> findPersons() {
+    public @ResponseBody Iterable<PersonEntity> fetchPersons() {
         return  personRepo.findAll();
     }
      
 	@GetMapping(value = "/api/v1/person/{id}")
 	public PersonEntity fetchPersonById(
-			@PathVariable int id) {
+			@PathVariable Integer id) {
 		return personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
 	}
  
@@ -65,7 +64,7 @@ public class PersonController {
 
 	@GetMapping(value = "/api/v1/person/{id}/check")
 	public PersonEntity checkPersonById(
-			@PathVariable int id) {
+			@PathVariable Integer id) {
     	PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(p, AllChecks.class);
 		if (!violations.isEmpty()) {
@@ -77,33 +76,19 @@ public class PersonController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PutMapping("/api/v1/person/{id}")
 	public PersonEntity updatePerson(
-			@PathVariable int id,
+			@PathVariable Integer id,
 			@RequestBody @Validated(InputChecks.class) PersonEntity person) {
 		Set<ConstraintViolation<PersonEntity>> violations =  validator.validate(person, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		Optional<PersonEntity> previousPerson = personRepo.findById(id);
-		previousPerson.ifPresentOrElse(
-				(value) 
-					-> {
-						value.setBirthDate(person.getBirthDate());
-						value.setFirstName(person.getFirstName());
-						value.setLastName(person.getLastName());
-						value.setPersonNumber(person.getPersonNumber());
-						personRepo.save(value);
-					},
-				()
-				 	-> {
-				 		personRepo.save(person);
-				 	});
-		return fetchPersonById(id);
+		return personRepo.save(person);
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/api/v1/person/{id}")
 	public void deletePerson(
-			@PathVariable int id) {
+			@PathVariable Integer id) {
 		PersonEntity person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
  		personRepo.delete(person);
 	}

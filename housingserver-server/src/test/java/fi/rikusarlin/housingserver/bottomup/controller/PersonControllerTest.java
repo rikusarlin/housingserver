@@ -6,6 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
@@ -41,14 +43,14 @@ class PersonControllerTest {
     @Test
     public void testAddNewPerson(){
     	PersonEntity person1 = PersonData.getPerson1();
-    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1);
+    	when(mockPersonRepo.save(person1)).thenReturn(person1);
     	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.empty());
     	
         PersonEntity result = personService.addPerson(person1);
 
         Assertions.assertTrue(result.equals(person1));
         verify(mockPersonRepo).findByPersonNumber(person1.getPersonNumber());
-        verify(mockPersonRepo).save(any(PersonEntity.class));
+        verify(mockPersonRepo).save(person1);
     }
     
     @Test
@@ -76,6 +78,20 @@ class PersonControllerTest {
         verify(mockPersonRepo, times(0)).save(any(PersonEntity.class));
 
     }
+    
+    @Test
+    public void testFetchAllPersons(){
+    	List<PersonEntity> personList = new ArrayList<PersonEntity>();
+    	personList.add(PersonData.getPerson1());
+    	personList.add(PersonData.getPerson4());
+    	when(mockPersonRepo.findAll()).thenReturn(personList);
+    	
+    	Iterable<PersonEntity> resultList = personService.fetchPersons();
+
+        Assertions.assertTrue(resultList.equals(personList));
+        verify(mockPersonRepo).findAll();
+    }
+
     
     @Test
     public void testFetchPersonById_found(){
@@ -146,13 +162,12 @@ class PersonControllerTest {
     public void testUpdatePerson_ok(){
     	PersonEntity person1 = PersonData.getPerson1();
 
-    	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1);
-    	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
+    	when(mockPersonRepo.save(person1)).thenReturn(person1);
 
         PersonEntity result = personService.updatePerson(person1.getId(), person1);
 
         Assertions.assertTrue(result.equals(person1));
-        verify(mockPersonRepo).save(any(PersonEntity.class));
+        verify(mockPersonRepo).save(person1);
     }
 
     @Test
@@ -173,6 +188,7 @@ class PersonControllerTest {
         personService.deletePerson(person1.getId());
 
         verify(mockPersonRepo).findById(person1.getId());
+        verify(mockPersonRepo).delete(person1);
     }
 
     @Test

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
-import fi.rikusarlin.housingserver.model.Gender;
+import fi.rikusarlin.housingserver.data.Gender;
 
 public class PersonData {
 	
