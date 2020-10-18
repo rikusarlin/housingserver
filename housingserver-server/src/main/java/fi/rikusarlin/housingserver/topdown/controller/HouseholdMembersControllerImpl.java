@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controllerimpl;
+package fi.rikusarlin.housingserver.topdown.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,33 +11,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.api.IncomesApi;
+import fi.rikusarlin.housingserver.api.HouseholdmembersApi;
+import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
-import fi.rikusarlin.housingserver.model.Income;
+import fi.rikusarlin.housingserver.model.HouseholdMember;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
-import fi.rikusarlin.housingserver.repository.IncomeRepository;
+import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
 
 @RestController
 @Service
 @Validated
-public class IncomesControllerImpl implements IncomesApi {
+public class HouseholdMembersControllerImpl implements HouseholdmembersApi {
 	
-    ModelMapper modelMapper = new ModelMapper();
+	ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     CaseRepository caseRepo;
     @Autowired
-    IncomeRepository incomeRepo;
-
+    HouseholdMemberRepository householdMemberRepo;
+    
     @Override
-    public ResponseEntity<List<Income>> fetchIncomes(Integer caseId) {
+    public ResponseEntity<List<HouseholdMember>> fetchHouseholdMembers(Integer caseId) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	Iterable<IncomeEntity> incomes = incomeRepo.findByHousingBenefitCase(hbce);
+    	Iterable<HouseholdMemberEntity> householdMembers = householdMemberRepo.findByHousingBenefitCase(hbce);
     	return ResponseEntity.ok(
-    			StreamSupport.stream(incomes.spliterator(), false)
-    			.map(ie -> modelMapper.map(ie, Income.class))
+    			StreamSupport.stream(householdMembers.spliterator(), false)
+    			.map(hm -> modelMapper.map(hm, HouseholdMember.class))
     			.collect(Collectors.toList()));
     }
-}
+ }

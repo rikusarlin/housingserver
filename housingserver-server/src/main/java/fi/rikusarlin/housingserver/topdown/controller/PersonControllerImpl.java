@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.controllerimpl;
+package fi.rikusarlin.housingserver.topdown.controller;
 
 import java.util.Set;
 

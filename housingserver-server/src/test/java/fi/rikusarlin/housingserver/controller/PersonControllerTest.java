@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import fi.rikusarlin.housingserver.controllerimpl.PersonControllerImpl;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
@@ -27,6 +26,7 @@ import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.testdata.PersonData;
+import fi.rikusarlin.housingserver.topdown.controller.PersonControllerImpl;
 
 @ExtendWith(MockitoExtension.class)
 class PersonControllerTest {
