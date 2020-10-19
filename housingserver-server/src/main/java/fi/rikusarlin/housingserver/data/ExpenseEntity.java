@@ -15,9 +15,6 @@ import fi.rikusarlin.housingserver.validation.ExpenseChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 import fi.rikusarlin.housingserver.validation.NotNullIfAnotherFieldHasValue;
 import fi.rikusarlin.housingserver.validation.Severity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NotNullIfAnotherFieldHasValue(
 	    fieldName = "expenseType",
@@ -27,9 +24,6 @@ import lombok.Setter;
 	    payload={Severity.Error.class})
 @Entity
 @Table(name = "expense")
-@NoArgsConstructor
-@Getter
-@Setter
 public class ExpenseEntity extends DateRangedEntity{
 	@JsonIgnore
     @ManyToOne
@@ -48,4 +42,40 @@ public class ExpenseEntity extends DateRangedEntity{
     @Column(name = "amount", nullable=false)	
 	@Min(value = 0, message = "Amount must be greater than zero", groups=InputChecks.class, payload={Severity.Error.class})
     Double amount;
+	
+	public ExpenseEntity() {
+	}
+
+	public HousingBenefitCaseEntity getHousingBenefitCase() {
+		return housingBenefitCase;
+	}
+
+	public void setHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase) {
+		this.housingBenefitCase = housingBenefitCase;
+	}
+
+	public ExpenseType getExpenseType() {
+		return expenseType;
+	}
+
+	public void setExpenseType(ExpenseType expenseType) {
+		this.expenseType = expenseType;
+	}
+
+	public String getOtherExpenseDescription() {
+		return otherExpenseDescription;
+	}
+
+	public void setOtherExpenseDescription(String otherExpenseDescription) {
+		this.otherExpenseDescription = otherExpenseDescription;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+	
 }

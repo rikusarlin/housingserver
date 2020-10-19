@@ -8,16 +8,19 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.validation.annotation.Validated;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @MappedSuperclass
 @Validated
-@Getter
-@Setter
 public abstract class EntityClass {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
-	Integer id;	
+	Integer id;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}	
 }

@@ -18,9 +18,6 @@ import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.IncomeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.SubCollectionOverlappingDateRange;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @SubCollectionOverlappingDateRange.List({
 	  @SubCollectionOverlappingDateRange(fieldName = "application", collectionName = "householdMembers", groups= {HouseholdChecks.class}, payload={Severity.Info.class}),
@@ -29,9 +26,6 @@ import lombok.Setter;
 })
 @Entity
 @Table(name = "cases")
-@NoArgsConstructor
-@Getter
-@Setter
 public class HousingBenefitCaseEntity extends EntityClass{
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="housingBenefitCase")
@@ -57,4 +51,57 @@ public class HousingBenefitCaseEntity extends EntityClass{
 	@Basic
 	@Valid
     private CaseState caseState;
+	
+	public HousingBenefitCaseEntity() {
+	}
+
+	public Set<HouseholdMemberEntity> getHouseholdMembers() {
+		return householdMembers;
+	}
+
+	public void setHouseholdMembers(Set<HouseholdMemberEntity> householdMembers) {
+		this.householdMembers = householdMembers;
+	}
+
+	public Set<IncomeEntity> getIncomes() {
+		return incomes;
+	}
+
+	public void setIncomes(Set<IncomeEntity> incomes) {
+		this.incomes = incomes;
+	}
+
+	public Set<ExpenseEntity> getHousingExpenses() {
+		return housingExpenses;
+	}
+
+	public void setHousingExpenses(Set<ExpenseEntity> housingExpenses) {
+		this.housingExpenses = housingExpenses;
+	}
+
+	public HousingBenefitApplicationEntity getApplication() {
+		return application;
+	}
+
+	public void setApplication(HousingBenefitApplicationEntity application) {
+		this.application = application;
+	}
+
+	public PersonEntity getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(PersonEntity customer) {
+		this.customer = customer;
+	}
+
+	public CaseState getCaseState() {
+		return caseState;
+	}
+
+	public void setCaseState(CaseState caseState) {
+		this.caseState = caseState;
+	}
+	
+	
 }
