@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS person(
-  id int(11) NOT NULL,
+  id integer NOT NULL,
   firstName varchar(80),
   lastName varchar(80),
   personNumber varchar(11) NOT NULL,
@@ -11,18 +11,18 @@ CREATE TABLE IF NOT EXISTS person(
 );
 
 CREATE TABLE IF NOT EXISTS cases (
-  id int(11) NOT NULL,
-  customer_id int(11) NOT NULL,
+  id integer NOT NULL,
+  customer_id integer NOT NULL,
   caseState varchar(20),
   PRIMARY KEY (id),
   FOREIGN KEY(customer_id) REFERENCES person(id)
 );
 
 CREATE TABLE IF NOT EXISTS application(
-  id int(11) NOT NULL,
-  case_id int(11) NOT NULL,
-  applicant_id int(11) NOT NULL,
-  received datetime,
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  applicant_id integer NOT NULL,
+  received timestamp,
   startDate date,
   endDate date,
   PRIMARY KEY (id),
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS application(
 );
 
 CREATE TABLE IF NOT EXISTS householdmember(
-  id int(11) NOT NULL,
-  case_id int(11) NOT NULL,
-  customer_id int(11) NOT NULL,
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  customer_id integer NOT NULL,
   startDate date,
   endDate date,
   PRIMARY KEY (id),
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS householdmember(
 ) ;
 
 CREATE TABLE IF NOT EXISTS expense (
-  id int(11) NOT NULL,
-  case_id int(11) NOT NULL,
-  amount double,
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  amount decimal,
   expenseType varchar(20),
   otherExpenseDescription varchar(200),
   startDate date,
@@ -54,13 +54,24 @@ CREATE TABLE IF NOT EXISTS expense (
 );
 
 CREATE TABLE IF NOT EXISTS income (
-  id int(11) NOT NULL,
-  case_id int(11) NOT NULL,
-  amount double,
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  amount decimal,
   incomeType varchar(20),
   otherIncomeDescription varchar(200),
   startDate date,
   endDate date,
+  PRIMARY KEY (id),
+  FOREIGN KEY(case_id) REFERENCES cases(id)
+);
+
+CREATE TABLE IF NOT EXISTS housingdata (
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  startDate date,
+  endDate date,
+  housingdataType varchar(20),
+  data json NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );

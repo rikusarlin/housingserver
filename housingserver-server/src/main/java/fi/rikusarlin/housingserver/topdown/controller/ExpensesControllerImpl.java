@@ -17,7 +17,7 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.model.Expense;
 import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
-import fi.rikusarlin.housingserver.repository.basic.ExpenseRepository;
+import fi.rikusarlin.housingserver.repository.basic.ExpenseJpaRepository;
 
 @RestController
 @Service
@@ -27,7 +27,7 @@ public class ExpensesControllerImpl implements ExpensesApi {
     ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
-    ExpenseRepository expenseRepo;
+    ExpenseJpaRepository expenseRepo;
     @Autowired
     CaseRepository caseRepo;
     
