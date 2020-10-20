@@ -21,7 +21,6 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
-import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
@@ -35,7 +34,7 @@ public class ExpenseControllerImpl implements ExpenseApi {
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Autowired
-	@Qualifier("expenseRepositoryJpa")
+	@Qualifier("expenseRepositoryJson")
 	ExpenseRepository expenseRepo;
     @Autowired
     CaseRepository caseRepo;
@@ -43,29 +42,29 @@ public class ExpenseControllerImpl implements ExpenseApi {
 	@Override
 	public ResponseEntity<Expense> fetchExpenseById(Integer caseId, Integer id) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-		HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
-    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbc, id).orElseThrow(() -> new NotFoundException("Expense", id));
+		//HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
+    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Expense", id));
 		return ResponseEntity.ok(e);
 	}
  
 	@Override
 	public ResponseEntity<Expense> addExpense(Integer caseId, Expense expense) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
+    	//HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
     	ExpenseEntity ee = MappingUtil.modelMapperInsert.map(expense, ExpenseEntity.class);
     	ee.setHousingBenefitCase(hbce);
 		Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, InputChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return ResponseEntity.ok(expenseRepo.save(expense, hbc));
+		return ResponseEntity.ok(expenseRepo.save(expense, hbce));
 	}
 
 	@Override
 	public ResponseEntity<Expense> checkExpenseById(Integer caseId, Integer id) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
-    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbc, id).orElseThrow(() -> new NotFoundException("Expense", id));
+    	//HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
+    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Expense", id));
     	ExpenseEntity ee = MappingUtil.modelMapperInsert.map(e, ExpenseEntity.class);
     	Set<ConstraintViolation<ExpenseEntity>> violations =  validator.validate(ee, AllChecks.class);
 		if (!violations.isEmpty()) {
@@ -77,7 +76,7 @@ public class ExpenseControllerImpl implements ExpenseApi {
 	@Override
 	public ResponseEntity<Expense> updateExpense(Integer caseId, Integer id, Expense expense) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-    	HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
+    	//HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
     	ExpenseEntity ee = MappingUtil.modelMapper.map(expense, ExpenseEntity.class);
 		ee.setHousingBenefitCase(hbce);
 		ee.setId(id);
@@ -86,15 +85,15 @@ public class ExpenseControllerImpl implements ExpenseApi {
 			throw new ConstraintViolationException(violations);
 		}
 		expense.setId(id);
-		return ResponseEntity.ok(expenseRepo.save(expense, hbc));
+		return ResponseEntity.ok(expenseRepo.save(expense, hbce));
 	}
 	
 	@Override
 	public ResponseEntity<Void> deleteExpense(Integer caseId, Integer id) {
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
-		HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
-    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbc, id).orElseThrow(() -> new NotFoundException("Expense", id));
- 		expenseRepo.delete(e, hbc);
+		//HousingBenefitCase hbc = MappingUtil.modelMapper.map(hbce, HousingBenefitCase.class);
+    	Expense e = expenseRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Expense", id));
+ 		expenseRepo.delete(e, hbce);
  		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 

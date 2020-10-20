@@ -7,7 +7,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import fi.rikusarlin.housingserver.model.Expense;
 
 @Entity
 @Table(name = "housingdata")
@@ -21,9 +25,9 @@ public class HousingDataJsonEntity extends DateRangedEntity{
     @Column(name = "housingdataType")	
 	HousingDataType housingDataType;
 
-	@Basic
-    @Column(name = "data")	
-	String jsonData;	
+	@Type(type = "jsonb")
+	@Column(name="data")
+	Expense expense;	
 	
 	public HousingDataJsonEntity() {
 	}
@@ -44,11 +48,12 @@ public class HousingDataJsonEntity extends DateRangedEntity{
 		this.housingDataType = housingDataType;
 	}
 
-	public String getJsonData() {
-		return jsonData;
+	public Expense getExpense() {
+		return expense;
 	}
 
-	public void setJsonData(String jsonData) {
-		this.jsonData = jsonData;
+	public void setExpense(Expense expense) {
+		this.expense = expense;
 	}
+
 }

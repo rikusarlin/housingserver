@@ -7,15 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.HousingDataJsonEntity;
 import fi.rikusarlin.housingserver.data.HousingDataType;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
-import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 
 @Component("expenseRepositoryJson")
@@ -24,21 +20,21 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	@Autowired
     private HousingDataJpaRepository housingDataJpaRepo;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+	/*
+    static ObjectMapper objectMapper = new ObjectMapper();
 	
+    static {
+    	objectMapper.registerModule(new JavaTimeModule());
+    	objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+    */
+    
 	@Override
-	public Expense save(Expense expense, HousingBenefitCase hbc) {
-    	HousingBenefitCaseEntity hbce = MappingUtil.modelMapper.map(hbc, HousingBenefitCaseEntity.class);
+	public Expense save(Expense expense, HousingBenefitCaseEntity hbce) {
     	HousingDataJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, HousingDataJsonEntity.class);
-    	String json;
-    	try {
-			json = objectMapper.writeValueAsString(expense);
-		} catch (JsonProcessingException e) {
-			json = "{}";
-		}
     	dataEntity.setHousingBenefitCase(hbce);
     	dataEntity.setHousingDataType(HousingDataType.EXPENSE);
-    	dataEntity.setJsonData(json);
+    	dataEntity.setExpense(expense);
     	HousingDataJsonEntity savedEntity = housingDataJpaRepo.save(dataEntity);
     	expense.setId(savedEntity.getId());
     	return expense;
@@ -48,13 +44,7 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	public Optional<Expense> findById(Integer id) {
     	Optional<HousingDataJsonEntity> hdje = housingDataJpaRepo.findById(id);
 		if(hdje.isPresent()) {
-			Expense e;
-			try {
-				e = objectMapper.readValue(hdje.get().getJsonData(), Expense.class);
-			} catch (JsonProcessingException e1) {
-				// Mayhaps we get at least something from here?
-				e = MappingUtil.modelMapper.map(hdje.get(), Expense.class);
-			}
+			Expense e = hdje.get().getExpense();
 			e.setId(hdje.get().getId());
 			return Optional.of(e);
 		} else {
@@ -69,7 +59,7 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public void delete(Expense entity, HousingBenefitCase hbc) {
+	public void delete(Expense entity, HousingBenefitCaseEntity hbc) {
 		// TODO Auto-generated method stub
 
 	}
@@ -81,15 +71,22 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public List<Expense> findByHousingBenefitCase(HousingBenefitCase housingBenefitCase) {
+	public List<Expense> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Optional<Expense> findByHousingBenefitCaseAndId(HousingBenefitCase housingBenefitCase, Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<Expense> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
+		Optional<HousingDataJsonEntity> hdje = housingDataJpaRepo.findByHousingBenefitCaseAndId(hbce, id);
+		if(hdje.isPresent()) {
+			Expense e = hdje.get().getExpense();
+			e.setId(hdje.get().getId());
+			return Optional.of(e);
+		} else {
+			return Optional.empty();
+		}
+
 	}
 
 }
