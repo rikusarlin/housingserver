@@ -23,9 +23,9 @@ import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HousingBenefitApplication;
-import fi.rikusarlin.housingserver.repository.CaseRepository;
-import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
-import fi.rikusarlin.housingserver.repository.PersonRepository;
+import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
+import fi.rikusarlin.housingserver.repository.basic.HousingBenefitApplicationRepository;
+import fi.rikusarlin.housingserver.repository.basic.PersonJpaRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -41,7 +41,7 @@ public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
     @Autowired
     CaseRepository caseRepo;
     @Autowired
-    PersonRepository personRepo;
+    PersonJpaRepository personRepo;
     
 
     @Override

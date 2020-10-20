@@ -2,10 +2,15 @@ package fi.rikusarlin.housingserver.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Sort;
 
-import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.model.Person;
 
-public interface PersonRepository extends JpaRepository<PersonEntity, Integer> {
-	Optional<PersonEntity> findByPersonNumber(String personNumber);
+public interface PersonRepository{
+	Person save(Person entity);
+	Optional<Person> findById(Integer id);
+	Iterable<Person> findAll();
+	void delete(Person entity);
+	Iterable<Person> findAll(Sort sort);
+	Optional<Person> findByPersonNumber(String personNumber);
 }

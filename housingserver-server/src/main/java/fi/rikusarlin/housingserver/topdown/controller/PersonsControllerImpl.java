@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.PersonsApi;
 import fi.rikusarlin.housingserver.model.Person;
-import fi.rikusarlin.housingserver.repository.PersonRepository;
+import fi.rikusarlin.housingserver.repository.basic.PersonJpaRepository;
 
 @RestController
 @Service
@@ -21,7 +21,7 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 public class PersonsControllerImpl implements PersonsApi {
 	
     @Autowired
-    PersonRepository personRepo;
+    PersonJpaRepository personRepo;
     
     ModelMapper modelMapper = new ModelMapper();
 

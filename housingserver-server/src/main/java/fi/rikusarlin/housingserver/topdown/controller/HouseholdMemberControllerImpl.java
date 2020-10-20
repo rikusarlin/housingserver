@@ -24,9 +24,9 @@ import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
-import fi.rikusarlin.housingserver.repository.CaseRepository;
-import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
-import fi.rikusarlin.housingserver.repository.PersonRepository;
+import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
+import fi.rikusarlin.housingserver.repository.basic.HouseholdMemberRepository;
+import fi.rikusarlin.housingserver.repository.basic.PersonJpaRepository;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
@@ -42,7 +42,7 @@ public class HouseholdMemberControllerImpl implements HouseholdmemberApi {
     @Autowired
     HouseholdMemberRepository householdMemberRepo;
     @Autowired
-    PersonRepository personRepo;
+    PersonJpaRepository personRepo;
 
     @Override
 	public ResponseEntity<HouseholdMember> fetchHouseholdMemberById(Integer caseId, Integer id) {

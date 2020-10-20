@@ -21,8 +21,8 @@ import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
-import fi.rikusarlin.housingserver.repository.CaseRepository;
-import fi.rikusarlin.housingserver.repository.ExpenseRepository;
+import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
+import fi.rikusarlin.housingserver.repository.basic.ExpenseRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.CasesApi;
 import fi.rikusarlin.housingserver.model.HousingBenefitCase;
-import fi.rikusarlin.housingserver.repository.CaseRepository;
+import fi.rikusarlin.housingserver.repository.basic.CaseRepository;
 
 @RestController
 @Validated

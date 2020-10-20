@@ -1,14 +1,14 @@
-package fi.rikusarlin.housingserver.repository;
+package fi.rikusarlin.housingserver.repository.basic;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 
-public interface HouseholdMemberRepository extends JpaRepository<HouseholdMemberEntity, Integer> {
+public interface HouseholdMemberRepository extends CrudRepository<HouseholdMemberEntity, Integer> {
 	List<HouseholdMemberEntity> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase);
 	Optional<HouseholdMemberEntity> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity housingBenefitCase, Integer id);
 }
