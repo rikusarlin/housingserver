@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS housingdata (
   startDate date,
   endDate date,
   housingdataType varchar(20),
-  data json NOT NULL,
+  data text NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );

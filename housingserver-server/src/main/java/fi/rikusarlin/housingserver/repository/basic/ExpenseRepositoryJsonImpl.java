@@ -1,14 +1,17 @@
 package fi.rikusarlin.housingserver.repository.basic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import fi.rikusarlin.housingserver.data.ExpenseJsonEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataJsonEntity;
 import fi.rikusarlin.housingserver.data.HousingDataType;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
@@ -19,30 +22,21 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 
 	@Autowired
     private HousingDataJpaRepository housingDataJpaRepo;
-
-	/*
-    static ObjectMapper objectMapper = new ObjectMapper();
-	
-    static {
-    	objectMapper.registerModule(new JavaTimeModule());
-    	objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    }
-    */
     
 	@Override
 	public Expense save(Expense expense, HousingBenefitCaseEntity hbce) {
-    	HousingDataJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, HousingDataJsonEntity.class);
+    	ExpenseJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, ExpenseJsonEntity.class);
     	dataEntity.setHousingBenefitCase(hbce);
     	dataEntity.setHousingDataType(HousingDataType.EXPENSE);
     	dataEntity.setExpense(expense);
-    	HousingDataJsonEntity savedEntity = housingDataJpaRepo.save(dataEntity);
+    	ExpenseJsonEntity savedEntity = housingDataJpaRepo.save(dataEntity);
     	expense.setId(savedEntity.getId());
     	return expense;
 	}
 
 	@Override
 	public Optional<Expense> findById(Integer id) {
-    	Optional<HousingDataJsonEntity> hdje = housingDataJpaRepo.findById(id);
+    	Optional<ExpenseJsonEntity> hdje = housingDataJpaRepo.findById(id);
 		if(hdje.isPresent()) {
 			Expense e = hdje.get().getExpense();
 			e.setId(hdje.get().getId());
@@ -54,31 +48,52 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 
 	@Override
 	public Iterable<Expense> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		Iterable<ExpenseJsonEntity> expenses = housingDataJpaRepo.findAll();
+		return StreamSupport.stream(expenses.spliterator(), false)
+				.map(expense -> {
+					Expense e = MappingUtil.modelMapper.map(expense.getExpense(), Expense.class);
+					e.setId(expense.getId());
+					return e;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public void delete(Expense entity, HousingBenefitCaseEntity hbc) {
-		// TODO Auto-generated method stub
-
+	public void delete(Expense expense, HousingBenefitCaseEntity hbce) {
+    	ExpenseJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, ExpenseJsonEntity.class);
+    	dataEntity.setHousingBenefitCase(hbce);
+    	dataEntity.setHousingDataType(HousingDataType.EXPENSE);
+    	dataEntity.setExpense(expense);
+    	housingDataJpaRepo.delete(dataEntity);
 	}
 
 	@Override
 	public Iterable<Expense> findAll(Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
+		Iterable<ExpenseJsonEntity> expenses = housingDataJpaRepo.findAll(sort);
+		List<Expense> expenseList = new ArrayList<Expense>();
+		for(ExpenseJsonEntity expense:expenses) {
+			Expense e = MappingUtil.modelMapper.map(expense.getExpense(), Expense.class);
+			e.setId(expense.getId());
+			expenseList.add(e);
+		}
+		return expenseList;
 	}
 
 	@Override
-	public List<Expense> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Expense> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
+		Iterable<ExpenseJsonEntity> expenses = housingDataJpaRepo.findByHousingBenefitCase(hbce);
+		return StreamSupport.stream(expenses.spliterator(), false)
+				.map(expense -> {
+					Expense e = MappingUtil.modelMapper.map(expense.getExpense(), Expense.class);
+					e.setId(expense.getId());
+					return e;
+				})
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<Expense> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<HousingDataJsonEntity> hdje = housingDataJpaRepo.findByHousingBenefitCaseAndId(hbce, id);
+		Optional<ExpenseJsonEntity> hdje = housingDataJpaRepo.findByHousingBenefitCaseAndId(hbce, id);
 		if(hdje.isPresent()) {
 			Expense e = hdje.get().getExpense();
 			e.setId(hdje.get().getId());
