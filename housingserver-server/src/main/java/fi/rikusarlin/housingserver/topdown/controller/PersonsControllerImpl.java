@@ -12,8 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.PersonsApi;
+import fi.rikusarlin.housingserver.jparepository.PersonJpaRepository;
 import fi.rikusarlin.housingserver.model.Person;
-import fi.rikusarlin.housingserver.repository.basic.PersonJpaRepository;
 
 @RestController
 @Service

@@ -1,4 +1,4 @@
-package fi.rikusarlin.housingserver.repository.basic;
+package fi.rikusarlin.housingserver.jparepository;
 
 import java.util.List;
 
