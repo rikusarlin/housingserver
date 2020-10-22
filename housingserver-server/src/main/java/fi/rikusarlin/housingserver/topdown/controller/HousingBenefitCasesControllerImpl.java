@@ -1,5 +1,6 @@
 package fi.rikusarlin.housingserver.topdown.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -121,8 +122,16 @@ public class HousingBenefitCasesControllerImpl implements CasesApi{
 
     @Override
     public ResponseEntity<List<HousingBenefitCase>> fetchHousingBenefitCasesByPersonNumber(String personNumber) {
+    	List<Integer> ids = caseRepo.findByPersonNumber(personNumber);
+    	List<HousingBenefitCase> hbcList = new ArrayList<HousingBenefitCase>();
+    	for(Integer id:ids) {
+    		hbcList.add(caseRepo.findById(id).get());
+    	}
+    	return ResponseEntity.ok(hbcList);
+    	/* for reasons unknown findAllById produces a StackOverflow
     	return ResponseEntity.ok(
     			StreamSupport.stream(caseRepo.findAllById(caseRepo.findByPersonNumber(personNumber)).spliterator(), false)
     			.collect(Collectors.toList()));
+    	*/
     }    
 }

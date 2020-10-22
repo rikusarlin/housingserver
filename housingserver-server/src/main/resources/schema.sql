@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS householdmember_json (
   case_id integer NOT NULL,
   startDate date,
   endDate date,
-  data text NOT NULL,
+  data json NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS expense_json (
   case_id integer NOT NULL,
   startDate date,
   endDate date,
-  data text NOT NULL,
+  data json NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS income_json (
   case_id integer NOT NULL,
   startDate date,
   endDate date,
-  data text NOT NULL,
+  data json NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS application_json (
   case_id integer NOT NULL,
   startDate date,
   endDate date,
-  data text NOT NULL,
+  data json NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );

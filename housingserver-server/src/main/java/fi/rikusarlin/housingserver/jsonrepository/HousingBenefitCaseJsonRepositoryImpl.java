@@ -8,7 +8,7 @@ import java.util.stream.StreamSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -29,16 +29,13 @@ public class HousingBenefitCaseJsonRepositoryImpl implements HousingBenefitCaseR
     private EntityManager entityManager;
     
 	@Override
-	public List<Integer> findByPersonNumber(String personNumber) {
-	    TypedQuery<Integer> query 
-	      = entityManager.createQuery(
-	          "Select distinct c.id from HousingBenefitCaseJsonEntity c "
-	          + "join c.householdMembers hm "
-	          + "join hm.person hmPerson "
-	          + "where hmPerson.personNumber=:personNumber", 
-	          Integer.class);
-	    return query.setParameter("personNumber", personNumber).getResultList();
-		
+	public List<Integer> findByPersonNumber(String personNumber){
+		Query q = entityManager.createNativeQuery(
+				"select c.id from cases c "+
+				"join householdmember_json hm on c.id=hm.case_id "+
+				"where hm.data->'person'->>'personNumber'=:personNumber");
+		List<Integer> resultList = (List<Integer>) q.setParameter("personNumber", personNumber).getResultList();
+		return resultList;
 	}
 
 	@Override
