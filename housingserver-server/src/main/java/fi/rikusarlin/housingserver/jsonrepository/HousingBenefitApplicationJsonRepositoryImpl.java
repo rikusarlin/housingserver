@@ -10,24 +10,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fi.rikusarlin.housingserver.data.HousingBenefitApplicationJsonEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataType;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitApplicationJsonEntity;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitCaseJsonEntity;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HousingBenefitApplication;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
 
 @Component("housingBenefitApplicationRepositoryJson")
-public class HousingBenefitApplicationRepositoryJsonImpl implements HousingBenefitApplicationRepository {
+public class HousingBenefitApplicationJsonRepositoryImpl implements HousingBenefitApplicationRepository {
 
 	@Autowired
     private HousingBenefitApplicationJsonRepository jsonRepo;
+	@Autowired
+    private HousingBenefitCaseJsonRepository caseRepo;
     
 	@Override
-	public HousingBenefitApplication save(HousingBenefitApplication hba, HousingBenefitCaseEntity hbce) {
+	public HousingBenefitApplication save(Integer caseId, HousingBenefitApplication hba) {
+		Optional<HousingBenefitCaseJsonEntity> hbcje = caseRepo.findById(caseId);
     	HousingBenefitApplicationJsonEntity dataEntity = MappingUtil.modelMapper.map(hba, HousingBenefitApplicationJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.APPLICATION);
+    	dataEntity.setHousingBenefitCase(hbcje.get());
     	dataEntity.setHousingBenefitApplication(hba);
     	HousingBenefitApplicationJsonEntity savedEntity = jsonRepo.save(dataEntity);
     	hba.setId(savedEntity.getId());
@@ -59,11 +60,9 @@ public class HousingBenefitApplicationRepositoryJsonImpl implements HousingBenef
 	}
 
 	@Override
-	public void delete(HousingBenefitApplication hba, HousingBenefitCaseEntity hbce) {
+	public void delete(HousingBenefitApplication hba) {
     	HousingBenefitApplicationJsonEntity dataEntity = MappingUtil.modelMapper.map(hba, HousingBenefitApplicationJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.APPLICATION);
-    	dataEntity.setHousingBenefitApplication(hba);
+    	dataEntity.getHousingBenefitCase().setApplication(null);
     	jsonRepo.delete(dataEntity);
 	}
 
@@ -80,8 +79,9 @@ public class HousingBenefitApplicationRepositoryJsonImpl implements HousingBenef
 	}
 
 	@Override
-	public Optional<HousingBenefitApplication> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
-		Optional<HousingBenefitApplicationJsonEntity> hbaje = jsonRepo.findByHousingBenefitCaseAndHousingDataType(hbce, HousingDataType.APPLICATION);
+	public Optional<HousingBenefitApplication> findByHousingBenefitCaseId(Integer caseId) {
+		Optional<HousingBenefitCaseJsonEntity> hbcje = caseRepo.findById(caseId);
+		Optional<HousingBenefitApplicationJsonEntity> hbaje = jsonRepo.findByHousingBenefitCase(hbcje.get());
 		if(hbaje.isPresent()) {
 			HousingBenefitApplication hba = hbaje.get().getHousingBenefitApplication();
 			hba.setId(hbaje.get().getId());
@@ -92,8 +92,9 @@ public class HousingBenefitApplicationRepositoryJsonImpl implements HousingBenef
 	}
 
 	@Override
-	public Optional<HousingBenefitApplication> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<HousingBenefitApplicationJsonEntity> hbaje = jsonRepo.findByHousingBenefitCaseAndIdAndHousingDataType(hbce, id, HousingDataType.APPLICATION);
+	public Optional<HousingBenefitApplication> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+		Optional<HousingBenefitCaseJsonEntity> hbcje = caseRepo.findById(caseId);
+		Optional<HousingBenefitApplicationJsonEntity> hbaje = jsonRepo.findByHousingBenefitCaseAndId(hbcje.get(), id);
 		if(hbaje.isPresent()) {
 			HousingBenefitApplication hba = hbaje.get().getHousingBenefitApplication();
 			hba.setId(hbaje.get().getId());
@@ -103,5 +104,4 @@ public class HousingBenefitApplicationRepositoryJsonImpl implements HousingBenef
 		}
 
 	}
-
 }

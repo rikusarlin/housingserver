@@ -10,24 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
+import fi.rikusarlin.housingserver.data.IncomeEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Income;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
 
 @Component("incomeRepositoryJpa")
-public class IncomeRepositoryJpaImpl implements IncomeRepository {
+public class IncomeJpaRepositoryImpl implements IncomeRepository {
 
     @Autowired
     private IncomeJpaRepository repo;
-
-    public Income save(Income Income, HousingBenefitCaseEntity hbce) {
+	@Autowired
+    private HousingBenefitCaseJpaRepository caseRepo;
+    
+   	@Override
+    public Income save(Income Income, Integer caseId) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	IncomeEntity ee = MappingUtil.modelMapper.map(Income, IncomeEntity.class);
     	ee.setHousingBenefitCase(hbce);
         return MappingUtil.modelMapper.map(repo.save(ee), Income.class);
     }
-
 
 	@Override
 	public Optional<Income> findById(Integer id) {
@@ -48,12 +52,9 @@ public class IncomeRepositoryJpaImpl implements IncomeRepository {
 				.collect(Collectors.toList());
  	}
 
-
 	@Override
-	public void delete(Income Income, HousingBenefitCaseEntity hbce) {
-		IncomeEntity ee = MappingUtil.modelMapper.map(Income, IncomeEntity.class);
-		ee.setHousingBenefitCase(hbce);
-		repo.delete(ee);
+	public void delete(Integer id) {
+		repo.deleteById(id);
 	}
 
 	@Override
@@ -68,17 +69,17 @@ public class IncomeRepositoryJpaImpl implements IncomeRepository {
 	}
 
 	@Override
-	public List<Income> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
+	public List<Income> findByHousingBenefitCaseId(Integer caseId) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Iterable<IncomeEntity> Incomes = repo.findByHousingBenefitCase(hbce);
 		return StreamSupport.stream(Incomes.spliterator(), false)
 				.map(Income -> MappingUtil.modelMapper.map(Income, Income.class))
 				.collect(Collectors.toList());
-
 	}
 
-
 	@Override
-	public Optional<Income> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
+	public Optional<Income> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Optional<IncomeEntity> Income = repo.findByHousingBenefitCaseAndId(hbce, id);
 		if(Income.isPresent()) {
 			Income e = MappingUtil.modelMapper.map(Income.get(), Income.class);
@@ -87,5 +88,4 @@ public class IncomeRepositoryJpaImpl implements IncomeRepository {
 			return Optional.empty();
 		}
 	}
-
 }

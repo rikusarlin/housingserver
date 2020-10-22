@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan("fi.rikusarlin.housingserver.data")
+@EntityScan({"fi.rikusarlin.housingserver.data","fi.rikusarlin.housingserver.data.json"})
 @EnableJpaRepositories(basePackages= {"fi.rikusarlin.housingserver.jparepository", "fi.rikusarlin.housingserver.jsonrepository"})
 @ComponentScan(basePackages = {"fi.rikusarlin.housingserver.topdown.controller", "fi.rikusarlin.housingserver.jparepository",
 		"fi.rikusarlin.housingserver.jsonrepository"})

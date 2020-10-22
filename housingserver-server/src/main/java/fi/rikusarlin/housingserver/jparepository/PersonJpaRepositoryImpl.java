@@ -16,7 +16,7 @@ import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 
 @Component("personRepositoryJpa")
-public class PersonRepositoryJpaImpl implements PersonRepository {
+public class PersonJpaRepositoryImpl implements PersonRepository {
 
     @Autowired
     private PersonJpaRepository personJpaRepo;

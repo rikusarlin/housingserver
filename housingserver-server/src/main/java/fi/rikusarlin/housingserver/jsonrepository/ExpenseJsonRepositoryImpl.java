@@ -10,24 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fi.rikusarlin.housingserver.data.ExpenseJsonEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataType;
+import fi.rikusarlin.housingserver.data.json.ExpenseJsonEntity;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitCaseJsonEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 
 @Component("expenseRepositoryJson")
-public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
+public class ExpenseJsonRepositoryImpl implements ExpenseRepository {
 
 	@Autowired
     private ExpenseJsonRepository expenseJsonRepo;
-    
+	@Autowired
+    private HousingBenefitCaseJsonRepository caseRepo;
+
+
 	@Override
-	public Expense save(Expense expense, HousingBenefitCaseEntity hbce) {
+	public Expense save(Expense expense, Integer caseId) {
+    	HousingBenefitCaseJsonEntity hbcje = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	ExpenseJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, ExpenseJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.EXPENSE);
+    	dataEntity.setHousingBenefitCase(hbcje);
     	dataEntity.setExpense(expense);
     	ExpenseJsonEntity savedEntity = expenseJsonRepo.save(dataEntity);
     	expense.setId(savedEntity.getId());
@@ -59,12 +62,10 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public void delete(Expense expense, HousingBenefitCaseEntity hbce) {
-    	ExpenseJsonEntity dataEntity = MappingUtil.modelMapper.map(expense, ExpenseJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.EXPENSE);
-    	dataEntity.setExpense(expense);
-    	expenseJsonRepo.delete(dataEntity);
+	public void delete(Integer id) {
+		ExpenseJsonEntity eje = expenseJsonRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
+		eje.getHousingBenefitCase().getHousingExpenses().remove(eje);
+		expenseJsonRepo.delete(eje);
 	}
 
 	@Override
@@ -80,8 +81,9 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public List<Expense> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
-		Iterable<ExpenseJsonEntity> expenses = expenseJsonRepo.findByHousingBenefitCaseAndHousingDataType(hbce, HousingDataType.EXPENSE);
+	public List<Expense> findByHousingBenefitCaseId(Integer caseId) {
+    	HousingBenefitCaseJsonEntity hbcje = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Iterable<ExpenseJsonEntity> expenses = expenseJsonRepo.findByHousingBenefitCase(hbcje);
 		return StreamSupport.stream(expenses.spliterator(), false)
 				.map(expense -> {
 					Expense e = MappingUtil.modelMapper.map(expense.getExpense(), Expense.class);
@@ -92,8 +94,9 @@ public class ExpenseRepositoryJsonImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public Optional<Expense> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<ExpenseJsonEntity> hdje = expenseJsonRepo.findByHousingBenefitCaseAndIdAndHousingDataType(hbce, id, HousingDataType.EXPENSE);
+	public Optional<Expense> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+    	HousingBenefitCaseJsonEntity hbcje = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Optional<ExpenseJsonEntity> hdje = expenseJsonRepo.findByHousingBenefitCaseAndId(hbcje, id);
 		if(hdje.isPresent()) {
 			Expense e = hdje.get().getExpense();
 			e.setId(hdje.get().getId());

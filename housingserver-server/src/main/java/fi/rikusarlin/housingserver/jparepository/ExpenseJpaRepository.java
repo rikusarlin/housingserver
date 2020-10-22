@@ -9,6 +9,6 @@ import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 
 public interface ExpenseJpaRepository extends PagingAndSortingRepository<ExpenseEntity, Integer> {
-	List<ExpenseEntity> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase);
-	Optional<ExpenseEntity> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity housingBenefitCase, Integer id);
+	List<ExpenseEntity> findByHousingBenefitCase(HousingBenefitCaseEntity hbce);
+	Optional<ExpenseEntity> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id);
 }

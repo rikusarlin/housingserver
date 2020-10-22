@@ -17,14 +17,20 @@ import fi.rikusarlin.housingserver.model.HousingBenefitApplication;
 import fi.rikusarlin.housingserver.repository.HousingBenefitApplicationRepository;
 
 @Component("housingBenefitApplicationRepositoryJpa")
-public class HousingBenefitApplicationRepositoryJpaImpl implements HousingBenefitApplicationRepository {
+public class HousingBenefitApplicationJpaRepositoryImpl implements HousingBenefitApplicationRepository {
 
     @Autowired
     private HousingBenefitApplicationJpaRepository jpaRepo;
+    
+	@Autowired
+    private HousingBenefitCaseJpaRepository caseRepo;
+    
 
-    public HousingBenefitApplication save(HousingBenefitApplication hba, HousingBenefitCaseEntity hbce) {
+	@Override
+    public HousingBenefitApplication save(Integer caseId, HousingBenefitApplication hba) {
+		Optional<HousingBenefitCaseEntity> hbce = caseRepo.findById(caseId);
     	HousingBenefitApplicationEntity hbae = MappingUtil.modelMapper.map(hba, HousingBenefitApplicationEntity.class);
-    	hbae.setHousingBenefitCase(hbce);
+    	hbae.setHousingBenefitCase(hbce.get());
         return MappingUtil.modelMapper.map(jpaRepo.save(hbae), HousingBenefitApplication.class);
     }
 
@@ -48,9 +54,8 @@ public class HousingBenefitApplicationRepositoryJpaImpl implements HousingBenefi
  	}
 
 	@Override
-	public void delete(HousingBenefitApplication HousingBenefitApplication, HousingBenefitCaseEntity hbce) {
+	public void delete(HousingBenefitApplication HousingBenefitApplication) {
 		HousingBenefitApplicationEntity hbae = MappingUtil.modelMapper.map(HousingBenefitApplication, HousingBenefitApplicationEntity.class);
-		hbae.setHousingBenefitCase(hbce);
 		jpaRepo.delete(hbae);
 	}
 
@@ -65,8 +70,9 @@ public class HousingBenefitApplicationRepositoryJpaImpl implements HousingBenefi
 	}
 
 	@Override
-	public Optional<HousingBenefitApplication> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
-		Optional<HousingBenefitApplicationEntity> hbae = jpaRepo.findByHousingBenefitCase(hbce);
+	public Optional<HousingBenefitApplication> findByHousingBenefitCaseId(Integer caseId) {
+		Optional<HousingBenefitCaseEntity> hbce = caseRepo.findById(caseId);
+		Optional<HousingBenefitApplicationEntity> hbae = jpaRepo.findByHousingBenefitCase(hbce.get());
 		if(hbae.isPresent()) {
 			HousingBenefitApplication hba = MappingUtil.modelMapper.map(hbae.get(), HousingBenefitApplication.class);
 			return Optional.of(hba);
@@ -76,8 +82,9 @@ public class HousingBenefitApplicationRepositoryJpaImpl implements HousingBenefi
 	}
 
 	@Override
-	public Optional<HousingBenefitApplication> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<HousingBenefitApplicationEntity> hbae = jpaRepo.findByHousingBenefitCaseAndId(hbce, id);
+	public Optional<HousingBenefitApplication> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+		Optional<HousingBenefitCaseEntity> hbce = caseRepo.findById(caseId);
+		Optional<HousingBenefitApplicationEntity> hbae = jpaRepo.findByHousingBenefitCaseAndId(hbce.get(), id);
 		if(hbae.isPresent()) {
 			HousingBenefitApplication hba = MappingUtil.modelMapper.map(hbae.get(), HousingBenefitApplication.class);
 			return Optional.of(hba);

@@ -23,7 +23,7 @@ import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.testdata.PersonData;
-import fi.rikusarlin.housingserver.topdown.controller.PersonControllerImpl;
+import fi.rikusarlin.housingserver.topdown.controller.PersonsControllerImpl;
 
 @ExtendWith(MockitoExtension.class)
 class PersonControllerTest {
@@ -32,7 +32,7 @@ class PersonControllerTest {
     PersonRepository personRepo;
 
     @InjectMocks
-    PersonControllerImpl personService;
+    PersonsControllerImpl personService;
     
     @AfterEach
     public void tearDown() {
@@ -42,7 +42,6 @@ class PersonControllerTest {
     @Test
     public void testAddNewPerson(){
     	Person person1 = PersonData.getPerson1();
-
     	when(personRepo.save(person1)).thenReturn(person1);
     	when(personRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.empty());
     	
@@ -171,7 +170,7 @@ class PersonControllerTest {
     @Test
     public void testDeletePerson_found(){
     	Person person1 = PersonData.getPerson1();
- 
+
     	when(personRepo.findById(person1.getId())).thenReturn(Optional.of(person1));
     	
         personService.deletePerson(person1.getId());
@@ -192,6 +191,4 @@ class PersonControllerTest {
         Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
         verify(personRepo).findById(person1.getId());
     }
-
-
 }

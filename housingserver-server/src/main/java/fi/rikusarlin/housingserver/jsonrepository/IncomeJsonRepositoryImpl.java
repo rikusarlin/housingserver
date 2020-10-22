@@ -10,24 +10,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fi.rikusarlin.housingserver.data.IncomeJsonEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataType;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitCaseJsonEntity;
+import fi.rikusarlin.housingserver.data.json.IncomeJsonEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Income;
 import fi.rikusarlin.housingserver.repository.IncomeRepository;
 
 @Component("incomeRepositoryJson")
-public class IncomeRepositoryJsonImpl implements IncomeRepository {
+public class IncomeJsonRepositoryImpl implements IncomeRepository {
 
 	@Autowired
     private IncomeJsonRepository incomeJsonRepo;
+	@Autowired
+    private HousingBenefitCaseJsonRepository caseRepo;
     
 	@Override
-	public Income save(Income Income, HousingBenefitCaseEntity hbce) {
+	public Income save(Income Income, Integer caseId) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	IncomeJsonEntity dataEntity = MappingUtil.modelMapper.map(Income, IncomeJsonEntity.class);
     	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.INCOME);
     	dataEntity.setIncome(Income);
     	IncomeJsonEntity savedEntity = incomeJsonRepo.save(dataEntity);
     	Income.setId(savedEntity.getId());
@@ -59,12 +61,10 @@ public class IncomeRepositoryJsonImpl implements IncomeRepository {
 	}
 
 	@Override
-	public void delete(Income Income, HousingBenefitCaseEntity hbce) {
-    	IncomeJsonEntity dataEntity = MappingUtil.modelMapper.map(Income, IncomeJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.INCOME);
-    	dataEntity.setIncome(Income);
-    	incomeJsonRepo.delete(dataEntity);
+	public void delete(Integer id) {
+		IncomeJsonEntity hdje = incomeJsonRepo.findById(id).orElseThrow(() -> new NotFoundException("Income", id));
+		hdje.getHousingBenefitCase().getIncomes().remove(hdje);
+    	incomeJsonRepo.delete(hdje);
 	}
 
 	@Override
@@ -80,8 +80,9 @@ public class IncomeRepositoryJsonImpl implements IncomeRepository {
 	}
 
 	@Override
-	public List<Income> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
-		Iterable<IncomeJsonEntity> Incomes = incomeJsonRepo.findByHousingBenefitCaseAndHousingDataType(hbce, HousingDataType.INCOME);
+	public List<Income> findByHousingBenefitCaseId(Integer caseId) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Iterable<IncomeJsonEntity> Incomes = incomeJsonRepo.findByHousingBenefitCase(hbce);
 		return StreamSupport.stream(Incomes.spliterator(), false)
 				.map(Income -> {
 					Income e = MappingUtil.modelMapper.map(Income.getIncome(), Income.class);
@@ -92,8 +93,9 @@ public class IncomeRepositoryJsonImpl implements IncomeRepository {
 	}
 
 	@Override
-	public Optional<Income> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<IncomeJsonEntity> hdje = incomeJsonRepo.findByHousingBenefitCaseAndIdAndHousingDataType(hbce, id, HousingDataType.INCOME);
+	public Optional<Income> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Optional<IncomeJsonEntity> hdje = incomeJsonRepo.findByHousingBenefitCaseAndId(hbce, id);
 		if(hdje.isPresent()) {
 			Income e = hdje.get().getIncome();
 			e.setId(hdje.get().getId());
@@ -101,7 +103,5 @@ public class IncomeRepositoryJsonImpl implements IncomeRepository {
 		} else {
 			return Optional.empty();
 		}
-
 	}
-
 }

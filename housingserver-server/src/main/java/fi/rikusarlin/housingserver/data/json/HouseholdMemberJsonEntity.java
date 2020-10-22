@@ -1,7 +1,6 @@
-package fi.rikusarlin.housingserver.data;
+package fi.rikusarlin.housingserver.data.json;
 
 import javax.persistence.AttributeConverter;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Converter;
@@ -16,20 +15,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import fi.rikusarlin.housingserver.data.DateRangedEntity;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
 
 @Entity
-@Table(name = "housingdata")
+@Table(name = "householdmember_json")
 public class HouseholdMemberJsonEntity extends DateRangedEntity{
 	@JsonIgnore
     @ManyToOne
     @JoinColumn(name="case_id", nullable=false)
-    HousingBenefitCaseEntity housingBenefitCase;
+    HousingBenefitCaseJsonEntity housingBenefitCase;
 	
-	@Basic
-    @Column(name = "housingdataType")	
-	HousingDataType housingDataType;
-
 	@Column(name = "data")
 	@Convert(converter = HouseholdMemberJsonConverter.class)
 	HouseholdMember householdMember;	
@@ -37,22 +33,14 @@ public class HouseholdMemberJsonEntity extends DateRangedEntity{
 	public HouseholdMemberJsonEntity() {
 	}
 
-	public HousingBenefitCaseEntity getHousingBenefitCase() {
+	public HousingBenefitCaseJsonEntity getHousingBenefitCase() {
 		return housingBenefitCase;
 	}
 
-	public void setHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase) {
+	public void setHousingBenefitCase(HousingBenefitCaseJsonEntity housingBenefitCase) {
 		this.housingBenefitCase = housingBenefitCase;
 	}
 
-	public HousingDataType getHousingDataType() {
-		return housingDataType;
-	}
-
-	public void setHousingDataType(HousingDataType housingDataType) {
-		this.housingDataType = housingDataType;
-	}
-	
 	public HouseholdMember getHouseholdMember() {
 		return householdMember;
 	}

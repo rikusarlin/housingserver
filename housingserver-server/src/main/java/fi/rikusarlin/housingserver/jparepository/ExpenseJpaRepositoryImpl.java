@@ -12,17 +12,21 @@ import org.springframework.stereotype.Component;
 
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 
 @Component("expenseRepositoryJpa")
-public class ExpenseRepositoryJpaImpl implements ExpenseRepository {
+public class ExpenseJpaRepositoryImpl implements ExpenseRepository {
 
     @Autowired
     private ExpenseJpaRepository expenseJpaRepo;
+	@Autowired
+    private HousingBenefitCaseJpaRepository caseRepo;
 
-    public Expense save(Expense expense, HousingBenefitCaseEntity hbce) {
+    public Expense save(Expense expense, Integer caseId) {
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	ExpenseEntity ee = MappingUtil.modelMapper.map(expense, ExpenseEntity.class);
     	ee.setHousingBenefitCase(hbce);
         return MappingUtil.modelMapper.map(expenseJpaRepo.save(ee), Expense.class);
@@ -50,16 +54,13 @@ public class ExpenseRepositoryJpaImpl implements ExpenseRepository {
 
 
 	@Override
-	public void delete(Expense expense, HousingBenefitCaseEntity hbce) {
-		ExpenseEntity ee = MappingUtil.modelMapper.map(expense, ExpenseEntity.class);
-		ee.setHousingBenefitCase(hbce);
-		expenseJpaRepo.delete(ee);
+	public void delete(Integer id) {
+		expenseJpaRepo.deleteById(id);
 	}
 
 	@Override
 	public Iterable<Expense> findAll(Sort sort) {
 		Iterable<ExpenseEntity> expenses = expenseJpaRepo.findAll(sort);
-		// It might be better to do this using for-next loop rather than map-reduce to retain order
 		List<Expense> expenseList = new ArrayList<Expense>();
 		for(ExpenseEntity e:expenses) {
 			expenseList.add(MappingUtil.modelMapper.map(e, Expense.class));
@@ -68,7 +69,8 @@ public class ExpenseRepositoryJpaImpl implements ExpenseRepository {
 	}
 
 	@Override
-	public List<Expense> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
+	public List<Expense> findByHousingBenefitCaseId(Integer caseId) {
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Iterable<ExpenseEntity> expenses = expenseJpaRepo.findByHousingBenefitCase(hbce);
 		return StreamSupport.stream(expenses.spliterator(), false)
 				.map(expense -> MappingUtil.modelMapper.map(expense, Expense.class))
@@ -78,7 +80,8 @@ public class ExpenseRepositoryJpaImpl implements ExpenseRepository {
 
 
 	@Override
-	public Optional<Expense> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
+	public Optional<Expense> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+    	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Optional<ExpenseEntity> expense = expenseJpaRepo.findByHousingBenefitCaseAndId(hbce, id);
 		if(expense.isPresent()) {
 			Expense e = MappingUtil.modelMapper.map(expense.get(), Expense.class);

@@ -65,12 +65,41 @@ CREATE TABLE IF NOT EXISTS income (
   FOREIGN KEY(case_id) REFERENCES cases(id)
 );
 
-CREATE TABLE IF NOT EXISTS housingdata (
+CREATE TABLE IF NOT EXISTS householdmember_json (
   id integer NOT NULL,
   case_id integer NOT NULL,
   startDate date,
   endDate date,
-  housingdataType varchar(20),
+  data text NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY(case_id) REFERENCES cases(id)
+);
+
+CREATE TABLE IF NOT EXISTS expense_json (
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  startDate date,
+  endDate date,
+  data text NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY(case_id) REFERENCES cases(id)
+);
+
+CREATE TABLE IF NOT EXISTS income_json (
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  startDate date,
+  endDate date,
+  data text NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY(case_id) REFERENCES cases(id)
+);
+
+CREATE TABLE IF NOT EXISTS application_json (
+  id integer NOT NULL,
+  case_id integer NOT NULL,
+  startDate date,
+  endDate date,
   data text NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY(case_id) REFERENCES cases(id)

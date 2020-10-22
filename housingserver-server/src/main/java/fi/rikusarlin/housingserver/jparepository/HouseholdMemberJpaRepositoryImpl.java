@@ -12,17 +12,22 @@ import org.springframework.stereotype.Component;
 
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
 
 @Component("householdMemberRepositoryJpa")
-public class HouseholdMemberRepositoryJpaImpl implements HouseholdMemberRepository {
+public class HouseholdMemberJpaRepositoryImpl implements HouseholdMemberRepository {
 
     @Autowired
     private HouseholdMemberJpaRepository jpaRepo;
+	@Autowired
+    private HousingBenefitCaseJpaRepository caseRepo;
 
-    public HouseholdMember save(HouseholdMember householdMember, HousingBenefitCaseEntity hbce) {
+
+    public HouseholdMember save(HouseholdMember householdMember, Integer caseId) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	HouseholdMemberEntity hme = MappingUtil.modelMapper.map(householdMember, HouseholdMemberEntity.class);
     	hme.setHousingBenefitCase(hbce);
         return MappingUtil.modelMapper.map(jpaRepo.save(hme), HouseholdMember.class);
@@ -48,10 +53,8 @@ public class HouseholdMemberRepositoryJpaImpl implements HouseholdMemberReposito
  	}
 
 	@Override
-	public void delete(HouseholdMember HouseholdMember, HousingBenefitCaseEntity hbce) {
-		HouseholdMemberEntity hme = MappingUtil.modelMapper.map(HouseholdMember, HouseholdMemberEntity.class);
-		hme.setHousingBenefitCase(hbce);
-		jpaRepo.delete(hme);
+	public void delete(Integer id) {
+		jpaRepo.deleteById(id);
 	}
 
 	@Override
@@ -66,7 +69,8 @@ public class HouseholdMemberRepositoryJpaImpl implements HouseholdMemberReposito
 	}
 
 	@Override
-	public List<HouseholdMember> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
+	public List<HouseholdMember> findByHousingBenefitCaseId(Integer caseId) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Iterable<HouseholdMemberEntity> householdMembers = jpaRepo.findByHousingBenefitCase(hbce);
 		return StreamSupport.stream(householdMembers.spliterator(), false)
 				.map(householdMember -> MappingUtil.modelMapper.map(householdMember, HouseholdMember.class))
@@ -74,7 +78,8 @@ public class HouseholdMemberRepositoryJpaImpl implements HouseholdMemberReposito
 	}
 
 	@Override
-	public Optional<HouseholdMember> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
+	public Optional<HouseholdMember> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+       	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
 		Optional<HouseholdMemberEntity> householdMember = jpaRepo.findByHousingBenefitCaseAndId(hbce, id);
 		if(householdMember.isPresent()) {
 			HouseholdMember hm = MappingUtil.modelMapper.map(householdMember.get(), HouseholdMember.class);

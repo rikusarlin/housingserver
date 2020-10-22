@@ -10,24 +10,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fi.rikusarlin.housingserver.data.HouseholdMemberJsonEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataType;
+import fi.rikusarlin.housingserver.data.json.HouseholdMemberJsonEntity;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitCaseJsonEntity;
+import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
 import fi.rikusarlin.housingserver.repository.HouseholdMemberRepository;
 
 @Component("householdMemberRepositoryJson")
-public class HouseholdMemberRepositoryJsonImpl implements HouseholdMemberRepository {
+public class HouseholdMemberJsonRepositoryImpl implements HouseholdMemberRepository {
 
 	@Autowired
     private HouseholdMemberJsonRepository jsonRepo;
+	@Autowired
+    private HousingBenefitCaseJsonRepository caseRepo;
     
 	@Override
-	public HouseholdMember save(HouseholdMember hm, HousingBenefitCaseEntity hbce) {
+	public HouseholdMember save(HouseholdMember hm, Integer caseId) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
     	HouseholdMemberJsonEntity dataEntity = MappingUtil.modelMapper.map(hm, HouseholdMemberJsonEntity.class);
     	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.HOUSEHOLDMEMBER);
     	dataEntity.setHouseholdMember(hm);
     	HouseholdMemberJsonEntity savedEntity = jsonRepo.save(dataEntity);
     	hm.setId(savedEntity.getId());
@@ -59,12 +61,10 @@ public class HouseholdMemberRepositoryJsonImpl implements HouseholdMemberReposit
 	}
 
 	@Override
-	public void delete(HouseholdMember hm, HousingBenefitCaseEntity hbce) {
-    	HouseholdMemberJsonEntity dataEntity = MappingUtil.modelMapper.map(hm, HouseholdMemberJsonEntity.class);
-    	dataEntity.setHousingBenefitCase(hbce);
-    	dataEntity.setHousingDataType(HousingDataType.HOUSEHOLDMEMBER);
-    	dataEntity.setHouseholdMember(hm);
-    	jsonRepo.delete(dataEntity);
+	public void delete(Integer id) {
+		HouseholdMemberJsonEntity hmje = jsonRepo.findById(id).orElseThrow(() -> new NotFoundException("Household member", id));
+    	hmje.getHousingBenefitCase().getHouseholdMembers().remove(hmje);
+		jsonRepo.delete(hmje);
 	}
 
 	@Override
@@ -80,8 +80,9 @@ public class HouseholdMemberRepositoryJsonImpl implements HouseholdMemberReposit
 	}
 
 	@Override
-	public List<HouseholdMember> findByHousingBenefitCase(HousingBenefitCaseEntity hbce) {
-		Iterable<HouseholdMemberJsonEntity> hmjes = jsonRepo.findByHousingBenefitCaseAndHousingDataType(hbce, HousingDataType.HOUSEHOLDMEMBER);
+	public List<HouseholdMember> findByHousingBenefitCaseId(Integer caseId) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Iterable<HouseholdMemberJsonEntity> hmjes = jsonRepo.findByHousingBenefitCase(hbce);
 		return StreamSupport.stream(hmjes.spliterator(), false)
 				.map(hmje -> {
 					HouseholdMember hm = MappingUtil.modelMapper.map(hmje.getHouseholdMember(), HouseholdMember.class);
@@ -92,8 +93,9 @@ public class HouseholdMemberRepositoryJsonImpl implements HouseholdMemberReposit
 	}
 
 	@Override
-	public Optional<HouseholdMember> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id) {
-		Optional<HouseholdMemberJsonEntity> hmje = jsonRepo.findByHousingBenefitCaseAndIdAndHousingDataType(hbce, id, HousingDataType.HOUSEHOLDMEMBER);
+	public Optional<HouseholdMember> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id) {
+       	HousingBenefitCaseJsonEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException("Housing benefit case", caseId));
+		Optional<HouseholdMemberJsonEntity> hmje = jsonRepo.findByHousingBenefitCaseAndId(hbce, id);
 		if(hmje.isPresent()) {
 			HouseholdMember hm = hmje.get().getHouseholdMember();
 			hm.setId(hmje.get().getId());
@@ -101,7 +103,5 @@ public class HouseholdMemberRepositoryJsonImpl implements HouseholdMemberReposit
 		} else {
 			return Optional.empty();
 		}
-
 	}
-
 }

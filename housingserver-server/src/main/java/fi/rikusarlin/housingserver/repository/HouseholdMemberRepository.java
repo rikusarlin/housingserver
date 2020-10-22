@@ -5,15 +5,14 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
 
 public interface HouseholdMemberRepository{
-	HouseholdMember save(HouseholdMember entity, HousingBenefitCaseEntity hbce);
+	HouseholdMember save(HouseholdMember entity, Integer caseId);
 	Optional<HouseholdMember> findById(Integer id);
 	Iterable<HouseholdMember> findAll();
-	void delete(HouseholdMember entity, HousingBenefitCaseEntity hbce);
+	void delete(Integer id);
 	Iterable<HouseholdMember> findAll(Sort sort);
-	List<HouseholdMember> findByHousingBenefitCase(HousingBenefitCaseEntity hbce);
-	Optional<HouseholdMember> findByHousingBenefitCaseAndId(HousingBenefitCaseEntity hbce, Integer id);
+	List<HouseholdMember> findByHousingBenefitCaseId(Integer caseId);
+	Optional<HouseholdMember> findByHousingBenefitCaseIdAndId(Integer caseId, Integer id);
 }

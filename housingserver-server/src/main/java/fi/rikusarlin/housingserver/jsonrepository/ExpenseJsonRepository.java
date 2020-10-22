@@ -5,11 +5,10 @@ import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import fi.rikusarlin.housingserver.data.ExpenseJsonEntity;
-import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.data.HousingDataType;
+import fi.rikusarlin.housingserver.data.json.ExpenseJsonEntity;
+import fi.rikusarlin.housingserver.data.json.HousingBenefitCaseJsonEntity;
 
 public interface ExpenseJsonRepository extends PagingAndSortingRepository<ExpenseJsonEntity, Integer> {
-	List<ExpenseJsonEntity> findByHousingBenefitCaseAndHousingDataType(HousingBenefitCaseEntity housingBenefitCase, HousingDataType hdt);
-	Optional<ExpenseJsonEntity> findByHousingBenefitCaseAndIdAndHousingDataType(HousingBenefitCaseEntity housingBenefitCase, Integer id, HousingDataType hdt);
+	List<ExpenseJsonEntity> findByHousingBenefitCase(HousingBenefitCaseJsonEntity hbcje);
+	Optional<ExpenseJsonEntity> findByHousingBenefitCaseAndId(HousingBenefitCaseJsonEntity hbcje, Integer id);
 }
