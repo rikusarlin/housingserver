@@ -8,12 +8,18 @@
   	<preConditions onFail="MARK_RAN">
         <not><columnExists tableName="PERSON" columnName="CREATED"/></not>
     </preConditions>
-    <addColumn tableName="person">
+    <addColumn tableName="PERSON">
         <column name="CREATED" type="TIMESTAMP"/>
         <column name="CREATOR" type="VARCHAR(20)"/>
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="PERSON" columnName="CREATED"/>
+    	<dropColumn tableName="PERSON" columnName="CREATOR"/>
+    	<dropColumn tableName="PERSON" columnName="MODIFIED"/>
+    	<dropColumn tableName="PERSON" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
   <changeSet  author="s015sir" id="3_add_auditing_columns_2">
   	<preConditions onFail="MARK_RAN">
@@ -25,6 +31,12 @@
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="CASES" columnName="CREATED"/>
+    	<dropColumn tableName="CASES" columnName="CREATOR"/>
+    	<dropColumn tableName="CASES" columnName="MODIFIED"/>
+    	<dropColumn tableName="CASES" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
   <changeSet  author="s015sir" id="3_add_auditing_columns_3">
   	<preConditions onFail="MARK_RAN">
@@ -36,6 +48,12 @@
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="APPLICATION" columnName="CREATED"/>
+    	<dropColumn tableName="APPLICATION" columnName="CREATOR"/>
+    	<dropColumn tableName="APPLICATION" columnName="MODIFIED"/>
+    	<dropColumn tableName="APPLICATION" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
   <changeSet  author="s015sir" id="3_add_auditing_columns_4">
   	<preConditions onFail="MARK_RAN">
@@ -47,6 +65,12 @@
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="EXPENSE" columnName="CREATED"/>
+    	<dropColumn tableName="EXPENSE" columnName="CREATOR"/>
+    	<dropColumn tableName="EXPENSE" columnName="MODIFIED"/>
+    	<dropColumn tableName="EXPENSE" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
   <changeSet  author="s015sir" id="3_add_auditing_columns_5">
   	<preConditions onFail="MARK_RAN">
@@ -58,6 +82,12 @@
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="INCOME" columnName="CREATED"/>
+    	<dropColumn tableName="INCOME" columnName="CREATOR"/>
+    	<dropColumn tableName="INCOME" columnName="MODIFIED"/>
+    	<dropColumn tableName="INCOME" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
   <changeSet  author="s015sir" id="3_add_auditing_columns_6">
   	<preConditions onFail="MARK_RAN">
@@ -69,5 +99,11 @@
         <column name="MODIFIED" type="TIMESTAMP"/>
         <column name="MODIFIER" type="VARCHAR(20)"/>
     </addColumn>
+    <rollback>
+    	<dropColumn tableName="HOUSEHOLDMEMBER" columnName="CREATED"/>
+    	<dropColumn tableName="HOUSEHOLDMEMBER" columnName="CREATOR"/>
+    	<dropColumn tableName="HOUSEHOLDMEMBER" columnName="MODIFIED"/>
+    	<dropColumn tableName="HOUSEHOLDMEMBER" columnName="MODIFIER"/>
+    </rollback>
   </changeSet>  
 </databaseChangeLog> 
