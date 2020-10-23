@@ -31,3 +31,6 @@ hs_err_pid*
 /housingserver-server/bin/
 /housingserver-specification/bin
 /housingserver-specification/target
+
+# Test database, if H2 is used
+testdb.*

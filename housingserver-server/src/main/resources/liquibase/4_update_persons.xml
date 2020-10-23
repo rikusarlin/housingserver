@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog   
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"   
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">   
+  <changeSet  author="s015sir" id="4_update_persons_1">
+  	<preConditions onFail="MARK_RAN">
+        <sqlCheck expectedResult="1">SELECT COUNT(*) FROM person WHERE personNumber='010170-901K'</sqlCheck>
+    </preConditions>
+    <update tableName="person">
+      <column name="created" value="2020-10-23 17:45:55.220415"/>
+      <column name="creator" value="SuperUser"/>
+      <column name="modified" value="2020-10-23 17:45:55.220415"/>
+      <column name="modifier" value="SuperUser"/>
+      <where>creator is null</where>
+    </update>
+  </changeSet>  
+</databaseChangeLog> 

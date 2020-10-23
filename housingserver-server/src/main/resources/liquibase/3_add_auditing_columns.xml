@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>   
+<databaseChangeLog   
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"   
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">   
+  <changeSet  author="s015sir" id="3_add_auditing_columns_1">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="PERSON" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="person">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+  <changeSet  author="s015sir" id="3_add_auditing_columns_2">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="CASES" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="CASES">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+  <changeSet  author="s015sir" id="3_add_auditing_columns_3">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="APPLICATION" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="APPLICATION">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+  <changeSet  author="s015sir" id="3_add_auditing_columns_4">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="EXPENSE" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="EXPENSE">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+  <changeSet  author="s015sir" id="3_add_auditing_columns_5">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="INCOME" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="INCOME">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+  <changeSet  author="s015sir" id="3_add_auditing_columns_6">
+  	<preConditions onFail="MARK_RAN">
+        <not><columnExists tableName="HOUSEHOLDMEMBER" columnName="CREATED"/></not>
+    </preConditions>
+    <addColumn tableName="HOUSEHOLDMEMBER">
+        <column name="CREATED" type="TIMESTAMP"/>
+        <column name="CREATOR" type="VARCHAR(20)"/>
+        <column name="MODIFIED" type="TIMESTAMP"/>
+        <column name="MODIFIER" type="VARCHAR(20)"/>
+    </addColumn>
+  </changeSet>  
+</databaseChangeLog> 

@@ -1,0 +1,233 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="S015SIR (generated)" id="1603456842490-1">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="HIBERNATE_SEQUENCE"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="HIBERNATE_SEQUENCE"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-2">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="APPLICATION"/>
+            </not>
+        </preConditions>
+        <createTable tableName="APPLICATION">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_D"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPLICANT_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RECEIVED" type="TIMESTAMP"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-3">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CASES"/>
+            </not>
+        </preConditions>
+        <createTable tableName="CASES">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_3"/>
+            </column>
+            <column name="CUSTOMER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CASESTATE" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-4">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="EXPENSE"/>
+            </not>
+        </preConditions>
+        <createTable tableName="EXPENSE">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_DCC"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DOUBLE(17)"/>
+            <column name="EXPENSETYPE" type="VARCHAR(20)"/>
+            <column name="OTHEREXPENSEDESCRIPTION" type="VARCHAR(200)"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-5">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="HOUSEHOLDMEMBER"/>
+            </not>
+        </preConditions>
+        <createTable tableName="HOUSEHOLDMEMBER">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_A"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CUSTOMER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-6">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="INCOME"/>
+            </not>
+        </preConditions>
+        <createTable tableName="INCOME">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_80"/>
+            </column>
+            <column name="CASE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DOUBLE(17)"/>
+            <column name="INCOMETYPE" type="VARCHAR(20)"/>
+            <column name="OTHERINCOMEDESCRIPTION" type="VARCHAR(200)"/>
+            <column name="STARTDATE" type="date"/>
+            <column name="ENDDATE" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-7">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PERSON"/>
+            </not>
+        </preConditions>
+        <createTable tableName="PERSON">
+            <column name="ID" type="INT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_8"/>
+            </column>
+            <column name="FIRSTNAME" type="VARCHAR(80)"/>
+            <column name="LASTNAME" type="VARCHAR(80)"/>
+            <column name="PERSONNUMBER" type="VARCHAR(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BIRTHDATE" type="date"/>
+            <column name="GENDER" type="VARCHAR(20)"/>
+            <column name="EMAIL" type="VARCHAR(80)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-8">
+        <!-- The following is DB specific, there is no uniqueConstraintExists in liquibase :-( -->
+    	<preConditions onFail="MARK_RAN">
+             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM information_schema.constraints WHERE CONSTRAINT_NAME='CONSTRAINT_8C'</sqlCheck>
+        </preConditions>
+        <addUniqueConstraint columnNames="PERSONNUMBER" constraintName="CONSTRAINT_8C" tableName="PERSON"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-9">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_3"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_3" tableName="CASES">
+            <column name="CUSTOMER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-10">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_80"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_80" tableName="INCOME">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-11">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_A"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_A" tableName="HOUSEHOLDMEMBER">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-12">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_AC"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_AC" tableName="HOUSEHOLDMEMBER">
+            <column name="CUSTOMER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-13">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_D"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_D" tableName="APPLICATION">
+            <column name="APPLICANT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-14">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_DC"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_DC" tableName="APPLICATION">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-15">
+    	<preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="CONSTRAINT_INDEX_DCC"/></not>
+        </preConditions>
+        <createIndex indexName="CONSTRAINT_INDEX_DCC" tableName="EXPENSE">
+            <column name="CASE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-16">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_3C"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="CASES" constraintName="CONSTRAINT_3C" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-17">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_80F"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="INCOME" constraintName="CONSTRAINT_80F" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-18">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_AC"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="HOUSEHOLDMEMBER" constraintName="CONSTRAINT_AC" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-19">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_AC0"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CUSTOMER_ID" baseTableName="HOUSEHOLDMEMBER" constraintName="CONSTRAINT_AC0" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-20">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_DC"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="APPLICANT_ID" baseTableName="APPLICATION" constraintName="CONSTRAINT_DC" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PERSON" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-21">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_DCC0"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="EXPENSE" constraintName="CONSTRAINT_DCC0" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+    <changeSet author="S015SIR (generated)" id="1603456842490-22">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="CONSTRAINT_DCF"/></not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="CASE_ID" baseTableName="APPLICATION" constraintName="CONSTRAINT_DCF" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="CASES" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

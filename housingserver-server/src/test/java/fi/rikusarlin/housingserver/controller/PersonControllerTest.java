@@ -26,7 +26,7 @@ import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.testdata.PersonData;
-import fi.rikusarlin.housingserver.topdown.controller.PersonControllerImpl;
+import fi.rikusarlin.housingserver.topdown.controller.PersonsControllerImpl;
 
 @ExtendWith(MockitoExtension.class)
 class PersonControllerTest {
@@ -35,7 +35,7 @@ class PersonControllerTest {
     PersonRepository mockPersonRepo;
 
     @InjectMocks
-    PersonControllerImpl personService;
+    PersonsControllerImpl personService;
     
     @AfterEach
     public void tearDown() {

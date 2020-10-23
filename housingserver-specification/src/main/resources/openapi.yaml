@@ -34,7 +34,34 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/Person'
-  /person/{id}:
+    post:
+      tags:
+        - admins
+      summary: add person
+      operationId: addPerson
+      description: Adds a person to the system
+      responses:
+        '201':
+          description: person created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: person creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: an existing person already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        description: Person to add
+  /persons/{id}:
     get:
       tags:
         - developers
@@ -117,7 +144,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: person not found
-  /person/{id}/check:
+  /persons/{id}/check:
     get:
       tags:
         - developers
@@ -147,34 +174,6 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: person not found
-  /person:
-    post:
-      tags:
-        - admins
-      summary: add person
-      operationId: addPerson
-      description: Adds a person to the system
-      responses:
-        '201':
-          description: person created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Person'
-        '400':
-          description: person creation not ok, error message returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '409':
-          description: an existing person already exists
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Person'
-        description: Person to add
   /householdmembers/{caseId}:
     get:
       tags:
@@ -199,7 +198,39 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/HouseholdMember'
-  /householdmember/{caseId}/{id}:
+    post:
+      tags:
+        - developers
+      summary: add household member
+      operationId: addHouseholdMember
+      description: Adds a household member to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: household member created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdMember'
+        '400':
+          description: household member creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseholdMember'
+        description: Household member to add
+  /householdmembers/{caseId}/{id}:
     get:
       tags:
         - developers
@@ -303,7 +334,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: household member not found
-  /householdmember/{caseId}/{id}/check:
+  /householdmembers/{caseId}/{id}/check:
     get:
       tags:
         - developers
@@ -339,39 +370,6 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: household member not found
-  /householdmember/{caseId}:
-    post:
-      tags:
-        - developers
-      summary: add household member
-      operationId: addHouseholdMember
-      description: Adds a household member to a given case
-      parameters:
-        - in: path
-          name: caseId
-          description: id of case
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
-      responses:
-        '201':
-          description: household member created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HouseholdMember'
-        '400':
-          description: household member creation not ok, error message returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/HouseholdMember'
-        description: Household member to add
   /expenses/{caseId}:
     get:
       tags:
@@ -396,7 +394,39 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/Expense'
-  /expense/{caseId}/{id}:
+    post:
+      tags:
+        - developers
+      summary: add expense
+      operationId: addExpense
+      description: Adds an expense to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: expense created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: expense creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+        description: Expense to add
+  /expenses/{caseId}/{id}:
     get:
       tags:
         - developers
@@ -500,7 +530,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: expense not found
-  /expense/{caseId}/{id}/check:
+  /expenses/{caseId}/{id}/check:
     get:
       tags:
         - developers
@@ -536,39 +566,6 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: expense not found
-  /expense/{caseId}:
-    post:
-      tags:
-        - developers
-      summary: add expense
-      operationId: addExpense
-      description: Adds an expense to a given case
-      parameters:
-        - in: path
-          name: caseId
-          description: id of case
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
-      responses:
-        '201':
-          description: expense created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Expense'
-        '400':
-          description: expense creation not ok, error message returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Expense'
-        description: Expense to add
   /incomes/{caseId}:
     get:
       tags:
@@ -593,7 +590,39 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/Income'
-  /income/{caseId}/{id}:
+    post:
+      tags:
+        - developers
+      summary: add income
+      operationId: addIncome
+      description: Adds an income to a given case
+      parameters:
+        - in: path
+          name: caseId
+          description: id of case
+          required: true
+          schema:
+            $ref: '#/components/schemas/Id'
+      responses:
+        '201':
+          description: income created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+        '400':
+          description: income creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Income'
+        description: Income to add
+  /incomes/{caseId}/{id}:
     get:
       tags:
         - developers
@@ -697,7 +726,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: income not found
-  /income/{caseId}/{id}/check:
+  /incomes/{caseId}/{id}/check:
     get:
       tags:
         - developers
@@ -733,40 +762,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: income not found
-  /income/{caseId}:
-    post:
-      tags:
-        - developers
-      summary: add income
-      operationId: addIncome
-      description: Adds an income to a given case
-      parameters:
-        - in: path
-          name: caseId
-          description: id of case
-          required: true
-          schema:
-            $ref: '#/components/schemas/Id'
-      responses:
-        '201':
-          description: income created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Income'
-        '400':
-          description: income creation not ok, error message returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Income'
-        description: Income to add
-  /application/{caseId}:
+  /applications/{caseId}:
     get:
       tags:
         - developers
@@ -876,7 +872,7 @@ paths:
             schema:
               $ref: '#/components/schemas/HousingBenefitApplication'
         description: Application to add
-  /application/{caseId}/check:
+  /applications/{caseId}/check:
     get:
       tags:
         - developers
@@ -923,7 +919,32 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/HousingBenefitCase'
-  /cases/{personNumber}:
+    post:
+      tags:
+        - developers
+      summary: add housing benefit case based on application
+      operationId: addHousingBenefitCase
+      description: Adds housing benefit case
+      responses:
+        '201':
+          description: housing benefit case nad application created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HousingBenefitCase'
+        '400':
+          description: housing benefit case and application creation not ok, error message returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewHousingBenefitCase'
+        description: housing benefit case and application to add
+  /cases/person/{personNumber}:
     get:
       tags:
         - developers
@@ -949,7 +970,7 @@ paths:
                 type: array
                 items: 
                   $ref: '#/components/schemas/HousingBenefitCase'
-  /case/{caseId}:
+  /cases/{caseId}:
     get:
       tags:
         - developers
@@ -1035,7 +1056,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: housing benefit case not found
-  /case/{caseId}/check:
+  /cases/{caseId}/check:
     get:
       tags:
         - developers
@@ -1065,32 +1086,6 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: housing benefit case not found
-  /case:
-    post:
-      tags:
-        - developers
-      summary: add housing benefit case based on application
-      operationId: addHousingBenefitCase
-      description: Adds housing benefit case
-      responses:
-        '201':
-          description: housing benefit case nad application created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HousingBenefitCase'
-        '400':
-          description: housing benefit case and application creation not ok, error message returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewHousingBenefitCase'
-        description: housing benefit case and application to add
 components:
   schemas:
     ErrorMessage:
@@ -1127,12 +1122,28 @@ components:
     Id:
       type: integer
       description: Unique identifier of a resource
-    IdAndDateRange:
+    IdDateRangeAndAuditing:
       type: object
       description: Id and possibly open range between two dates - that is, both start end end dates can be empty
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
         startDate:
           type: string
           format: date
@@ -1141,6 +1152,28 @@ components:
           type: string
           format: date
           example: '2020-10-08'
+    IdAndAuditing:
+      type: object
+      description: Id and possibly open range between two dates - that is, both start end end dates can be empty
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
     Gender:
       type: string
       enum:
@@ -1150,34 +1183,35 @@ components:
     Person:
       type: object
       description: A natural person residing in Finland
-      properties: 
-        id:
-          $ref: '#/components/schemas/Id'
-        personNumber:
-          $ref: '#/components/schemas/PersonNumber'
-        firstName:
-          type: string
-          description: First name of a person
-          maxLength: 80
-        lastName:
-          type: string
-          description: Last name of a person
-          maxLength: 80
-        birthDate:
-          type: string
-          format: date
-          example: '1971-08-71'
-        gender:
-          $ref: '#/components/schemas/Gender'
-        email:
-          type: string
-          format: email
-          maxLength: 80
+      allOf:
+          - $ref: '#/components/schemas/IdAndAuditing'
+          - type: object
+            properties:
+              personNumber:
+                $ref: '#/components/schemas/PersonNumber'
+              firstName:
+                type: string
+                description: First name of a person
+                maxLength: 80
+              lastName:
+                type: string
+                description: Last name of a person
+                maxLength: 80
+              birthDate:
+                type: string
+                format: date
+                example: '1971-08-71'
+              gender:
+                $ref: '#/components/schemas/Gender'
+              email:
+                type: string
+                format: email
+                maxLength: 80
     HouseholdMember:
       type: object
       description: Household member info
       allOf:
-          - $ref: '#/components/schemas/IdAndDateRange'
+          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
           - type: object
             properties: 
               person:
@@ -1211,7 +1245,7 @@ components:
       type: object
       description: Income info
       allOf:
-          - $ref: '#/components/schemas/IdAndDateRange'
+          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
           - type: object
             properties: 
               incomeType:
@@ -1226,7 +1260,7 @@ components:
       type: object
       description: Expense info
       allOf:
-          - $ref: '#/components/schemas/IdAndDateRange'
+          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
           - type: object
             properties: 
               expenseType:
@@ -1241,7 +1275,7 @@ components:
       type: object
       description: Housing benefit application info
       allOf:
-          - $ref: '#/components/schemas/IdAndDateRange'
+          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
           - type: object
             properties:
               applicant:
@@ -1260,33 +1294,32 @@ components:
     HousingBenefitCase:
       type: object
       description: Housing benefit case
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        caseState:
-          $ref: '#/components/schemas/CaseState'
-        customer:
-          $ref: '#/components/schemas/Person'
-        application:
-          $ref: '#/components/schemas/HousingBenefitApplication'
-        householdMembers:
-          type: array
-          items:
-            $ref: '#/components/schemas/HouseholdMember'
-        housingExpenses:
-          type: array
-          items:
-            $ref: '#/components/schemas/Expense'
-        incomes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Income'
+      allOf:
+          - $ref: '#/components/schemas/IdAndAuditing'
+          - type: object
+            properties:
+              caseState:
+                $ref: '#/components/schemas/CaseState'
+              customer:
+                $ref: '#/components/schemas/Person'
+              application:
+                $ref: '#/components/schemas/HousingBenefitApplication'
+              householdMembers:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HouseholdMember'
+              housingExpenses:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+              incomes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
     NewHousingBenefitCase:
       type: object
       description: Housing benefit case
       properties:
-        id:
-          $ref: '#/components/schemas/Id'
         caseState:
           $ref: '#/components/schemas/CaseState'
         customer:

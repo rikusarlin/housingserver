@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import fi.rikusarlin.housingserver.api.ApplicationApi;
+import fi.rikusarlin.housingserver.api.ApplicationsApi;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
@@ -32,7 +32,7 @@ import fi.rikusarlin.housingserver.validation.InputChecks;
 @RestController
 @Service
 @Validated
-public class HousingBenefitApplicationControllerImpl implements ApplicationApi {
+public class HousingBenefitApplicationControllerImpl implements ApplicationsApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
