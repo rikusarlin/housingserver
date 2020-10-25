@@ -9,38 +9,38 @@
         <sqlCheck expectedResult="0">SELECT COUNT(*) FROM person WHERE personNumber='010170-901K'</sqlCheck>
     </preConditions>
     <insert tableName="person">  
-        <column  name="id"  valueComputed="HIBERNATE_SEQUENCE.NEXTVAL"/>  
-        <column  name="personNumber"  value="010170-901K"/>  
-        <column  name="firstName"  value="Rauli"/>  
-        <column  name="lastName"  value="Wnape"/>  
-        <column  name="birthDate"  value="1970-01-01"/>  
+        <column  name="id"  valueComputed="NEXTVAL('HIBERNATE_SEQUENCE')"/>  
+        <column  name="personnumber"  value="010170-901K"/>  
+        <column  name="firstname"  value="Rauli"/>  
+        <column  name="lastname"  value="Wnape"/>  
+        <column  name="birthdate"  value="1970-01-01"/>  
         <column  name="gender"  value="1"/>  
         <column  name="email"  value="rauliwnape2@hotmail.com"/>
      </insert>
     <insert tableName="person">  
-        <column  name="id"  valueComputed="HIBERNATE_SEQUENCE.NEXTVAL"/>  
-        <column  name="personNumber"  value="010170-902L"/>  
-        <column  name="firstName"  value="Marke"/>  
-        <column  name="lastName"  value="Peerakpe"/>  
-        <column  name="birthDate"  value="1970-01-01"/>  
+        <column  name="id"  valueComputed="NEXTVAL('HIBERNATE_SEQUENCE')"/>  
+        <column  name="personnumber"  value="010170-902L"/>  
+        <column  name="firstname"  value="Marke"/>  
+        <column  name="lastname"  value="Peerakpe"/>  
+        <column  name="birthdate"  value="1970-01-01"/>  
         <column  name="gender"  value="0"/>  
         <column  name="email"  value="marke.peerakpe@yahoo.com"/>
      </insert>
     <insert tableName="person">  
-        <column  name="id"  valueComputed="HIBERNATE_SEQUENCE.NEXTVAL"/>  
-        <column  name="personNumber"  value="010170-903M"/>  
-        <column  name="firstName"  value="Walter"/>  
-        <column  name="lastName"  value="Nutbekk"/>  
-        <column  name="birthDate"  value="1970-01-01"/>  
+        <column  name="id"  valueComputed="NEXTVAL('HIBERNATE_SEQUENCE')"/>  
+        <column  name="personnumber"  value="010170-903M"/>  
+        <column  name="firstname"  value="Walter"/>  
+        <column  name="lastname"  value="Nutbekk"/>  
+        <column  name="birthdate"  value="1970-01-01"/>  
         <column  name="gender"  value="1"/>  
         <column  name="email"  value="walter.nutbekk@welho.com"/>
      </insert>
     <insert tableName="person">  
-        <column  name="id"  valueComputed="HIBERNATE_SEQUENCE.NEXTVAL"/>  
-        <column  name="personNumber"  value="010170-904N"/>  
-        <column  name="firstName"  value="Suvi-Tuulia"/>  
-        <column  name="lastName"  value="Retsetenpe"/>  
-        <column  name="birthDate"  value="1970-01-01"/>  
+        <column  name="id"  valueComputed="NEXTVAL('HIBERNATE_SEQUENCE')"/>  
+        <column  name="personnumber"  value="010170-904N"/>  
+        <column  name="firstname"  value="Suvi-Tuulia"/>  
+        <column  name="lastname"  value="Retsetenpe"/>  
+        <column  name="birthdate"  value="1970-01-01"/>  
         <column  name="gender"  value="0"/>  
         <column  name="email"  value="suvi-tuuli.retsenape@gmail.com"/>
      </insert>
