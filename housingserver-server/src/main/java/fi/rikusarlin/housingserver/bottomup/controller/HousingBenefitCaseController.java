@@ -27,6 +27,7 @@ import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
+import fi.rikusarlin.housingserver.exception.ApiErrorMessage;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
 import fi.rikusarlin.housingserver.repository.ExpenseRepository;
@@ -36,6 +37,11 @@ import fi.rikusarlin.housingserver.repository.IncomeRepository;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @Validated
@@ -74,7 +80,14 @@ public class HousingBenefitCaseController {
 	}
  
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/api/v1/housing")
+    @Operation(description = "add housing benefit case based on application", operationId = "addHousingBenefitCase", tags={ "developers"})
+	@ApiResponses(value = {
+		      @ApiResponse(responseCode = "201", description = "housing benefit case and application created", content = @Content(schema = @Schema(implementation = HousingBenefitCaseEntity.class))),
+		      @ApiResponse(responseCode = "400", description = "housing benefit case and application creation not ok", content = @Content(schema = @Schema(implementation = ApiErrorMessage.class))),
+		      @ApiResponse(responseCode = "404", description = "person referenced in application or case not found", content = @Content(schema = @Schema(implementation = ApiErrorMessage.class))) })
+    @PostMapping(value = "/api/v2/housing/cases",
+        produces = { "application/json" }, 
+        consumes = { "application/json" })
 	public HousingBenefitCaseEntity addHousingBenefitCase(
 			@RequestBody @Validated(InputChecks.class) HousingBenefitCaseEntity hbc) {
 		// This deletes the potential ids
