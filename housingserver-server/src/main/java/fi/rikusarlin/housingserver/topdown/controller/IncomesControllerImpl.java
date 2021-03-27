@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fi.rikusarlin.housingserver.api.IncomesApi;
@@ -32,6 +33,7 @@ import fi.rikusarlin.housingserver.validation.InputChecks;
 @RestController
 @Service
 @Validated
+@RequestMapping("/api/v2/housing")
 public class IncomesControllerImpl implements IncomesApi {
 	
 	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();

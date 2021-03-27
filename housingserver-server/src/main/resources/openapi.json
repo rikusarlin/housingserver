@@ -1,0 +1,2137 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Housing benefit api API",
+    "description": "Housing benefit application handling demo API",
+    "contact": {
+      "email": "riku.sarlin@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://mit-license.org/"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v2/housing",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Persons",
+      "description": "Operations on persons"
+    },
+    {
+      "name": "Applications",
+      "description": "Operations on applications"
+    },
+    {
+      "name": "Household members",
+      "description": "Operations on household members"
+    },
+    {
+      "name": "Incomes",
+      "description": "Operations on incomes"
+    },
+    {
+      "name": "Expenses",
+      "description": "Operations on expenses"
+    },
+    {
+      "name": "Cases",
+      "description": "Operations on cases"
+    }
+  ],
+  "paths": {
+    "/persons": {
+      "get": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "fetch persons",
+        "description": "Fetch all persons\n",
+        "operationId": "fetchPersons",
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "add person",
+        "description": "Adds a person to the system",
+        "operationId": "addPerson",
+        "requestBody": {
+          "description": "Person to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Person"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "person created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "person creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "an existing person already exists"
+          }
+        }
+      }
+    },
+    "/persons/{id}": {
+      "get": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "fetch person",
+        "description": "Fetch person by person id\n",
+        "operationId": "fetchPersonById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of person to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "person found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          },
+          "404": {
+            "description": "person not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "update person",
+        "description": "Updates person info",
+        "operationId": "updatePerson",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of person to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Person to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Person"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "person updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "delete person",
+        "description": "Deletes person",
+        "operationId": "deletePerson",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of person to delete",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "person deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "person not found"
+          }
+        }
+      }
+    },
+    "/persons/{id}/check": {
+      "get": {
+        "tags": [
+          "Persons"
+        ],
+        "summary": "cross-check person info",
+        "description": "Cross validate by person id\n",
+        "operationId": "checkPersonById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of person to check",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "person validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "person validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "person not found"
+          }
+        }
+      }
+    },
+    "/householdmembers/{caseId}": {
+      "get": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "fetch household members of a given case",
+        "description": "Fetch all household members of a given case\n",
+        "operationId": "fetchHouseholdMembers",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HouseholdMember"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "add household member",
+        "description": "Adds a household member to a given case",
+        "operationId": "addHouseholdMember",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Household member to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HouseholdMember"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "household member created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "household member creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/householdmembers/{caseId}/{id}": {
+      "get": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "fetch household member",
+        "description": "Fetch household member by id in a given case\n",
+        "operationId": "fetchHouseholdMemberById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of household member to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "household member found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fetch not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "person not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "update household member in a given case",
+        "description": "Updates household member info",
+        "operationId": "updateHouseholdMember",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of household member to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Household member to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HouseholdMember"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "updated household member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "delete household member in a given case",
+        "description": "Deletes household member in a given case",
+        "operationId": "deleteHouseholdMember",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of household member to delete",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "household member deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "household member not found"
+          }
+        }
+      }
+    },
+    "/householdmembers/{caseId}/{id}/check": {
+      "get": {
+        "tags": [
+          "Household members"
+        ],
+        "summary": "cross-check household member info in a housing benefit application",
+        "description": "Cross validate by person id\n",
+        "operationId": "checkHouseholdMemberById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of household member to check",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "household member validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "household member validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "household member not found"
+          }
+        }
+      }
+    },
+    "/expenses/{caseId}": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "fetch expenses of a given case",
+        "description": "Fetch all expenses of a given case\n",
+        "operationId": "fetchExpenses",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "add expense",
+        "description": "Adds an expense to a given case",
+        "operationId": "addExpense",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Expense to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Expense"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "expense created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "expense creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expenses/{caseId}/{id}": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "fetch expense",
+        "description": "Fetch expense by id in a given case\n",
+        "operationId": "fetchExpenseById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of expense to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "expense found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fetch not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "expense not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "update expense in a given case",
+        "description": "Updates expense info",
+        "operationId": "updateExpense",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of expense to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Expense to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Expense"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "updated expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "delete expense in a given case",
+        "description": "Deletes expense in a given case",
+        "operationId": "deleteExpense",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of expense to delete",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "expense deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "expense not found"
+          }
+        }
+      }
+    },
+    "/expenses/{caseId}/{id}/check": {
+      "get": {
+        "tags": [
+          "Expenses"
+        ],
+        "summary": "cross-check expense info in a housing benefit application",
+        "description": "Cross validate by expense id\n",
+        "operationId": "checkExpenseById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of expense to check",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "expense validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "expense validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "expense not found"
+          }
+        }
+      }
+    },
+    "/incomes/{caseId}": {
+      "get": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "fetch incomes of a given case",
+        "description": "Fetch all incomes of a given case\n",
+        "operationId": "fetchIncomes",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Income"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "add income",
+        "description": "Adds an income to a given case",
+        "operationId": "addIncome",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Income to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Income"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "income created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Income"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "income creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/incomes/{caseId}/{id}": {
+      "get": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "fetch income",
+        "description": "Fetch income by id in a given case\n",
+        "operationId": "fetchIncomeById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of income to return",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "income found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Income"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fetch not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "income not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "update income in a given case",
+        "description": "Updates income info",
+        "operationId": "updateIncome",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of income to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Income to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Income"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "updated income",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Income"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "delete income in a given case",
+        "description": "Deletes income in a given case",
+        "operationId": "deleteIncome",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of income to delete",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "income deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "income not found"
+          }
+        }
+      }
+    },
+    "/incomes/{caseId}/{id}/check": {
+      "get": {
+        "tags": [
+          "Incomes"
+        ],
+        "summary": "cross-check income info in a housing benefit application",
+        "description": "Cross validate by income id\n",
+        "operationId": "checkIncomeById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of income to check",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "income validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Income"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "income validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "income not found"
+          }
+        }
+      }
+    },
+    "/applications/{caseId}": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "fetch application of a given case",
+        "description": "Fetch all incomes of a given case\n",
+        "operationId": "fetchApplication",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitApplication"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "update application in a given case",
+        "description": "Updates application info",
+        "operationId": "updateApplication",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Application to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HousingBenefitApplication"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "updated application",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "add application to case",
+        "description": "Adds an application to a given case",
+        "operationId": "addApplication",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Application to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HousingBenefitApplication"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "application created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "application creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "delete application of a given case",
+        "description": "Deletes application of a given case",
+        "operationId": "deleteApplication",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "application deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "application not found"
+          }
+        }
+      }
+    },
+    "/applications/{caseId}/check": {
+      "get": {
+        "tags": [
+          "Applications"
+        ],
+        "summary": "cross-check application info in a housing benefit application",
+        "description": "Cross validate by income id\n",
+        "operationId": "checkApplication",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "application validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "application validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "application not found"
+          }
+        }
+      }
+    },
+    "/cases": {
+      "get": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "fetch housing benefit cases",
+        "description": "Fetch all housing benefit cases\n",
+        "operationId": "fetchHousingBenefitCases",
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HousingBenefitCase"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "add housing benefit case based on application",
+        "description": "Adds housing benefit case",
+        "operationId": "addHousingBenefitCase",
+        "requestBody": {
+          "description": "housing benefit case and application to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewHousingBenefitCase"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "housing benefit case and application created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitCase"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "housing benefit case and application creation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cases/person/{personNumber}": {
+      "get": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "fetch housing benefit cases for a given person",
+        "description": "Fetch all housing benefit cases of a given person\nA housing benefit case is returned if the given person is\na household member in the application\n",
+        "operationId": "fetchHousingBenefitCasesByPersonNumber",
+        "parameters": [
+          {
+            "name": "personNumber",
+            "in": "path",
+            "description": "person number of the person in question",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PersonNumber"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HousingBenefitCase"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cases/{caseId}": {
+      "get": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "fetch housing benefit case",
+        "description": "Fetch housing benefit case by id\n",
+        "operationId": "fetchHousingBenefitCaseById",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "housing benefit application found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitCase"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fetch not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "housing benefit case not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "update housing benefit case",
+        "description": "Updates housing benefit case",
+        "operationId": "updateHousingBenefitCase",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Housing benefit case to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HousingBenefitCase"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "updated housing benefit case",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitCase"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "update not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "delete housing benefit case",
+        "description": "Deletes housing benefit case",
+        "operationId": "deleteHousingBenefitCase",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "housing benefit case deleted successfully"
+          },
+          "400": {
+            "description": "delete not successful, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "housing benefit case not found"
+          }
+        }
+      }
+    },
+    "/cases/{caseId}/check": {
+      "get": {
+        "tags": [
+          "Cases"
+        ],
+        "summary": "cross-check housing benefit case",
+        "description": "Cross validate housing benefit case\n",
+        "operationId": "checkHousingBenefitCase",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "description": "id of case",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "housing benefit case validation ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HousingBenefitCase"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "housing benefit case validation not ok, error message returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "housing benefit case not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "number",
+            "description": "HTTP status code",
+            "format": "integer"
+          },
+          "error": {
+            "type": "string",
+            "description": "description of error"
+          },
+          "path": {
+            "type": "string",
+            "description": "URL path of error"
+          },
+          "message": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fieldName": {
+                  "type": "string",
+                  "description": "name of field, if applicable, where error occured"
+                },
+                "errorMessage": {
+                  "type": "string",
+                  "description": "a more detailed description of the error"
+                },
+                "errorCode": {
+                  "type": "string",
+                  "description": "error code"
+                }
+              }
+            }
+          }
+        },
+        "description": "Info about error(s) in backend processing"
+      },
+      "Id": {
+        "type": "integer",
+        "description": "Unique identifier of a resource"
+      },
+      "IdDateRangeAndAuditing": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "creationTime": {
+            "type": "string",
+            "description": "Timestamp of last creation",
+            "format": "date-time"
+          },
+          "createdByUser": {
+            "maxLength": 80,
+            "type": "string",
+            "description": "User that created this entity"
+          },
+          "modificationTime": {
+            "type": "string",
+            "description": "Timestamp of last modification",
+            "format": "date-time"
+          },
+          "modifiedByUser": {
+            "maxLength": 80,
+            "type": "string",
+            "description": "User that last modified this entity"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2020-10-08"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2020-10-08"
+          }
+        },
+        "description": "Id and possibly open range between two dates - that is, both start end end dates can be empty"
+      },
+      "IdAndAuditing": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "creationTime": {
+            "type": "string",
+            "description": "Timestamp of last creation",
+            "format": "date-time"
+          },
+          "createdByUser": {
+            "maxLength": 80,
+            "type": "string",
+            "description": "User that created this entity"
+          },
+          "modificationTime": {
+            "type": "string",
+            "description": "Timestamp of last modification",
+            "format": "date-time"
+          },
+          "modifiedByUser": {
+            "maxLength": 80,
+            "type": "string",
+            "description": "User that last modified this entity"
+          }
+        },
+        "description": "Id and possibly open range between two dates - that is, both start end end dates can be empty"
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "WOMAN",
+          "MAN",
+          "OTHER"
+        ]
+      },
+      "Person": {
+        "type": "object",
+        "description": "A natural person residing in Finland",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "personNumber": {
+                "$ref": "#/components/schemas/PersonNumber"
+              },
+              "firstName": {
+                "maxLength": 80,
+                "type": "string",
+                "description": "First name of a person"
+              },
+              "lastName": {
+                "maxLength": 80,
+                "type": "string",
+                "description": "Last name of a person"
+              },
+              "birthDate": {
+                "type": "string",
+                "format": "date",
+                "example": "1971-10-10"
+              },
+              "gender": {
+                "$ref": "#/components/schemas/Gender"
+              },
+              "email": {
+                "maxLength": 80,
+                "type": "string",
+                "format": "email"
+              }
+            }
+          }
+        ]
+      },
+      "HouseholdMember": {
+        "type": "object",
+        "description": "Household member info",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdDateRangeAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "person": {
+                "$ref": "#/components/schemas/Person"
+              }
+            }
+          }
+        ]
+      },
+      "PersonNumber": {
+        "maxLength": 11,
+        "minLength": 11,
+        "pattern": "^\\d{6}[A+-]\\d{3}[0-9A-FHJ-NPR-Y]$",
+        "type": "string",
+        "description": "Finnish person number"
+      },
+      "ExpenseType": {
+        "type": "string",
+        "enum": [
+          "RENT",
+          "ELECTRICITY",
+          "WATER",
+          "INTEREST",
+          "MAINTENANCE_CHARGE",
+          "OTHER"
+        ]
+      },
+      "IncomeType": {
+        "type": "string",
+        "enum": [
+          "SALARY",
+          "PENSION",
+          "SOCIAL_BENEFIT",
+          "STUDY_GRANT",
+          "DIVIDEND",
+          "INTEREST",
+          "OTHER"
+        ]
+      },
+      "Income": {
+        "type": "object",
+        "description": "Income info",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdDateRangeAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "incomeType": {
+                "$ref": "#/components/schemas/IncomeType"
+              },
+              "amount": {
+                "type": "number",
+                "format": "double"
+              },
+              "otherIncomeDescription": {
+                "type": "string",
+                "description": "A textual description for income if income type is OTHER"
+              }
+            }
+          }
+        ]
+      },
+      "Expense": {
+        "type": "object",
+        "description": "Expense info",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdDateRangeAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "expenseType": {
+                "$ref": "#/components/schemas/ExpenseType"
+              },
+              "amount": {
+                "type": "number",
+                "format": "double"
+              },
+              "otherExpenseDescription": {
+                "type": "string",
+                "description": "A textual description for expense if expense type is OTHER"
+              }
+            }
+          }
+        ]
+      },
+      "HousingBenefitApplication": {
+        "type": "object",
+        "description": "Housing benefit application info",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdDateRangeAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "applicant": {
+                "$ref": "#/components/schemas/Person"
+              },
+              "received": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "CaseState": {
+        "type": "string",
+        "enum": [
+          "NEW",
+          "ACTIVE",
+          "WAITING",
+          "READY",
+          "CANCELED"
+        ]
+      },
+      "HousingBenefitCase": {
+        "type": "object",
+        "description": "Housing benefit case",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdAndAuditing"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "caseState": {
+                "$ref": "#/components/schemas/CaseState"
+              },
+              "customer": {
+                "$ref": "#/components/schemas/Person"
+              },
+              "application": {
+                "$ref": "#/components/schemas/HousingBenefitApplication"
+              },
+              "householdMembers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HouseholdMember"
+                }
+              },
+              "housingExpenses": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              },
+              "incomes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Income"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "NewHousingBenefitCase": {
+        "type": "object",
+        "properties": {
+          "caseState": {
+            "$ref": "#/components/schemas/CaseState"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "application": {
+            "$ref": "#/components/schemas/HousingBenefitApplication"
+          }
+        },
+        "description": "Housing benefit case"
+      }
+    }
+  }
+}

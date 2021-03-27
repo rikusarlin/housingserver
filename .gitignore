@@ -32,5 +32,6 @@ hs_err_pid*
 /housingserver-specification/bin
 /housingserver-specification/target
 
-# Test database, if H2 is used
-testdb.*
+# H2 database files, if any
+housingserver-server/testdb.mv.db
+housingserver-server/testdb.trace.db

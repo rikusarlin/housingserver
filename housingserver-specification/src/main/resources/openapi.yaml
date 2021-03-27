@@ -927,7 +927,7 @@ paths:
       description: Adds housing benefit case
       responses:
         '201':
-          description: housing benefit case nad application created
+          description: housing benefit case and application created
           content:
             application/json:
               schema:

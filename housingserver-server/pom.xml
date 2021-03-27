@@ -34,11 +34,6 @@
             </exclusions>
         </dependency>
         <dependency>
-			<groupId>fi.rikusarlin</groupId>
-			<artifactId>housingserver-specification</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-        <dependency>
   			<groupId>org.modelmapper</groupId>
   			<artifactId>modelmapper</artifactId>
   			<version>2.3.0</version>
@@ -83,11 +78,6 @@
     		<version>1.0.42</version>
 		</dependency>
 		<dependency>
-           <groupId>io.swagger</groupId>
-           <artifactId>swagger-annotations</artifactId>
-           <version>1.5.24</version>
-		</dependency>
-		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
 			<version>0.2.1</version>
@@ -95,8 +85,25 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.2.32</version>
+			<version>1.4.8</version>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<!--  
+		<dependency>
+    		<groupId>io.springfox</groupId>
+    		<artifactId>springfox-swagger-ui</artifactId>
+    		<version>2.9.2</version>
+		</dependency>
+		<dependency>
+    		<groupId>io.springfox</groupId>
+    		<artifactId>springfox-boot-starter</artifactId>
+    		<version>3.0.0</version>
+		</dependency>
+		-->
 		<dependency>
     		<groupId>org.liquibase</groupId>
     		<artifactId>liquibase-core</artifactId>
@@ -164,6 +171,35 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>4.3.1</version>
+                <executions>
+                    <execution>
+                        <id>spring-boot-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+							<inputSpec>
+								${project.basedir}/src/main/resources/openapi.json
+							</inputSpec>
+							<generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+							<apiPackage>fi.rikusarlin.housingserver.api</apiPackage>
+							<modelPackage>fi.rikusarlin.housingserver.model</modelPackage>
+							<supportingFilesToGenerate>
+								ApiUtil.java
+							</supportingFilesToGenerate>
+							<configOptions>
+								<delegatePattern>false</delegatePattern>
+								<interfaceOnly>true</interfaceOnly>
+							</configOptions>
+						</configuration>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>  
               <groupId>org.liquibase</groupId>  
               <artifactId>liquibase-maven-plugin</artifactId>  

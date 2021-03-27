@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import fi.rikusarlin.housingserver.model.Gender;
 import fi.rikusarlin.housingserver.model.Person;
 
+
 public class PersonData {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
