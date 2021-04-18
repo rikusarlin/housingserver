@@ -174,7 +174,7 @@
 			<plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>4.3.1</version>
+	            <version>4.3.1</version>
                 <executions>
                     <execution>
                         <id>spring-boot-api</id>
@@ -202,7 +202,7 @@
             </plugin>
 			<plugin>  
               <groupId>org.liquibase</groupId>  
-              <artifactId>liquibase-maven-plugin</artifactId>  
+              <artifactId>liquibase-maven-plugin</artifactId>
               <version>3.8.0</version>  
               <configuration>  
                 <propertyFile>src/main/resources/liquibase.properties</propertyFile>  
@@ -231,7 +231,7 @@
     			<version>3.5.37</version>
     			<executions>
    					<execution>
-       					<id>fmp</id>
+       					<id>fabric8</id>
        					<goals>
        						<goal>resource</goal>
        						<goal>build</goal>

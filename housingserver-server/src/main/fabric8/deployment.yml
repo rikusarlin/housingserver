@@ -1,0 +1,26 @@
+spec:
+  template:
+    spec:
+      containers:
+        -
+          env:
+          - name: POSTGRE_HOST
+            value: ec2-52-50-171-4.eu-west-1.compute.amazonaws.com
+          - name: POSTGRE_DB
+            value: dc6lju2h0h9m1n
+          - name: POSTGRE_USER
+            value: nqcuifkjvvsymv
+          - name: POSTGRE_PASSWORD
+            value: c5b652d2a22be5fc21489639742a1941f050708763025d985018670bfd9d63da
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 180
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
