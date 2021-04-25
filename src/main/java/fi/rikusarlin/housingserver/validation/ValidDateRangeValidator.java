@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
-
 import fi.rikusarlin.housingserver.data.DateRangedEntity;
 
 
@@ -21,10 +19,6 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
 	@Override
 	public boolean isValid (Object value, ConstraintValidatorContext context) {
 		boolean isValid = true;
-
-        HibernateConstraintValidatorContext hibernateContext = context.unwrap(
-                HibernateConstraintValidatorContext.class );
-        hibernateContext.disableDefaultConstraintViolation();
 
 		if(!(value instanceof DateRangedEntity)) {
 			return false;
@@ -42,8 +36,8 @@ public class ValidDateRangeValidator implements ConstraintValidator<ValidDateRan
            	    	null, 
            	    	0, 
            	    	"startEndDate",
-           	    	"start date must be less than end date if both are given, here start date is '{0}' and end date '{1}'",
-           			hibernateContext,
+           	    	"start date must be less than end date if both are given, here start date is ''{0}'' and end date ''{1}''",
+           			context,
            			startDate !=null ? startDate.format(formatter) : "null",
            			endDate != null ? endDate.format(formatter) : "null"
            		);

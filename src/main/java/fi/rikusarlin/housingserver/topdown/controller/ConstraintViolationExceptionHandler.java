@@ -15,8 +15,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.springframework.http.HttpStatus;
-
 import fi.rikusarlin.housingserver.validation.Severity;
 
 @Provider
@@ -26,7 +24,7 @@ public class ConstraintViolationExceptionHandler implements ExceptionMapper<Cons
 	{
     	Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("status", Status.BAD_REQUEST.name());
         List<String> errors = new ArrayList<String>();
         for(ConstraintViolation<?> violation:e.getConstraintViolations()) {
         	String message = "UNKNOWN:" + violation.getPropertyPath() + ": " + violation.getMessage();

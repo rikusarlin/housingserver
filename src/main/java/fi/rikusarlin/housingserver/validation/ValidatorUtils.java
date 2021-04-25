@@ -5,16 +5,14 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
-import javax.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
+import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.Payload;
-
-import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 
 public class ValidatorUtils {
 	
@@ -56,7 +54,7 @@ public class ValidatorUtils {
     public static void addViolation(
     		String propertyName,
     		String messageTemplate,
-    		HibernateConstraintValidatorContext ctx,
+    		ConstraintValidatorContext ctx,
     		String... variableValues) {
     	addViolation(null,0, propertyName, messageTemplate, ctx, variableValues);
     }
@@ -66,21 +64,17 @@ public class ValidatorUtils {
     		int collectionIndex, 
     		String propertyName,
     		String messageTemplate,
-    		HibernateConstraintValidatorContext ctx,
+    		ConstraintValidatorContext ctx,
     		String... variableValues) {
-    	int index = 0;
-    	for(String variableValue:variableValues) {
-    		ctx.addMessageParameter(index+"", variableValue);
-    		index++;
-    	}
-    	ConstraintViolationBuilder cvb = ctx.buildConstraintViolationWithTemplate(messageTemplate);
-    	NodeBuilderCustomizableContext nbcc;
+    	String formattedMessage = MessageFormat.format(messageTemplate, (Object[]) variableValues);
+    	ctx.disableDefaultConstraintViolation();
     	if(collectionName != null) {
-    		nbcc = cvb.addPropertyNode(collectionName+"["+collectionIndex+"]."+propertyName);
+        	ctx.buildConstraintViolationWithTemplate(formattedMessage)
+        	.addPropertyNode(collectionName+"["+collectionIndex+"]."+propertyName).addConstraintViolation();
     	} else {
-   			nbcc = cvb.addPropertyNode(propertyName);
+        	ctx.buildConstraintViolationWithTemplate(formattedMessage)
+        	.addPropertyNode(propertyName).addConstraintViolation();
     	}
-    	nbcc.addConstraintViolation();
     }
 
 }

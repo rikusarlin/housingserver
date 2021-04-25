@@ -9,8 +9,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -47,7 +45,6 @@ public class PersonEntity extends EntityClass {
 	@Basic
     @Column(name = "birthDate", nullable = false)	
 	@NotNull(groups=InputChecks.class, payload={Severity.Error.class})
-	@DateTimeFormat(pattern="dd.MM.yyyy")
 	@JsonDeserialize(using = LocalDateDeserializer.class)  
 	@JsonSerialize(using = LocalDateSerializer.class)  
 	LocalDate birthDate;

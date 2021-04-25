@@ -6,18 +6,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import fi.rikusarlin.housingserver.api.HouseholdmembersApiService;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.data.HouseholdMemberEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
-import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HouseholdMember;
@@ -27,21 +29,22 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.HouseholdChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@ApplicationScoped
 public class HouseholdMembersControllerImpl implements HouseholdmembersApiService {
 	
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
 	@Inject
     CaseRepository caseRepo;
     @Inject
     HouseholdMemberRepository householdMemberRepo;
     @Inject
     PersonRepository personRepo;
-    @Inject
-    Validator validator;
 
     @Override
 	public Response fetchHouseholdMemberById(Integer caseId, Integer id, SecurityContext securityContext) throws NotFoundException{
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException(caseId, "Housing benefit case"));
-		HouseholdMemberEntity hme = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Household member", id));
+		HouseholdMemberEntity hme = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException(id, "Household member"));
 		return Response.ok(MappingUtil.modelMapper.map(hme, HouseholdMember.class)).build();
 	}
  
@@ -50,7 +53,7 @@ public class HouseholdMembersControllerImpl implements HouseholdmembersApiServic
 			Integer caseId,
 			HouseholdMember hm, SecurityContext securityContext) throws NotFoundException{
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException(caseId, "Housing benefit case"));
-    	PersonEntity pe = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException("Person", hm.getPerson().getId()));
+    	PersonEntity pe = personRepo.findById(hm.getPerson().getId()).orElseThrow(() -> new NotFoundException(hm.getPerson().getId(), "Person"));
     	HouseholdMemberEntity hme = new HouseholdMemberEntity();
     	MappingUtil.modelMapperInsert.map(hm,  hme);
     	hme.setHousingBenefitCase(hbce);
@@ -70,7 +73,7 @@ public class HouseholdMembersControllerImpl implements HouseholdmembersApiServic
     @Override
 	public Response checkHouseholdMemberById(Integer caseId, Integer id, SecurityContext securityContext) throws NotFoundException{
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException(caseId, "Housing benefit case"));
-		HouseholdMemberEntity hme = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Household member", id));
+		HouseholdMemberEntity hme = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException(id, "Household member"));
 		Set<ConstraintViolation<HouseholdMemberEntity>> violations =  validator.validate(hme, HouseholdChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -121,7 +124,7 @@ public class HouseholdMembersControllerImpl implements HouseholdmembersApiServic
 			Integer caseId, 
 			Integer id, SecurityContext securityContext) throws NotFoundException{
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException(caseId, "Housing benefit case"));
-    	HouseholdMemberEntity hm = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException("Household member", id));
+    	HouseholdMemberEntity hm = householdMemberRepo.findByHousingBenefitCaseAndId(hbce, id).orElseThrow(() -> new NotFoundException(id, "Household member"));
  		householdMemberRepo.delete(hm);
  		return Response.ok().build();
 	}

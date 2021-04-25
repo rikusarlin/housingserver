@@ -6,8 +6,6 @@ import java.util.Collection;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
-
 import fi.rikusarlin.housingserver.data.DateRangedEntity;
 
 /**
@@ -37,9 +35,11 @@ public class SubCollectionOverlappingDateRangeValidator
        	DateRangedEntity entity1 = (DateRangedEntity) ValidatorUtils.getProperty(value, fieldName);
        	Collection<?> collection = (Collection<?>) ValidatorUtils.getProperty(value, collectionName);
 
+       	/*
         HibernateConstraintValidatorContext hibernateContext = ctx.unwrap(
                 HibernateConstraintValidatorContext.class );
         hibernateContext.disableDefaultConstraintViolation();
+       	*/
        	
         int index=0;
        	for(Object subvalue:collection) {
@@ -51,7 +51,7 @@ public class SubCollectionOverlappingDateRangeValidator
            	    		index, 
            	    		"startEndDate",
            	    		"must overlap with application date range, and {0}-{1} and {2}-{3} do not overlap",
-           				hibernateContext,
+           	    		ctx,
            				entity1.getStartDate()!=null ? entity1.getStartDate().format(formatter) : "null",
            				entity1.getEndDate()!=null ? entity1.getEndDate().format(formatter) : "null",
            				entity2.getStartDate()!=null ? entity2.getStartDate().format(formatter) : "null",

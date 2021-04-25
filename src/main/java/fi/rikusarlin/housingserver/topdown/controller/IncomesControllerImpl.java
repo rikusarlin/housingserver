@@ -5,17 +5,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import fi.rikusarlin.housingserver.api.IncomesApiService;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.IncomeEntity;
-import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Income;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
@@ -23,14 +25,16 @@ import fi.rikusarlin.housingserver.repository.IncomeRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@ApplicationScoped
 public class IncomesControllerImpl implements IncomesApiService {
 	
-    @Inject
+
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+	@Inject
     CaseRepository caseRepo;
     @Inject
     IncomeRepository incomeRepo;
-    @Inject
-    Validator validator;
 
 	@Override
 	public Response fetchIncomeById(Integer caseId, Integer id, SecurityContext securityContext) throws NotFoundException {

@@ -10,10 +10,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import org.springframework.validation.annotation.Validated;
-
 @MappedSuperclass
-@Validated
 public abstract class EntityClass {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

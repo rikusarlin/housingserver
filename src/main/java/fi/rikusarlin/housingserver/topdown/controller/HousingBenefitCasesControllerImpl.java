@@ -5,18 +5,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import fi.rikusarlin.housingserver.api.CasesApiService;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 import fi.rikusarlin.housingserver.data.PersonEntity;
-import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.HousingBenefitCase;
 import fi.rikusarlin.housingserver.model.NewHousingBenefitCase;
@@ -26,16 +28,17 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@ApplicationScoped
 public class HousingBenefitCasesControllerImpl implements CasesApiService{
 	
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
     @Inject
     CaseRepository caseRepo;
     @Inject
     HousingBenefitApplicationRepository hbaRepo;
     @Inject
     PersonRepository personRepo;
-    @Inject
-    Validator validator;
     
     @Override
 	public Response fetchHousingBenefitCaseById(Integer caseId, SecurityContext securityContext) throws NotFoundException {
@@ -82,6 +85,7 @@ public class HousingBenefitCasesControllerImpl implements CasesApiService{
 			Integer caseId,
 			HousingBenefitCase hbc, SecurityContext securityContext) throws NotFoundException{
 		HousingBenefitCaseEntity hbce = MappingUtil.modelMapper.map(hbc, HousingBenefitCaseEntity.class);
+		personRepo.findById(hbc.getCustomer().getId()).orElseThrow(() -> new NotFoundException(hbc.getCustomer().getId(), "Customer"));
 		Set<ConstraintViolation<HousingBenefitCaseEntity>> violations =  validator.validate(hbce, AllChecks.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
@@ -91,7 +95,7 @@ public class HousingBenefitCasesControllerImpl implements CasesApiService{
 				(value) 
 					-> {
 						MappingUtil.modelMapper.map(hbc, value);
-						PersonEntity customer = personRepo.findById(hbc.getCustomer().getId()).orElseThrow(() -> new NotFoundException(bc.getCustomer().getId(), "Customer"));
+						PersonEntity customer = personRepo.findById(hbc.getCustomer().getId()).get();
 						value.setCustomer(customer);
 						value = caseRepo.save(value);
 					},

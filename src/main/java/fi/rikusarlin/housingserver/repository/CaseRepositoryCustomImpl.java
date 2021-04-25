@@ -2,10 +2,12 @@ package fi.rikusarlin.housingserver.repository;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+@ApplicationScoped
 public class CaseRepositoryCustomImpl implements CaseRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;

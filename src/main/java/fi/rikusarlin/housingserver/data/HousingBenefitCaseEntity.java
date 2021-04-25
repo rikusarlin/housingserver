@@ -48,8 +48,8 @@ public class HousingBenefitCaseEntity extends EntityClass{
     @JoinColumn(name="customer_id", nullable=false)
     private PersonEntity customer;
 
-	@Basic
 	@Valid
+	@Basic
     private CaseState caseState;
 	
 	public HousingBenefitCaseEntity() {

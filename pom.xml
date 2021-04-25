@@ -45,10 +45,27 @@
 			<artifactId>quarkus-resteasy</artifactId>
 		</dependency>
 		<dependency>
+  			<groupId>io.quarkus</groupId>
+  			<artifactId>quarkus-resteasy-jsonb</artifactId>
+		</dependency>
+		<!-- Next 2 are needed for H2 console -->
+		<dependency>
+  			<groupId>io.quarkus</groupId>
+  			<artifactId>quarkus-vertx</artifactId>
+		</dependency>
+		<dependency>
+  			<groupId>io.quarkus</groupId>
+  			<artifactId>quarkus-undertow</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-openshift</artifactId>
 		</dependency>
-		<dependency>
+    	<dependency>
+        	<groupId>io.quarkus</groupId>
+        	<artifactId>quarkus-liquibase</artifactId>
+    	</dependency>
+   		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.0</version>
@@ -73,35 +90,21 @@
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-hibernate-validator</artifactId>
 		</dependency>
+		<!-- Expose OpenAPI -->
 		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-spring-web</artifactId>
+    		<groupId>io.quarkus</groupId>
+    		<artifactId>quarkus-smallrye-openapi</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.networknt</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>1.0.42</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.1</version>
-		</dependency>
-		<dependency>
-    		<groupId>org.springframework</groupId>
-    		<artifactId>spring-web</artifactId>
-    		<version>5.3.6</version>
-		</dependency>
-		<!-- Source generation -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.4.8</version>
-		</dependency>
+		<!-- Source generation & Swagger -->
 		<dependency>
     		<groupId>io.swagger.core.v3</groupId>
     		<artifactId>swagger-annotations</artifactId>
     		<version>2.1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.4.8</version>
 		</dependency>
 		<dependency>
     		<groupId>io.springfox</groupId>
@@ -146,6 +149,18 @@
 			<version>2.23.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>1.0.42</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -182,6 +197,7 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<!--  
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -193,7 +209,7 @@
                         </goals>
                         <configuration>
 							<inputSpec>
-								${project.basedir}/src/main/resources/openapi.json
+								${project.basedir}/src/main/resources/META-INF/openapi.json
 							</inputSpec>
 							<generatorName>jaxrs-resteasy</generatorName>
 							<apiPackage>fi.rikusarlin.housingserver.api</apiPackage>
@@ -207,6 +223,8 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
+			<!--  
 			<plugin>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
@@ -232,6 +250,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 	<profiles>

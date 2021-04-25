@@ -4,15 +4,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import fi.rikusarlin.housingserver.api.PersonsApiService;
 import fi.rikusarlin.housingserver.api.NotFoundException;
+import fi.rikusarlin.housingserver.api.PersonsApiService;
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
@@ -21,12 +23,13 @@ import fi.rikusarlin.housingserver.repository.PersonRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@ApplicationScoped
 public class PersonsControllerImpl implements PersonsApiService {
+
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 	@Inject
 	PersonRepository personRepo;
-    @Inject
-    Validator validator;
 
 	@Override
 	public Response fetchPersonById(Integer id, SecurityContext securityContext) throws NotFoundException{

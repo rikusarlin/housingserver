@@ -5,17 +5,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 import fi.rikusarlin.housingserver.api.ExpensesApiService;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.data.ExpenseEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
-import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Expense;
 import fi.rikusarlin.housingserver.repository.CaseRepository;
@@ -23,19 +25,20 @@ import fi.rikusarlin.housingserver.repository.ExpenseRepository;
 import fi.rikusarlin.housingserver.validation.AllChecks;
 import fi.rikusarlin.housingserver.validation.InputChecks;
 
+@ApplicationScoped
 public class ExpensesControllerImpl implements ExpensesApiService {
 	
-    @Inject
+	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+	@Inject
     ExpenseRepository expenseRepo;
     @Inject
     CaseRepository caseRepo;
-    @Inject
-    Validator validator;
     
 	@Override
 	public Response fetchExpenseById(Integer caseId, Integer id, SecurityContext securityContext) throws NotFoundException{
     	HousingBenefitCaseEntity hbce = caseRepo.findById(caseId).orElseThrow(() -> new NotFoundException(caseId, "Housing benefit case"));
-		ExpenseEntity ee = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException("Expense", id));
+		ExpenseEntity ee = expenseRepo.findById(id).orElseThrow(() -> new NotFoundException(id, "Expense"));
 		ee.setHousingBenefitCase(hbce);
 		return Response.ok(MappingUtil.modelMapper.map(ee, Expense.class)).build();
 	}

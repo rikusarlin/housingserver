@@ -9,19 +9,22 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
-import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
@@ -37,6 +40,13 @@ class PersonControllerTest {
     @InjectMocks
     PersonsControllerImpl personService;
     
+    SecurityContext securityContext;
+ 
+ 	@BeforeEach
+ 	public void setUp() {
+ 	   securityContext = Mockito.mock(SecurityContext.class); 		
+ 	}
+ 	
     @AfterEach
     public void tearDown() {
         clearInvocations(mockPersonRepo);
@@ -51,9 +61,15 @@ class PersonControllerTest {
     	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1outEntity);
     	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.empty());
     	
-        ResponseEntity<Person> result = personService.addPerson(person1);
+    	
+        Response result = null;
+		try {
+			result = personService.addPerson(person1, securityContext);
+		} catch (fi.rikusarlin.housingserver.api.NotFoundException e) {
+			e.printStackTrace();
+		}
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+		Assertions.assertTrue(result.getEntity().equals(Response.ok(person1out).build().getEntity()));
         verify(mockPersonRepo).findByPersonNumber(person1.getPersonNumber());
         verify(mockPersonRepo).save(any(PersonEntity.class));
     }
@@ -66,7 +82,7 @@ class PersonControllerTest {
     	when(mockPersonRepo.findByPersonNumber(person1.getPersonNumber())).thenReturn(Optional.of(person1outEntity));
     	
     	Exception e = Assertions.assertThrows(DuplicateNotAllowedException.class, () -> {
-            personService.addPerson(person1);
+            personService.addPerson(person1, securityContext);
         });
     	Assertions.assertTrue(e.getMessage().equals("personNumber "+person1.getPersonNumber()));
         verify(mockPersonRepo).findByPersonNumber(person1.getPersonNumber());        
@@ -78,7 +94,7 @@ class PersonControllerTest {
     	person2.setPersonNumber("010170-901L");
 
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            personService.addPerson(person2);
+            personService.addPerson(person2, securityContext);
         });
         Assertions.assertTrue(e.getMessage().equals("personNumber: invalid person number '"+person2.getPersonNumber()+"'"));
         verify(mockPersonRepo, times(0)).findByPersonNumber(person2.getPersonNumber());
@@ -94,9 +110,14 @@ class PersonControllerTest {
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
     	
-        ResponseEntity<Person> result = personService.fetchPersonById(person1.getId());
+        Response result = null;
+		try {
+			result = personService.fetchPersonById(person1.getId(), securityContext);
+		} catch (fi.rikusarlin.housingserver.api.NotFoundException e) {
+			e.printStackTrace();
+		}
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.getEntity().equals(Response.ok(person1out).build().getEntity()));
         verify(mockPersonRepo).findById(person1.getId());
     }
 
@@ -106,10 +127,10 @@ class PersonControllerTest {
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	Exception e = Assertions.assertThrows(NotFoundException.class, () -> {
-    		personService.fetchPersonById(person1.getId());
+    		personService.fetchPersonById(person1.getId(), securityContext);
         });
 
-        Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
+        Assertions.assertTrue(e.getMessage().equals("Person"));
         verify(mockPersonRepo).findById(person1.getId());
     }
 
@@ -122,7 +143,7 @@ class PersonControllerTest {
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
 
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            personService.checkPersonById(person1.getId());
+            personService.checkPersonById(person1.getId(), securityContext);
         });
         Assertions.assertTrue(e.getMessage().equals("email: invalid emailAddress 'username@yahoo..com'"));
         verify(mockPersonRepo).findById(person1.getId());
@@ -136,9 +157,14 @@ class PersonControllerTest {
 
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
     	
-        ResponseEntity<Person> result = personService.checkPersonById(person1.getId());
+        Response result = null;
+		try {
+			result = personService.checkPersonById(person1.getId(), securityContext);
+		} catch (fi.rikusarlin.housingserver.api.NotFoundException e) {
+			e.printStackTrace();
+		}
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.getEntity().equals(Response.ok(person1out).build().getEntity()));
         verify(mockPersonRepo).findById(person1.getId());
     }
 
@@ -149,10 +175,10 @@ class PersonControllerTest {
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	
     	Exception e = Assertions.assertThrows(NotFoundException.class, () -> {
-    		personService.checkPersonById(person1.getId());
+    		personService.checkPersonById(person1.getId(), securityContext);
         });
 
-        Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
+        Assertions.assertTrue(e.getMessage().equals("Person"));
         verify(mockPersonRepo).findById(person1.getId());
     }
     
@@ -164,9 +190,14 @@ class PersonControllerTest {
 
     	when(mockPersonRepo.save(any(PersonEntity.class))).thenReturn(person1Entity);
     	
-        ResponseEntity<Person> result = personService.updatePerson(person1.getId(), person1);
+        Response result = null;
+		try {
+			result = personService.updatePerson(person1.getId(), person1, securityContext);
+		} catch (fi.rikusarlin.housingserver.api.NotFoundException e) {
+			e.printStackTrace();
+		}
 
-        Assertions.assertTrue(result.equals(ResponseEntity.ok(person1out)));
+        Assertions.assertTrue(result.getEntity().equals(Response.ok(person1out).build().getEntity()));
         verify(mockPersonRepo).save(any(PersonEntity.class));
     }
 
@@ -175,7 +206,7 @@ class PersonControllerTest {
     	Person person1 = PersonData.getPerson1();
     	person1.setEmail("username@yahoo..com");
     	Exception e = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            personService.updatePerson(person1.getId(), person1);
+            personService.updatePerson(person1.getId(), person1, securityContext);
         });
         Assertions.assertTrue(e.getMessage().equals("email: invalid emailAddress 'username@yahoo..com'"));
     }
@@ -187,7 +218,12 @@ class PersonControllerTest {
  
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.of(person1outEntity));
     	
-        personService.deletePerson(person1.getId());
+        try {
+			personService.deletePerson(person1.getId(), securityContext);
+		} catch (fi.rikusarlin.housingserver.api.NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         verify(mockPersonRepo).findById(person1.getId());
     }
@@ -199,10 +235,10 @@ class PersonControllerTest {
     	when(mockPersonRepo.findById(person1.getId())).thenReturn(Optional.empty());
     	
     	Exception e = Assertions.assertThrows(NotFoundException.class, () -> {
-    		personService.deletePerson(person1.getId());
+    		personService.deletePerson(person1.getId(), securityContext);
         });
 
-        Assertions.assertTrue(e.getMessage().equals("Person not found : "+person1.getId()));
+        Assertions.assertTrue(e.getMessage().equals("Person"));
         verify(mockPersonRepo).findById(person1.getId());
     }
 

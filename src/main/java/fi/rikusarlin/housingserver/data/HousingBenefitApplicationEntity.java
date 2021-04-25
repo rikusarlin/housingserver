@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,7 +23,6 @@ public class HousingBenefitApplicationEntity extends DateRangedEntity {
     @Column(name = "received", nullable = true)
 	OffsetDateTime received;
 
-	@Valid
 	@OneToOne
     @JoinColumn(name="applicant_id", nullable=false)
     PersonEntity applicant;

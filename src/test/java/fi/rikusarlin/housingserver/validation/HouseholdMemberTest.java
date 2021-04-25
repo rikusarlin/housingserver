@@ -58,9 +58,10 @@ public class HouseholdMemberTest
     			HouseholdMemberData.getHouseholdMember2(),HouseholdMemberEntity.class);
     	hm1.setEndDate(LocalDate.parse("01.01.2019", formatter));
     	violations = validator.validate(hm1, HouseholdChecks.class);
+        List<String> violationList = getMessages(violations);
         Assertions.assertTrue(!violations.isEmpty());
         Assertions.assertTrue(violations.size() == 1);
-        Assertions.assertTrue(getMessages(violations).contains("startEndDate: start date must be less than end date if both are given, here start date is '01.09.2020' and end date '01.01.2019'"));
+        Assertions.assertTrue(violationList.contains("startEndDate: start date must be less than end date if both are given, here start date is '01.09.2020' and end date '01.01.2019'"));
     }
     
     @Test

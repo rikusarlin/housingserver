@@ -2,11 +2,14 @@ package fi.rikusarlin.housingserver.repository;
 
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import fi.rikusarlin.housingserver.data.HousingBenefitApplicationEntity;
 import fi.rikusarlin.housingserver.data.HousingBenefitCaseEntity;
 
+@ApplicationScoped
 public interface HousingBenefitApplicationRepository extends 
 	JpaRepository<HousingBenefitApplicationEntity, Integer> {
 	Optional<HousingBenefitApplicationEntity> findByHousingBenefitCase(HousingBenefitCaseEntity housingBenefitCase);

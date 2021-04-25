@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import fi.rikusarlin.housingserver.exception.NotFoundException;
+import fi.rikusarlin.housingserver.api.NotFoundException;
 
 @Provider
 public class NotFoundExceptionHandler implements ExceptionMapper<NotFoundException> {
