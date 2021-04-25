@@ -45,27 +45,27 @@
 			<artifactId>quarkus-resteasy</artifactId>
 		</dependency>
 		<dependency>
-  			<groupId>io.quarkus</groupId>
-  			<artifactId>quarkus-resteasy-jsonb</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy-jsonb</artifactId>
 		</dependency>
 		<!-- Next 2 are needed for H2 console -->
 		<dependency>
-  			<groupId>io.quarkus</groupId>
-  			<artifactId>quarkus-vertx</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-vertx</artifactId>
 		</dependency>
 		<dependency>
-  			<groupId>io.quarkus</groupId>
-  			<artifactId>quarkus-undertow</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-undertow</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-openshift</artifactId>
 		</dependency>
-    	<dependency>
-        	<groupId>io.quarkus</groupId>
-        	<artifactId>quarkus-liquibase</artifactId>
-    	</dependency>
-   		<dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-liquibase</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.0</version>
@@ -92,36 +92,26 @@
 		</dependency>
 		<!-- Expose OpenAPI -->
 		<dependency>
-    		<groupId>io.quarkus</groupId>
-    		<artifactId>quarkus-smallrye-openapi</artifactId>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-smallrye-openapi</artifactId>
 		</dependency>
-		<!-- Source generation & Swagger -->
+		<!-- Support for generated sources -->
 		<dependency>
-    		<groupId>io.swagger.core.v3</groupId>
-    		<artifactId>swagger-annotations</artifactId>
-    		<version>2.1.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.4.8</version>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jaxrs</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 		<dependency>
-    		<groupId>io.springfox</groupId>
-    		<artifactId>springfox-swagger-ui</artifactId>
-    		<version>2.9.2</version>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.6.2</version>
 		</dependency>
-		<dependency>
-    		<groupId>io.springfox</groupId>
-    		<artifactId>springfox-boot-starter</artifactId>
-    		<version>3.0.0</version>
-		</dependency>
-		<dependency>
-    		<groupId>javax.servlet</groupId>
-    		<artifactId>servlet-api</artifactId>
-    		<version>2.5</version>
-    		<scope>provided</scope>
-		</dependency>
+
+		<!-- <dependency> <groupId>io.springfox</groupId> <artifactId>springfox-swagger-ui</artifactId> 
+			<version>2.9.2</version> </dependency> <dependency> <groupId>io.springfox</groupId> 
+			<artifactId>springfox-boot-starter</artifactId> <version>3.0.0</version> 
+			</dependency> <dependency> <groupId>javax.servlet</groupId> <artifactId>servlet-api</artifactId> 
+			<version>2.5</version> <scope>provided</scope> </dependency> -->
 		<!-- Testing -->
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -197,7 +187,6 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-			<!--  
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -205,52 +194,50 @@
 				<executions>
 					<execution>
 						<goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
 							<inputSpec>
 								${project.basedir}/src/main/resources/META-INF/openapi.json
 							</inputSpec>
 							<generatorName>jaxrs-resteasy</generatorName>
 							<apiPackage>fi.rikusarlin.housingserver.api</apiPackage>
 							<modelPackage>fi.rikusarlin.housingserver.model</modelPackage>
+							<output>${project.build.directory}/generated-sources/</output>
+							<supportingFilesToGenerate>RestApplication.java,NotFoundException.java,ApiException.java,ApiResponseMessage.java</supportingFilesToGenerate>
 							<configOptions>
-								<delegatePattern>false</delegatePattern>
-								<interfaceOnly>true</interfaceOnly>
 								<dateLibrary>java8</dateLibrary>
+								<sourceFolder>src/main/java</sourceFolder>
 							</configOptions>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			-->
-			<!--  
 			<plugin>
-				<groupId>org.liquibase</groupId>
-				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>io.quarkus</groupId>
-						<artifactId>quarkus-jdbc-h2</artifactId>
-						<version>1.13.2.Final</version>
-					</dependency>
-					<dependency>
-						<groupId>io.quarkus</groupId>
-						<artifactId>quarkus-hibernate-orm</artifactId>
-						<version>1.13.2.Final</version>
-					</dependency>
-					<dependency>
-						<groupId>javax.xml.bind</groupId>
-						<artifactId>jaxb-api</artifactId>
-						<version>2.4.0-b180830.0359</version>
-					</dependency>
-				</dependencies>
+				<!-- Not able to tell openapi-generator NOT to generate implementation classes, so...  -->
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>clean-generated-impl</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+						    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+							<filesets>
+								<fileset>
+									<directory>target/generated-sources/src/main/java/fi/rikusarlin/housingserver/api/impl</directory>
+									<includes>
+                						<include>**/*</include>
+              						</includes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
-			-->
 		</plugins>
 	</build>
 	<profiles>
