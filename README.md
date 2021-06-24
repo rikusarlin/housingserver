@@ -63,8 +63,8 @@ The application uses various technologies, as follows:
 * Liquibase: database change control
 
 ## Local use
-The service is accessed via Rest api. Swagger UI is included in the package in the following address: 
-http://localhost:8080/swagger-ui.html
+The service is accessed via Rest api. OpenApi spec can be found in this address, and API accessed via browser extensions 
+http://localhost:8080/swagger-ui
 
 If H2 database is used, its UI can be accessed via the following address:
 http://localhost:8080/h2
@@ -116,16 +116,4 @@ These are considered to be stored in a separate database, reflected in the fact 
 * PUT /api/v2/housing/applications/{caseId} - update housing benefit application in a case
 * POST /api/v2/housing/applications/ - add housing benefit application in a case
 * GET /api/v2/housing//applications/{caseId}/{id}/check - cross validate housing benefit application
-
-## Variations in different branches
-It is worth noting that this repository contains additional branches which may be of interest. These are more straightforward or more complex software architectures with the same theme and business model, as follows:
-* bottom-up: a more simple approach which doesn't utilize openapi-generator. The Rest API is hand coded, and utilizes directly the entity objects in the interface
-* daolayer: a more complex approach centered in different repositories. PostgreSQL is used here, and two repository implementations are provided: a straightforward JPA-based one, and a little more exciting JPA and JSON based one. The idea with JSON columns is to be able to add attributes to business objects without having to bother with database and JPA entity changes. This does work, but repository layer adds complexity and lines of code a little.
  
-In addition to the actual Rest service, there are experiments with JSON schema based validation in class JsonSchemaValidition application (in src/test/main). JSON schema files can be found in src/main/resources and some example JSON input in src/test/resources. JsonSchemaValidation app also shows how to combine JSON schema validation to Spring validation (in a rather unsatisfactory way, though). This could also be applied to Rest service, see [this blog post](https://www.mscharhag.com/spring/json-schema-validation-handlermethodargumentresolver). All in all, only quite basic validation can be done through JSON schema validation - no cross-validation can be done, and no validation containing complex logic (such as validating control characters). 
- 
-## Running in Openshift
-This app can be deployed OpenShift environment using fabirc8. The prerequisites are as follows
-* OpenShift environment is available (a local "Code ready container" or enterprise version)
-* You have been logged into OpenShift ("oc login -u XXXX -p YYYYY")
-* You have chosen or created an openshift project ("e.g oc new-project housing-server")
