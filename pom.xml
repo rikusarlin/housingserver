@@ -243,7 +243,7 @@
 	<profiles>
 		<profile>
 			<id>native</id>
-			<activation>
+        	<activation>
 				<property>
 					<name>native</name>
 				</property>
@@ -274,6 +274,7 @@
 			<properties>
 				<quarkus.package.type>native</quarkus.package.type>
 				<quarkus.native.native-image-xmx>8192m</quarkus.native.native-image-xmx>
+            	<quarkus.native.additional-build-args>allow-incomplete-classpath</quarkus.native.additional-build-args>
 			</properties>
 		</profile>
 	</profiles>
