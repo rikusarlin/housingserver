@@ -1,7 +1,7 @@
 package fi.rikusarlin.housingserver.testdata;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class HousingBenefitCaseData {
     	hba.setStartDate(LocalDate.parse("01.09.2020", formatter));
     	hba.setEndDate(LocalDate.parse("01.10.2020", formatter));
     	hba.setApplicant(PersonData.getPerson1());;
-    	hba.setReceived(OffsetDateTime.parse("2020-10-12T07:29:44.907Z"));
+    	hba.setReceived(LocalDateTime.parse("2020-10-12T07:29:44.907Z"));
     	
     	hbc.setCaseState(CaseState.ACTIVE);
     	hbc.setApplication(hba);
@@ -37,8 +37,8 @@ public class HousingBenefitCaseData {
     	
     	hbc.getHousingExpenses().add(ExpenseData.getExpense1());
     	hbc.getHousingExpenses().add(ExpenseData.getExpense1());
-    	hbc.getIncomes().add(IncomeData.getIncome1());
-    	hbc.getIncomes().add(IncomeData.getIncome2());
+    	//hbc.getIncomes().add(IncomeData.getIncome1());
+    	//hbc.getIncomes().add(IncomeData.getIncome2());
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember1());
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember2());
     	hbc.getHouseholdMembers().add(HouseholdMemberData.getHouseholdMember3());

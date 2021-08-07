@@ -16,21 +16,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
 import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.exception.TooLongRangeException;
 import fi.rikusarlin.housingserver.validation.Severity;
 
+/*
 @RestController
 @ControllerAdvice
-public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+*/
+public class CustomGlobalExceptionHandler { //extends ResponseEntityExceptionHandler {
 
 	/*
     @ExceptionHandler(NotFoundException.class)
@@ -42,7 +41,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     // error handle for @Validated
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
@@ -61,8 +59,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<Object> springHandleConstraintViolation(ConstraintViolationException cve, WebRequest request) {
+    public static ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException cve) {
     	Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", HttpStatus.BAD_REQUEST.value());
@@ -84,7 +81,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         }
         body.put("error", "NOTVALID2");
         body.put("message", errors);
-        body.put("path", request.getContextPath());
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
     

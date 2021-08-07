@@ -1,11 +1,11 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="rikusarlin" id="1_create_db-1">
-        <createSequence sequenceName="HIBERNATE_SEQUENCE"/>
-    </changeSet>
-    <changeSet author="rikusarlin" id="1_create_db-2">
+		<createSequence sequenceName="HIBERNATE_SEQUENCE"/>
+	</changeSet>
+	<changeSet author="rikusarlin" id="1_create_db-2">
         <createTable tableName="APPLICATION">
-            <column name="ID" type="INT">
+            <column name="ID" autoIncrement="true" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_APPLICATION_PK"/>
             </column>
             <column name="CASE_ID" type="INT">
@@ -21,7 +21,7 @@
     </changeSet>
     <changeSet author="rikusarlin" id="1_create_db-3">
         <createTable tableName="CASES">
-            <column name="ID" type="INT">
+            <column name="ID" autoIncrement="true" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_CASES_PK"/>
             </column>
             <column name="CUSTOMER_ID" type="INT">
@@ -32,7 +32,7 @@
     </changeSet>
     <changeSet author="rikusarlin" id="1_create_db-4">
         <createTable tableName="EXPENSE">
-            <column name="ID" type="INT">
+            <column name="ID" type="SERIAL" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_EXPENSE_PK"/>
             </column>
             <column name="CASE_ID" type="INT">
@@ -47,7 +47,7 @@
     </changeSet>
     <changeSet author="rikusarlin" id="1_create_db-5">
         <createTable tableName="HOUSEHOLDMEMBER">
-            <column name="ID" type="INT">
+            <column name="ID" autoIncrement="true" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_HOUSEHOLDMEMBER_PK"/>
             </column>
             <column name="CASE_ID" type="INT">
@@ -62,7 +62,7 @@
     </changeSet>
     <changeSet author="rikusarlin" id="1_create_db-6">
         <createTable tableName="INCOME">
-            <column name="ID" type="INT">
+            <column name="ID" autoIncrement="true" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_INCOME_PK"/>
             </column>
             <column name="CASE_ID" type="INT">
@@ -77,7 +77,7 @@
     </changeSet>
     <changeSet author="rikusarlin" id="1_create_db-7">
         <createTable tableName="PERSON">
-            <column name="ID" type="INT">
+            <column name="ID" autoIncrement="true" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_PERSON_PK"/>
             </column>
             <column name="FIRSTNAME" type="VARCHAR(80)"/>

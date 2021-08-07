@@ -1,96 +1,96 @@
 package fi.rikusarlin.housingserver.topdown.controller;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import fi.rikusarlin.housingserver.api.PersonsApi;
-import fi.rikusarlin.housingserver.data.PersonEntity;
-import fi.rikusarlin.housingserver.exception.DuplicateNotAllowedException;
-import fi.rikusarlin.housingserver.exception.NotFoundException;
 import fi.rikusarlin.housingserver.mapping.MappingUtil;
 import fi.rikusarlin.housingserver.model.Person;
 import fi.rikusarlin.housingserver.repository.PersonRepository;
-import fi.rikusarlin.housingserver.validation.AllChecks;
-import fi.rikusarlin.housingserver.validation.InputChecks;
+import reactor.core.publisher.Mono;
 
+@Component
 @RestController
 @Service
 @Validated
 @RequestMapping("/api/v2/housing")
 public class PersonsControllerImpl implements PersonsApi {
 
-	@Autowired
 	PersonRepository personRepo;
 
-	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+	//private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-	@Override
-	public ResponseEntity<Person> fetchPersonById(Integer id) {
-		PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		return ResponseEntity.ok(MappingUtil.modelMapper.map(p, Person.class));
+	public PersonsControllerImpl(PersonRepository repo) {
+		this.personRepo = repo;
 	}
-
 	@Override
-	public ResponseEntity<Person> addPerson(Person person) {
-		PersonEntity p = MappingUtil.modelMapperInsert.map(person, PersonEntity.class);
-		Set<ConstraintViolation<PersonEntity>> violations = validator.validate(p, InputChecks.class);
+	public Mono<ResponseEntity<Person>> fetchPersonById(Integer id, ServerWebExchange exchange) {
+		return  personRepo.findById(id)
+	             .flatMap(p -> Mono.just(ResponseEntity.ok(MappingUtil.modelMapper.map(p, Person.class))))
+				 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+	}
+	
+	/*
+	@Override
+	public Mono<ResponseEntity<Person>> addPerson(Mono<Person> person, ServerWebExchange exchange) {
+		Mono<PersonEntity> p = person.subscribe(pers -> MappingUtil.modelMapperInsert.map(pers, PersonEntity.class));
+		Set<ConstraintViolation<PersonEntity>> violations = p.flatMap(p2 -> validator.validate(p2, InputChecks.class));
 		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
+			return Mono.error(new ConstraintViolationException(violations));
 		}
-		personRepo.findByPersonNumber(person.getPersonNumber()).ifPresent(thePerson -> {
-			throw new DuplicateNotAllowedException("personNumber " + thePerson.getPersonNumber());
-		});
-		PersonEntity personEntitySaved = personRepo.save(p);
-		Person personSaved = MappingUtil.modelMapper.map(personEntitySaved, Person.class);
-		return ResponseEntity.ok(personSaved);
+		Mono<PersonEntity> personFound = personRepo.findByPersonNumber(Mono.just(p.getPersonNumber()));
+		if(!personFound.equals(Mono.empty())) {
+			return Mono.error(new DuplicateNotAllowedException("personNumber " + personFound.map(pers -> pers.getBirthDate())));
+		}
+		Person personSaved = (Person) personRepo.save(p).subscribe(pe -> MappingUtil.modelMapper.map(pe, Person.class));
+		return Mono.just(ResponseEntity.ok(personSaved));
 	}
 
 	@Override
-	public ResponseEntity<Person> checkPersonById(Integer id) {
-		PersonEntity p = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		Set<ConstraintViolation<PersonEntity>> violations = validator.validate(p, AllChecks.class);
+	public Mono<ResponseEntity<Person>> checkPersonById(Integer id, ServerWebExchange exchange) {
+		PersonEntity person =  (PersonEntity) personRepo.findById(id).subscribe(
+				p -> MappingUtil.modelMapper.map(p, PersonEntity.class));
+		if(person == null){
+			return Mono.error(new NotFoundException("Person", id));
+		}
+		Set<ConstraintViolation<PersonEntity>> violations = validator.validate(person, AllChecks.class);
 		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
+			return Mono.error(new ConstraintViolationException(violations));
 		}
-		return ResponseEntity.ok(MappingUtil.modelMapper.map(p, Person.class));
+		return Mono.just(ResponseEntity.ok(MappingUtil.modelMapper.map(person, Person.class)));
 	}
 
 	@Override
-	public ResponseEntity<Person> updatePerson(Integer id, Person person) {
+	public Mono<ResponseEntity<Person>> updatePerson(Integer id, Mono<Person> person, ServerWebExchange exchange) {
 		PersonEntity p = MappingUtil.modelMapper.map(person, PersonEntity.class);
 		p.setId(id);
 		Set<ConstraintViolation<PersonEntity>> violations = validator.validate(p, InputChecks.class);
 		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
+			return Mono.error(new ConstraintViolationException(violations));
 		}
-		return ResponseEntity.ok(MappingUtil.modelMapper.map(personRepo.save(p), Person.class));
+		return Mono.just(ResponseEntity.ok(MappingUtil.modelMapper.map(personRepo.save(p), Person.class)));
 	}
 
 	@Override
-	public ResponseEntity<Void> deletePerson(Integer id) {
-		PersonEntity person = personRepo.findById(id).orElseThrow(() -> new NotFoundException("Person", id));
-		personRepo.delete(person);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	public Mono<ResponseEntity<Void>> deletePerson(Integer id, ServerWebExchange exchange) {
+		Mono<PersonEntity> person = personRepo.findById(id);
+		if(person.equals(Mono.empty())){
+			return Mono.error(new NotFoundException("Person", id));
+		}
+		personRepo.deleteById(id);
+		return Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT));
 	}
 
 	@Override
-	public ResponseEntity<List<Person>> fetchPersons() {
-		return ResponseEntity.ok(StreamSupport.stream(personRepo.findAll().spliterator(), false)
-				.map(pe -> MappingUtil.modelMapper.map(pe, Person.class)).collect(Collectors.toList()));
+	public Mono<ResponseEntity<Flux<Person>>> fetchPersons(ServerWebExchange exchange) {
+		return Mono.just(
+				ResponseEntity.ok(
+						personRepo.findAll().map(pe -> MappingUtil.modelMapper.map(pe, Person.class))));
 	}
+	*/
 }

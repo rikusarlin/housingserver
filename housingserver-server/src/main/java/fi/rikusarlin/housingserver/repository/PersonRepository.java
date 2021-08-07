@@ -1,11 +1,12 @@
 package fi.rikusarlin.housingserver.repository;
 
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Component;
 
 import fi.rikusarlin.housingserver.data.PersonEntity;
+import reactor.core.publisher.Mono;
 
-public interface PersonRepository extends JpaRepository<PersonEntity, Integer> {
-	Optional<PersonEntity> findByPersonNumber(String personNumber);
+@Component
+public interface PersonRepository extends ReactiveCrudRepository<PersonEntity, Integer> {
+	Mono<PersonEntity> findByPersonNumber(Mono<String> personNumber);
 }

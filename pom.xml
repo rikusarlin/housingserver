@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fi.rikusarlin</groupId>
-  <artifactId>housingserver-parent</artifactId>
+  <artifactId>housingserver-parent-reactive</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 

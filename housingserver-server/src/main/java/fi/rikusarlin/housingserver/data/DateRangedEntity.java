@@ -1,13 +1,9 @@
 package fi.rikusarlin.housingserver.data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.data.relational.core.mapping.Column;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,34 +13,25 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import fi.rikusarlin.housingserver.validation.DateRangeChecks;
 import fi.rikusarlin.housingserver.validation.Severity;
 import fi.rikusarlin.housingserver.validation.ValidDateRange;
+import lombok.Getter;
+import lombok.Setter;
 
 @ValidDateRange(groups=DateRangeChecks.class,payload={Severity.Error.class})
-@MappedSuperclass
-@Validated
+@Getter @Setter
 public abstract class DateRangedEntity extends EntityClass {
-	@Basic
-    @Column(name = "startDate", nullable = true)	
-	@DateTimeFormat(pattern="dd.MM.yyyy")
+	@Column(value = "startDate")
 	@JsonDeserialize(using = LocalDateDeserializer.class)  
 	@JsonSerialize(using = LocalDateSerializer.class)  
 	LocalDate startDate;
-	@Basic
-    @Column(name = "endDate", nullable = true)	
-	@DateTimeFormat(pattern="dd.MM.yyyy")
+    
+    @Column(value = "endDate")
 	@JsonDeserialize(using = LocalDateDeserializer.class)  
 	@JsonSerialize(using = LocalDateSerializer.class)  
-	
-	LocalDate endDate;
-	public LocalDate getStartDate() {
-		return startDate;
+	LocalDate endDate;  
+    
+    public DateRangedEntity(Integer id, String createdByUser, String modifiedByUser, LocalDateTime creationTime,
+			LocalDateTime modificationTime) {
+		super(id, createdByUser, modifiedByUser, creationTime, modificationTime);
 	}
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
+
 }

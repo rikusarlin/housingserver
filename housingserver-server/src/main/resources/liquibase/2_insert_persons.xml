@@ -14,7 +14,7 @@
         <column  name="firstname"  value="Rauli"/>  
         <column  name="lastname"  value="Wnape"/>  
         <column  name="birthdate"  value="1970-01-01"/>  
-        <column  name="gender"  value="1"/>  
+        <column  name="gender"  value="MAN"/>  
         <column  name="email"  value="rauliwnape2@hotmail.com"/>
      </insert>
     <insert tableName="person">  
@@ -23,7 +23,7 @@
         <column  name="firstname"  value="Marke"/>  
         <column  name="lastname"  value="Peerakpe"/>  
         <column  name="birthdate"  value="1970-01-01"/>  
-        <column  name="gender"  value="0"/>  
+        <column  name="gender"  value="WOMAN"/>  
         <column  name="email"  value="marke.peerakpe@yahoo.com"/>
      </insert>
     <insert tableName="person">  
@@ -32,7 +32,7 @@
         <column  name="firstname"  value="Walter"/>  
         <column  name="lastname"  value="Nutbekk"/>  
         <column  name="birthdate"  value="1970-01-01"/>  
-        <column  name="gender"  value="1"/>  
+        <column  name="gender"  value="MAN"/>  
         <column  name="email"  value="walter.nutbekk@welho.com"/>
      </insert>
     <insert tableName="person">  
@@ -41,7 +41,7 @@
         <column  name="firstname"  value="Suvi-Tuulia"/>  
         <column  name="lastname"  value="Retsetenpe"/>  
         <column  name="birthdate"  value="1970-01-01"/>  
-        <column  name="gender"  value="0"/>  
+        <column  name="gender"  value="WOMAN"/>  
         <column  name="email"  value="suvi-tuuli.retsenape@gmail.com"/>
      </insert>
   </changeSet>  
