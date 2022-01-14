@@ -927,7 +927,7 @@ paths:
       description: Adds housing benefit case
       responses:
         '201':
-          description: housing benefit case and application created
+          description: housing benefit case nad application created
           content:
             application/json:
               schema:
@@ -1122,9 +1122,57 @@ components:
     Id:
       type: integer
       description: Unique identifier of a resource
-    IdDateRangeAndAuditing:
+    Gender:
+      type: string
+      enum:
+        - WOMAN
+        - MAN
+        - OTHER
+    Person:
       type: object
-      description: Id and possibly open range between two dates - that is, both start end end dates can be empty
+      description: A natural person residing in Finland
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
+        personNumber:
+          $ref: '#/components/schemas/PersonNumber'
+        firstName:
+          type: string
+          description: First name of a person
+          maxLength: 80
+        lastName:
+          type: string
+          description: Last name of a person
+          maxLength: 80
+        birthDate:
+          type: string
+          format: date
+          example: '1971-08-71'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        email:
+          type: string
+          format: email
+          maxLength: 80
+    HouseholdMember:
+      type: object
+      description: Household member info
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -1152,70 +1200,8 @@ components:
           type: string
           format: date
           example: '2020-10-08'
-    IdAndAuditing:
-      type: object
-      description: Id and possibly open range between two dates - that is, both start end end dates can be empty
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        creationTime:
-          type: string
-          format: date-time
-          description: Timestamp of last creation
-        createdByUser:
-          type: string
-          maxLength: 80
-          description: User that created this entity
-        modificationTime:
-          type: string
-          format: date-time
-          description: Timestamp of last modification
-        modifiedByUser:
-          type: string
-          maxLength: 80
-          description: User that last modified this entity
-    Gender:
-      type: string
-      enum:
-        - WOMAN
-        - MAN
-        - OTHER
-    Person:
-      type: object
-      description: A natural person residing in Finland
-      allOf:
-          - $ref: '#/components/schemas/IdAndAuditing'
-          - type: object
-            properties:
-              personNumber:
-                $ref: '#/components/schemas/PersonNumber'
-              firstName:
-                type: string
-                description: First name of a person
-                maxLength: 80
-              lastName:
-                type: string
-                description: Last name of a person
-                maxLength: 80
-              birthDate:
-                type: string
-                format: date
-                example: '1971-08-71'
-              gender:
-                $ref: '#/components/schemas/Gender'
-              email:
-                type: string
-                format: email
-                maxLength: 80
-    HouseholdMember:
-      type: object
-      description: Household member info
-      allOf:
-          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
-          - type: object
-            properties: 
-              person:
-                $ref: '#/components/schemas/Person'
+        person:
+          $ref: '#/components/schemas/Person'
     PersonNumber:
       type: string
       description: Finnish person number
@@ -1244,45 +1230,114 @@ components:
     Income:
       type: object
       description: Income info
-      allOf:
-          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
-          - type: object
-            properties: 
-              incomeType:
-                $ref: '#/components/schemas/IncomeType'
-              amount:
-                type: number
-                format: double
-              otherIncomeDescription:
-                type: string
-                description: A textual description for income if income type is OTHER
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
+        startDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        endDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        incomeType:
+          $ref: '#/components/schemas/IncomeType'
+        amount:
+          type: number
+          format: double
+        otherIncomeDescription:
+          type: string
+          description: A textual description for income if income type is OTHER
     Expense:
       type: object
       description: Expense info
-      allOf:
-          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
-          - type: object
-            properties: 
-              expenseType:
-                $ref: '#/components/schemas/ExpenseType'
-              amount:
-                type: number
-                format: double
-              otherExpenseDescription:
-                type: string
-                description: A textual description for expense if expense type is OTHER
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
+        startDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        endDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        expenseType:
+          $ref: '#/components/schemas/ExpenseType'
+        amount:
+          type: number
+          format: double
+        otherExpenseDescription:
+          type: string
+          description: A textual description for expense if expense type is OTHER
     HousingBenefitApplication:
       type: object
       description: Housing benefit application info
-      allOf:
-          - $ref: '#/components/schemas/IdDateRangeAndAuditing'
-          - type: object
-            properties:
-              applicant:
-                $ref: '#/components/schemas/Person'
-              received:
-                type: string
-                format: date-time
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
+        startDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        endDate:
+          type: string
+          format: date
+          example: '2020-10-08'
+        applicant:
+          $ref: '#/components/schemas/Person'
+        received:
+          type: string
+          format: date-time
     CaseState:
       type: string
       enum:
@@ -1294,28 +1349,43 @@ components:
     HousingBenefitCase:
       type: object
       description: Housing benefit case
-      allOf:
-          - $ref: '#/components/schemas/IdAndAuditing'
-          - type: object
-            properties:
-              caseState:
-                $ref: '#/components/schemas/CaseState'
-              customer:
-                $ref: '#/components/schemas/Person'
-              application:
-                $ref: '#/components/schemas/HousingBenefitApplication'
-              householdMembers:
-                type: array
-                items:
-                  $ref: '#/components/schemas/HouseholdMember'
-              housingExpenses:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Expense'
-              incomes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Income'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        creationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last creation
+        createdByUser:
+          type: string
+          maxLength: 80
+          description: User that created this entity
+        modificationTime:
+          type: string
+          format: date-time
+          description: Timestamp of last modification
+        modifiedByUser:
+          type: string
+          maxLength: 80
+          description: User that last modified this entity
+        caseState:
+          $ref: '#/components/schemas/CaseState'
+        customer:
+          $ref: '#/components/schemas/Person'
+        application:
+          $ref: '#/components/schemas/HousingBenefitApplication'
+        householdMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/HouseholdMember'
+        housingExpenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Expense'
+        incomes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Income'
     NewHousingBenefitCase:
       type: object
       description: Housing benefit case

@@ -65,7 +65,9 @@ The application uses various technologies, as follows:
 
 ## Local use
 The service is accessed via Rest api. Swagger UI is included in the package in the following address: 
-http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/
+Direct link to swagger-ui with relevant api:
+http://localhost:8080/swagger-ui/?url=http%3A%2F%2Flocalhost%3A8080%2Fhousing-api-docs
 
 If H2 database is used, its UI can be accessed via the following address:
 http://localhost:8080/h2
