@@ -131,6 +131,7 @@
          
 	</dependencies>
 
+	<!--
 	<profiles>
 		<profile>
   			<id>openshift</id>
@@ -164,6 +165,7 @@
   			</dependencies>
 		</profile>
     </profiles>
+	-->
     
 	<build>
 		<plugins>
@@ -225,6 +227,7 @@
                 </dependency>  
               </dependencies>  
             </plugin>
+			<!--
 			<plugin>
     			<groupId>io.fabric8</groupId>
     			<artifactId>fabric8-maven-plugin</artifactId>
@@ -239,6 +242,7 @@
       				</execution>
     			</executions>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 
